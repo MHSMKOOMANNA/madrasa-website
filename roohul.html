@@ -82,7 +82,7 @@ nav a:hover {
     color: #043c2d;
 }
 
-/* MAIN */
+/* MAIN SECTIONS */
 section {
     max-width: 1100px;
     margin: auto;
@@ -105,7 +105,7 @@ section h2::after {
     margin: 10px auto;
 }
 
-/* TITLE */
+/* PAGE TITLE */
 .page-title {
     text-align: center;
     padding-top: 60px;
@@ -119,6 +119,53 @@ section h2::after {
 .page-title p {
     color: #68786f;
     font-size: 17px;
+}
+
+/* CHAMPIONS */
+.champions-box {
+    max-width: 800px;
+    margin: 0 auto;
+    background: linear-gradient(135deg, #064e3b, #0b6b4f);
+    border: 4px solid #d4af37;
+    border-radius: 20px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.champions-box h2 {
+    color: #f5d77a;
+    margin-bottom: 20px;
+    font-size: 34px;
+}
+
+.champions-box h2::after {
+    background: #f5d77a;
+}
+
+.champions-image {
+    width: 100%;
+    max-width: 650px;
+    max-height: 500px;
+    object-fit: contain;
+    background: white;
+    border-radius: 15px;
+    padding: 8px;
+    cursor: pointer;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+}
+
+.champions-name {
+    color: #f5d77a;
+    font-size: 30px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.champions-subtitle {
+    color: white;
+    font-size: 17px;
+    margin-top: 5px;
 }
 
 /* PHOTO GALLERY */
@@ -136,7 +183,7 @@ section h2::after {
     border-top: 4px solid #d4af37;
 }
 
-/* FULL PHOTO - NO CROPPING */
+/* FULL IMAGE - NO CROPPING */
 .photo-card img {
     width: 100%;
     height: 300px;
@@ -289,6 +336,10 @@ footer strong {
     .page-title h2 {
         font-size: 34px;
     }
+
+    .champions-name {
+        font-size: 25px;
+    }
 }
 
 @media (max-width: 500px) {
@@ -299,6 +350,14 @@ footer strong {
 
     .photo-card img {
         height: 400px;
+    }
+
+    .champions-box {
+        padding: 20px 12px;
+    }
+
+    .champions-image {
+        max-height: 450px;
     }
 
     section {
@@ -357,6 +416,32 @@ footer strong {
 
 </section>
 
+
+<!-- CHAMPIONS -->
+<section>
+
+    <div class="champions-box">
+
+        <h2>🏆 CHAMPIONS 🏆</h2>
+
+        <img src="champions.jpg"
+             alt="BUKHARA Champions"
+             class="champions-image"
+             onclick="openImage(this.src)">
+
+        <div class="champions-name">
+            BUKHARA
+        </div>
+
+        <div class="champions-subtitle">
+            ROOHUL MAHABBA — CHAMPIONS
+        </div>
+
+    </div>
+
+</section>
+
+
 <!-- EVENT PHOTOS -->
 <section>
 
@@ -398,6 +483,7 @@ footer strong {
 
 </section>
 
+
 <!-- WINNERS -->
 <section>
 
@@ -430,6 +516,7 @@ footer strong {
 
         </div>
 
+
         <!-- 2 -->
         <div class="winner-card">
 
@@ -454,6 +541,7 @@ footer strong {
             </div>
 
         </div>
+
 
         <!-- 3 -->
         <div class="winner-card">
@@ -480,6 +568,7 @@ footer strong {
 
         </div>
 
+
         <!-- 4 -->
         <div class="winner-card">
 
@@ -504,6 +593,7 @@ footer strong {
             </div>
 
         </div>
+
 
         <!-- 5 -->
         <div class="winner-card">
@@ -530,6 +620,7 @@ footer strong {
 
         </div>
 
+
         <!-- 6 -->
         <div class="winner-card">
 
@@ -555,6 +646,7 @@ footer strong {
 
         </div>
 
+
         <!-- 7 -->
         <div class="winner-card">
 
@@ -579,6 +671,7 @@ footer strong {
             </div>
 
         </div>
+
 
         <!-- 8 -->
         <div class="winner-card">
@@ -607,12 +700,18 @@ footer strong {
 
     </div>
 
+
     <!-- BACK HOME -->
     <div class="back-button">
-        <a href="index.html">← Back to Home</a>
+
+        <a href="index.html">
+            ← Back to Home
+        </a>
+
     </div>
 
 </section>
+
 
 <!-- IMAGE POPUP -->
 <div class="image-popup"
@@ -628,6 +727,7 @@ footer strong {
 
 </div>
 
+
 <!-- FOOTER -->
 <footer>
 
@@ -640,6 +740,7 @@ footer strong {
     </p>
 
 </footer>
+
 
 <script>
 function openImage(imageSource) {
