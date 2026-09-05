@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Student Panel - Maadanudheen Madrasa</title>
 
   <script type="module">
@@ -20,20 +19,16 @@
     );
 
     async function loadStudent() {
-
       const message = document.getElementById("message");
 
       try {
-
-        // Check logged-in user
         const {
           data: { user },
           error: userError
         } = await supabase.auth.getUser();
 
         if (userError) {
-          message.textContent =
-            "Login error: " + userError.message;
+          message.textContent = "Login error: " + userError.message;
           return;
         }
 
@@ -42,81 +37,60 @@
           return;
         }
 
-        // Get username from login email
         const username = user.email.split("@")[0];
 
         console.log("Logged in email:", user.email);
         console.log("Username searched:", username);
 
-        // Get student information
         const {
           data,
           error
         } = await supabase
-          .from("maadanudheen-madrasa")
-          .select('student_name, "class"')
+          .from("students")
+          .select("student_name, class")
           .eq("username", username)
           .maybeSingle();
 
         if (error) {
-
           console.error("Database error:", error);
-
-          message.textContent =
-            "Database error: " + error.message;
-
+          message.textContent = "Database error: " + error.message;
           return;
         }
 
         if (!data) {
-
           message.textContent =
             "Student not found. Username searched: " + username;
-
           return;
         }
 
-        // Display student name
         document.getElementById("studentName").textContent =
           data.student_name;
 
         document.getElementById("studentName2").textContent =
           data.student_name;
 
-        // Display class
         document.getElementById("studentClass").textContent =
           data.class;
 
         message.textContent = "";
 
       } catch (error) {
-
         console.error(error);
-
-        message.textContent =
-          "Error: " + error.message;
+        message.textContent = "Error: " + error.message;
       }
     }
 
-
-    // Logout
     async function logout() {
-
       await supabase.auth.signOut();
-
       window.location.href = "login.html";
     }
 
     window.logout = logout;
 
-    // Load student information
     loadStudent();
-
   </script>
 
-
   <style>
-
     * {
       box-sizing: border-box;
     }
@@ -149,10 +123,6 @@
       font-size: 25px;
     }
 
-    header p {
-      margin: 5px;
-    }
-
     .container {
       max-width: 900px;
       margin: 30px auto;
@@ -173,7 +143,6 @@
 
     .student-info h2 {
       color: #064d35;
-      margin-bottom: 20px;
     }
 
     .info-row {
@@ -191,7 +160,6 @@
       margin: 8px 0;
       background: #f1f7f3;
       border-radius: 10px;
-      cursor: pointer;
     }
 
     .namaz-list input {
@@ -207,8 +175,8 @@
       padding: 12px;
       border: 1px solid #ccc;
       border-radius: 10px;
-      resize: vertical;
       font-size: 16px;
+      resize: vertical;
     }
 
     button {
@@ -220,10 +188,6 @@
       cursor: pointer;
       font-size: 16px;
       margin-top: 12px;
-    }
-
-    button:hover {
-      background: #08734e;
     }
 
     .logout {
@@ -244,154 +208,71 @@
       color: white;
       margin-top: 40px;
     }
-
   </style>
-
 </head>
-
 
 <body>
 
-  <header>
+<header>
+  <img src="logo.png" alt="Madrasa Logo">
+  <h1>MAADANUDHEEN MADRASA</h1>
+  <p>Student Panel</p>
+</header>
 
-    <img src="logo.png" alt="Madrasa Logo">
+<div class="container">
 
-    <h1>MAADANUDHEEN MADRASA</h1>
+  <div id="message"></div>
 
-    <p>Student Panel</p>
+  <div class="card student-info">
+    <h2>👋 Welcome, <span id="studentName">Loading...</span></h2>
 
-  </header>
-
-
-  <div class="container">
-
-    <div id="message"></div>
-
-
-    <!-- STUDENT INFORMATION -->
-
-    <div class="card student-info">
-
-      <h2>
-        👋 Welcome,
-        <span id="studentName">Loading...</span>
-      </h2>
-
-      <div class="info-row">
-
-        <span class="label">
-          Name:
-        </span>
-
-        <span id="studentName2">
-          Loading...
-        </span>
-
-      </div>
-
-      <div class="info-row">
-
-        <span class="label">
-          Class:
-        </span>
-
-        <span id="studentClass">
-          Loading...
-        </span>
-
-      </div>
-
+    <div class="info-row">
+      <span class="label">Name:</span>
+      <span id="studentName2">Loading...</span>
     </div>
 
-
-    <!-- NAMAZ -->
-
-    <div class="card">
-
-      <h2>🕌 Today's Namaz</h2>
-
-      <div class="namaz-list">
-
-        <label>
-          <input type="checkbox">
-          Fajr
-        </label>
-
-        <label>
-          <input type="checkbox">
-          Dhuhr
-        </label>
-
-        <label>
-          <input type="checkbox">
-          Asr
-        </label>
-
-        <label>
-          <input type="checkbox">
-          Maghrib
-        </label>
-
-        <label>
-          <input type="checkbox">
-          Isha
-        </label>
-
-      </div>
-
-      <button onclick="alert('Namaz saving will be connected next.')">
-        Save Namaz
-      </button>
-
+    <div class="info-row">
+      <span class="label">Class:</span>
+      <span id="studentClass">Loading...</span>
     </div>
-
-
-    <!-- SUGGESTIONS -->
-
-    <div class="card">
-
-      <h2>💡 Suggestions</h2>
-
-      <textarea
-        placeholder="Write your suggestion here..."
-      ></textarea>
-
-      <button
-        onclick="alert('Suggestions will be connected next.')"
-      >
-        Submit Suggestion
-      </button>
-
-    </div>
-
-
-    <!-- LOGOUT -->
-
-    <div
-      class="card"
-      style="text-align:center;"
-    >
-
-      <button
-        class="logout"
-        onclick="logout()"
-      >
-        Logout
-      </button>
-
-    </div>
-
   </div>
 
+  <div class="card">
+    <h2>🕌 Today's Namaz</h2>
 
-  <footer>
+    <div class="namaz-list">
+      <label><input type="checkbox"> Fajr</label>
+      <label><input type="checkbox"> Dhuhr</label>
+      <label><input type="checkbox"> Asr</label>
+      <label><input type="checkbox"> Maghrib</label>
+      <label><input type="checkbox"> Isha</label>
+    </div>
 
-    MAADANUDHEEN MADRASA
-    <br>
+    <button onclick="alert('Namaz saving will be connected next.')">
+      Save Namaz
+    </button>
+  </div>
 
-    KOOMANNA CHENAKKAL
+  <div class="card">
+    <h2>💡 Suggestions</h2>
 
-  </footer>
+    <textarea placeholder="Write your suggestion here..."></textarea>
+
+    <button onclick="alert('Suggestions will be connected next.')">
+      Submit Suggestion
+    </button>
+  </div>
+
+  <div class="card" style="text-align:center;">
+    <button class="logout" onclick="logout()">Logout</button>
+  </div>
+
+</div>
+
+<footer>
+  MAADANUDHEEN MADRASA<br>
+  KOOMANNA CHENAKKAL
+</footer>
 
 </body>
 </html>
