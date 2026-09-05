@@ -1,340 +1,280 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Panel | Maadanudheen Madrasa</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Panel - Maadanudheen Madrasa</title>
 
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+  <script type="module">
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+    const SUPABASE_URL = "https://oqhnaxolmqxifyjyzufj.supabase.co";
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_xGFE4JO5yMzYW7fIG3f1xg_1fEn300G";
+
+    const supabase = createClient(
+      SUPABASE_URL,
+      SUPABASE_PUBLISHABLE_KEY
+    );
+
+    async function loadStudent() {
+      const message = document.getElementById("message");
+
+      try {
+        // Check logged-in student
+        const { data: { user }, error: userError } =
+          await supabase.auth.getUser();
+
+        if (userError || !user) {
+          window.location.href = "login.html";
+          return;
         }
 
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f8f5;
-            color: #222;
+        // Get username from login email
+        const username = user.email.split("@")[0];
+
+        // Find student
+        const { data, error } = await supabase
+          .from("students")
+          .select("student_name, class")
+          .eq("username", username)
+          .maybeSingle();
+
+        if (error) {
+          console.error("Student query error:", error);
+          message.textContent = "Database error: " + error.message;
+          return;
         }
 
-        header {
-            background: #064e3b;
-            color: white;
-            text-align: center;
-            padding: 25px 15px;
+        if (!data) {
+          message.textContent =
+            "Student not found. Username searched: " + username;
+          return;
         }
 
-        header img {
-            width: 75px;
-            height: 75px;
-            object-fit: contain;
-            margin-bottom: 10px;
-        }
+        // Show student information
+        document.getElementById("studentName").textContent =
+          data.student_name;
 
-        header h1 {
-            font-size: 24px;
-        }
+        document.getElementById("studentClass").textContent =
+          data.class;
 
-        header p {
-            margin-top: 6px;
-            color: #d9f5e8;
-        }
+        message.textContent = "";
 
-        .container {
-            max-width: 900px;
-            margin: 30px auto;
-            padding: 0 20px;
-        }
+      } catch (error) {
+        console.error(error);
+        message.textContent = "Error: " + error.message;
+      }
+    }
 
-        .welcome {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            margin-bottom: 25px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-        }
+    async function logout() {
+      await supabase.auth.signOut();
+      window.location.href = "login.html";
+    }
 
-        .welcome h2 {
-            color: #064e3b;
-            margin-bottom: 10px;
-        }
+    window.logout = logout;
 
-        .student-info {
-            margin-top: 15px;
-            line-height: 1.8;
-        }
+    loadStudent();
+  </script>
 
-        .card {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            margin-bottom: 25px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-        }
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-        .card h2 {
-            color: #064e3b;
-            margin-bottom: 20px;
-        }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f8f5;
+      color: #123d2b;
+    }
 
-        .namaz-list {
-            display: grid;
-            gap: 12px;
-        }
+    header {
+      background: #064d35;
+      color: white;
+      text-align: center;
+      padding: 25px 15px;
+    }
 
-        .namaz-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 14px;
-            background: #f1f7f3;
-            border-radius: 10px;
-        }
+    header img {
+      width: 75px;
+      height: 75px;
+      object-fit: contain;
+      background: white;
+      border-radius: 50%;
+      padding: 5px;
+    }
 
-        .namaz-item input {
-            width: 20px;
-            height: 20px;
-        }
+    header h1 {
+      margin: 10px 0 5px;
+    }
 
-        textarea {
-            width: 100%;
-            min-height: 130px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            font-size: 16px;
-            resize: vertical;
-        }
+    .container {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 15px;
+    }
 
-        button {
-            margin-top: 15px;
-            padding: 12px 22px;
-            border: none;
-            border-radius: 10px;
-            background: #064e3b;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-        }
+    .card {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
 
-        button:hover {
-            background: #0f766e;
-        }
+    .student-info {
+      text-align: center;
+    }
 
-        .logout {
-            background: #b8860b;
-        }
+    .student-info h2 {
+      color: #064d35;
+      margin-bottom: 20px;
+    }
 
-        .logout:hover {
-            background: #96720a;
-        }
+    .info-row {
+      font-size: 18px;
+      margin: 10px;
+    }
 
-        #message {
-            margin-top: 15px;
-            color: #c0392b;
-        }
+    .label {
+      font-weight: bold;
+    }
 
-        footer {
-            text-align: center;
-            padding: 25px;
-            background: #064e3b;
-            color: white;
-            margin-top: 40px;
-        }
-    </style>
+    .namaz-list label {
+      display: block;
+      padding: 12px;
+      margin: 8px 0;
+      background: #f1f7f3;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .namaz-list input {
+      width: 20px;
+      height: 20px;
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 120px;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      resize: vertical;
+      font-size: 16px;
+    }
+
+    button {
+      background: #064d35;
+      color: white;
+      border: none;
+      padding: 12px 22px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 12px;
+    }
+
+    button:hover {
+      background: #08734e;
+    }
+
+    .logout {
+      background: #a33;
+    }
+
+    #message {
+      text-align: center;
+      color: #a33;
+      font-weight: bold;
+      margin: 15px 0;
+    }
+
+    footer {
+      text-align: center;
+      padding: 25px;
+      background: #064d35;
+      color: white;
+      margin-top: 40px;
+    }
+  </style>
 </head>
 
 <body>
 
 <header>
-    <img src="logo.png" alt="Madrasa Logo">
-    <h1>MAADANUDHEEN MADRASA</h1>
-    <p>KOOMANNA CHENAKKAL</p>
+  <img src="logo.png" alt="Madrasa Logo">
+  <h1>MAADANUDHEEN MADRASA</h1>
+  <p>Student Panel</p>
 </header>
 
 <div class="container">
 
-    <div class="welcome">
-        <h2>👋 Welcome, <span id="studentName">Loading...</span></h2>
+  <div id="message"></div>
 
-        <div class="student-info">
-            <p><strong>Name:</strong> <span id="name">Loading...</span></p>
-            <p><strong>Class:</strong> <span id="studentClass">Loading...</span></p>
-        </div>
+  <div class="card student-info">
+    <h2>👋 Welcome, <span id="studentName">Loading...</span></h2>
 
-        <p id="message"></p>
+    <div class="info-row">
+      <span class="label">Name:</span>
+      <span id="studentName2">Loading...</span>
     </div>
 
-    <div class="card">
-        <h2>🕌 Today's Namaz</h2>
+    <div class="info-row">
+      <span class="label">Class:</span>
+      <span id="studentClass">Loading...</span>
+    </div>
+  </div>
 
-        <div class="namaz-list">
+  <div class="card">
+    <h2>🕌 Today's Namaz</h2>
 
-            <label class="namaz-item">
-                <input type="checkbox" id="fajr">
-                <span>Fajr</span>
-            </label>
-
-            <label class="namaz-item">
-                <input type="checkbox" id="dhuhr">
-                <span>Dhuhr</span>
-            </label>
-
-            <label class="namaz-item">
-                <input type="checkbox" id="asr">
-                <span>Asr</span>
-            </label>
-
-            <label class="namaz-item">
-                <input type="checkbox" id="maghrib">
-                <span>Maghrib</span>
-            </label>
-
-            <label class="namaz-item">
-                <input type="checkbox" id="isha">
-                <span>Isha</span>
-            </label>
-
-        </div>
-
-        <button onclick="saveNamaz()">Save Namaz Update</button>
+    <div class="namaz-list">
+      <label><input type="checkbox"> Fajr</label>
+      <label><input type="checkbox"> Dhuhr</label>
+      <label><input type="checkbox"> Asr</label>
+      <label><input type="checkbox"> Maghrib</label>
+      <label><input type="checkbox"> Isha</label>
     </div>
 
-    <div class="card">
-        <h2>💡 Suggestions</h2>
+    <button onclick="alert('Namaz saving will be connected next.')">
+      Save Namaz
+    </button>
+  </div>
 
-        <textarea
-            id="suggestion"
-            placeholder="Write your suggestion here..."
-        ></textarea>
+  <div class="card">
+    <h2>💡 Suggestions</h2>
 
-        <button onclick="submitSuggestion()">
-            Submit Suggestion
-        </button>
-    </div>
+    <textarea placeholder="Write your suggestion here..."></textarea>
 
-    <div class="card">
-        <h2>🚪 Account</h2>
+    <button onclick="alert('Suggestions will be connected next.')">
+      Submit Suggestion
+    </button>
+  </div>
 
-        <button class="logout" onclick="logout()">
-            Logout
-        </button>
-    </div>
+  <div class="card" style="text-align:center;">
+    <button class="logout" onclick="logout()">Logout</button>
+  </div>
 
 </div>
 
 <footer>
-    © 2026 MAADANUDHEEN MADRASA
+  MAADANUDHEEN MADRASA<br>
+  KOOMANNA CHENAKKAL
 </footer>
 
-<script type="module">
+<script>
+  // Copy the loaded name into the second name field
+  const observer = new MutationObserver(() => {
+    document.getElementById("studentName2").textContent =
+      document.getElementById("studentName").textContent;
+  });
 
-    import { createClient } from
-    "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
-
-    const SUPABASE_URL =
-        "https://oqhnaxolmqxifyjyzufj.supabase.co";
-
-    const SUPABASE_PUBLISHABLE_KEY =
-        "sb_publishable_xGFE4JO5yMzYW7fIG3f1xg_1fEn300G";
-
-    const supabase = createClient(
-        SUPABASE_URL,
-        SUPABASE_PUBLISHABLE_KEY
-    );
-
-
-    // ==========================================
-    // LOAD LOGGED-IN STUDENT
-    // ==========================================
-
-    async function loadStudent() {
-
-        const {
-            data: { user },
-            error: authError
-        } = await supabase.auth.getUser();
-
-        if (authError || !user) {
-
-            window.location.href = "login.html";
-            return;
-        }
-
-        const { data, error } = await supabase
-            .from("students")
-            .select("student_name, class")
-            .eq("username", user.email.split("@")[0])
-            .single();
-
-        if (error) {
-
-            document.getElementById("message").textContent =
-                "Student information could not be loaded.";
-
-            console.error(error);
-            return;
-        }
-
-        document.getElementById("studentName").textContent =
-            data.student_name;
-
-        document.getElementById("name").textContent =
-            data.student_name;
-
-        document.getElementById("studentClass").textContent =
-            data.class;
-    }
-
-
-    // ==========================================
-    // NAMAZ
-    // ==========================================
-
-    window.saveNamaz = function() {
-
-        alert(
-            "Namaz saving will be connected to the database in the next step."
-        );
-    };
-
-
-    // ==========================================
-    // SUGGESTION
-    // ==========================================
-
-    window.submitSuggestion = function() {
-
-        const suggestion =
-            document.getElementById("suggestion").value.trim();
-
-        if (suggestion === "") {
-
-            alert("Please write a suggestion first.");
-            return;
-        }
-
-        alert(
-            "Suggestion saving will be connected to the database in the next step."
-        );
-    };
-
-
-    // ==========================================
-    // LOGOUT
-    // ==========================================
-
-    window.logout = async function() {
-
-        await supabase.auth.signOut();
-
-        window.location.href = "login.html";
-    };
-
-
-    loadStudent();
-
+  observer.observe(document.getElementById("studentName"), {
+    childList: true
+  });
 </script>
 
 </body>
