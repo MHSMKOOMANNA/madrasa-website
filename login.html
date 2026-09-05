@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | Maadanudheen Madrasa</title>
+    <title>Student Login | Maadanudheen Madrasa</title>
 
     <style>
         * {
@@ -92,40 +92,111 @@
             text-decoration: none;
         }
 
-        .note {
-            margin-top: 20px;
-            font-size: 13px;
-            color: #888;
+        #message {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #c0392b;
         }
     </style>
 </head>
 
 <body>
 
-    <div class="login-box">
+<div class="login-box">
 
-        <img src="logo.png" class="logo" alt="Madrasa Logo">
+    <img src="logo.png" class="logo" alt="Madrasa Logo">
 
-        <h1>MAADANUDHEEN MADRASA</h1>
-        <p class="subtitle">KOOMANNA CHENAKKAL</p>
+    <h1>MAADANUDHEEN MADRASA</h1>
+    <p class="subtitle">KOOMANNA CHENAKKAL</p>
 
-        <h2 class="login-title">🎓 Student Login</h2>
+    <h2 class="login-title">🎓 Student Login</h2>
 
-        <form>
-            <input type="text" placeholder="Student Username" required>
+    <form id="loginForm">
 
-            <input type="password" placeholder="Password" required>
+        <input
+            type="email"
+            id="email"
+            placeholder="Student Email"
+            required
+        >
 
-            <button type="submit">LOGIN</button>
-        </form>
+        <input
+            type="password"
+            id="password"
+            placeholder="Password"
+            required
+        >
 
-        <a href="index.html" class="back">← Back to Website</a>
+        <button type="submit">LOGIN</button>
 
-        <p class="note">
-            Student login system will be connected to the secure database in the next steps.
-        </p>
+    </form>
 
-    </div>
+    <p id="message"></p>
+
+    <a href="index.html" class="back">← Back to Website</a>
+
+</div>
+
+<script type="module">
+
+    import { createClient } from
+    "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+    // ==========================================
+    // PUT YOUR SUPABASE DETAILS HERE
+    // ==========================================
+
+    const SUPABASE_URL = "https://oqhnaxolmqxifyjyzufj.supabase.co/rest/v1/";
+
+    const SUPABASE_PUBLISHABLE_KEY =
+        "sb_publishable_xGFE4JO5yMzYW7fIG3f1xg_1fEn300G";
+
+    // ==========================================
+
+    const supabase = createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+    );
+
+    const loginForm = document.getElementById("loginForm");
+    const message = document.getElementById("message");
+
+    loginForm.addEventListener("submit", async function(event) {
+
+        event.preventDefault();
+
+        const email =
+            document.getElementById("email").value.trim();
+
+        const password =
+            document.getElementById("password").value;
+
+        message.textContent = "Logging in...";
+
+        const { data, error } =
+            await supabase.auth.signInWithPassword({
+                email: email,
+                password: password
+            });
+
+        if (error) {
+
+            message.textContent =
+                "Login failed: " + error.message;
+
+            return;
+        }
+
+        message.style.color = "#064e3b";
+        message.textContent = "Login successful!";
+
+        setTimeout(function() {
+            window.location.href = "student.html";
+        }, 500);
+
+    });
+
+</script>
 
 </body>
 </html>
