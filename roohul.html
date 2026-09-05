@@ -5,24 +5,27 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>ROOHUL MAHABBA - MAADANUDHEEN MADRASA</title>
+<title>ROOHUL MAHABBA | MAADANUDHEEN MADRASA</title>
 
 <style>
-
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     font-family: Arial, sans-serif;
     background: #f4f8f5;
     color: #173d2b;
+    line-height: 1.6;
 }
 
 /* HEADER */
-
 header {
     background: linear-gradient(135deg, #064e3b, #0b6b4f);
     color: white;
@@ -30,127 +33,148 @@ header {
     padding: 25px 15px;
 }
 
-header img {
-    width: 85px;
-    height: 85px;
+.logo {
+    width: 100px;
+    height: 100px;
     object-fit: contain;
+    background: white;
+    border-radius: 50%;
+    padding: 8px;
+    margin-bottom: 10px;
 }
 
 header h1 {
     color: #f5d77a;
-    margin-top: 10px;
-    font-size: 30px;
+    font-size: 32px;
+    letter-spacing: 1px;
 }
 
 header p {
-    margin-top: 7px;
+    margin-top: 5px;
 }
 
 /* NAVIGATION */
-
 nav {
     background: #043c2d;
-    padding: 13px;
-    text-align: center;
     position: sticky;
     top: 0;
-    z-index: 10;
+    z-index: 1000;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
 nav a {
+    display: block;
     color: white;
     text-decoration: none;
-    margin: 0 12px;
+    padding: 15px 18px;
+    font-weight: bold;
     font-size: 14px;
 }
 
 nav a:hover {
-    color: #f5d77a;
+    background: #d4af37;
+    color: #043c2d;
 }
 
 /* MAIN */
-
-.container {
+section {
     max-width: 1100px;
     margin: auto;
-    padding: 45px 20px;
+    padding: 60px 20px;
+}
+
+section h2 {
+    text-align: center;
+    color: #075b43;
+    font-size: 30px;
+    margin-bottom: 30px;
+}
+
+section h2::after {
+    content: "";
+    display: block;
+    width: 70px;
+    height: 3px;
+    background: #d4af37;
+    margin: 10px auto;
 }
 
 /* TITLE */
-
-.main-title {
+.page-title {
     text-align: center;
-    margin-bottom: 40px;
+    padding-top: 60px;
 }
 
-.main-title h2 {
-    font-size: 38px;
-    color: #075c43;
+.page-title h2 {
+    font-size: 42px;
+    color: #064e3b;
 }
 
-.main-title p {
-    margin-top: 10px;
-    color: #555;
+.page-title p {
+    color: #68786f;
     font-size: 17px;
 }
 
 /* PHOTO GALLERY */
-
-.section-title {
-    text-align: center;
-    color: #075c43;
-    font-size: 28px;
-    margin-bottom: 25px;
-}
-
-.gallery {
+.photo-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 18px;
-    margin-bottom: 60px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
 }
 
-.gallery img {
+.photo-card {
+    background: white;
+    border-radius: 15px;
+    padding: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    border-top: 4px solid #d4af37;
+}
+
+/* FULL PHOTO - NO CROPPING */
+.photo-card img {
     width: 100%;
-    height: 230px;
-    object-fit: cover;
-    border-radius: 16px;
-    border: 4px solid #d4af37;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.12);
-    transition: 0.3s;
+    height: 300px;
+    object-fit: contain;
+    background: #f4f8f5;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.2s;
 }
 
-.gallery img:hover {
-    transform: scale(1.03);
+.photo-card img:hover {
+    transform: scale(1.02);
 }
 
 /* WINNERS */
-
-.winners {
+.winner-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 22px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
 }
 
 .winner-card {
     background: white;
-    border-radius: 18px;
-    padding: 24px;
-    box-shadow: 0 5px 18px rgba(0,0,0,0.10);
-    border-top: 5px solid #d4af37;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    border-top: 4px solid #d4af37;
 }
 
 .winner-card h3 {
-    color: #075c43;
-    text-align: center;
+    color: #075b43;
     margin-bottom: 18px;
     font-size: 19px;
 }
 
 .winner {
-    padding: 10px 0;
-    border-bottom: 1px solid #e5e5e5;
-    line-height: 1.5;
+    padding: 12px 0;
+    border-bottom: 1px solid #e1e8e3;
 }
 
 .winner:last-child {
@@ -159,375 +183,475 @@ nav a:hover {
 
 .position {
     font-weight: bold;
+    color: #b38b16;
 }
 
-.first {
-    color: #b8860b;
-}
-
-.second {
-    color: #555;
-}
-
-.third {
-    color: #8b5a2b;
-}
-
-.group {
-    font-size: 13px;
+.student-name {
     font-weight: bold;
-    color: #075c43;
+    color: #173d2b;
+}
+
+.details {
+    color: #68786f;
+    font-size: 14px;
 }
 
 /* BACK BUTTON */
-
-.back {
+.back-button {
     text-align: center;
-    margin-top: 45px;
+    margin-top: 40px;
 }
 
-.back a {
+.back-button a {
     display: inline-block;
-    background: #075c43;
+    background: #075b43;
     color: white;
-    padding: 13px 25px;
-    border-radius: 10px;
+    padding: 12px 25px;
+    border-radius: 8px;
     text-decoration: none;
+    font-weight: bold;
 }
 
-.back a:hover {
-    background: #043c2d;
+.back-button a:hover {
+    background: #d4af37;
+    color: #043c2d;
+}
+
+/* IMAGE POPUP */
+.image-popup {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.92);
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.image-popup img {
+    max-width: 95%;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: 10px;
+}
+
+.close-popup {
+    position: absolute;
+    top: 15px;
+    right: 30px;
+    color: white;
+    font-size: 45px;
+    font-weight: bold;
+    cursor: pointer;
 }
 
 /* FOOTER */
-
 footer {
     background: #043c2d;
     color: white;
     text-align: center;
-    padding: 25px;
+    padding: 25px 15px;
     margin-top: 20px;
 }
 
+footer strong {
+    color: #f5d77a;
+}
+
 /* MOBILE */
+@media (max-width: 800px) {
 
-@media (max-width: 600px) {
-
-    .main-title h2 {
-        font-size: 29px;
+    header h1 {
+        font-size: 25px;
     }
 
     nav a {
-        display: inline-block;
-        margin: 5px;
+        padding: 12px 10px;
+        font-size: 12px;
     }
 
-    .gallery img {
-        height: 200px;
+    .photo-grid {
+        grid-template-columns: 1fr 1fr;
     }
 
+    .winner-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .photo-card img {
+        height: 280px;
+    }
+
+    .page-title h2 {
+        font-size: 34px;
+    }
 }
 
+@media (max-width: 500px) {
+
+    .photo-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .photo-card img {
+        height: 400px;
+    }
+
+    section {
+        padding: 45px 15px;
+    }
+}
 </style>
 </head>
 
 <body>
 
 <!-- HEADER -->
-
 <header>
 
-    <img src="logo.png" alt="Madrasa Logo">
+    <img src="logo.png" alt="Madrasa Logo" class="logo">
 
     <h1>ROOHUL MAHABBA</h1>
 
-    <p>MAADANUDHEEN MADRASA — KOOMANNA CHENAKKAL</p>
+    <p>
+        MAADANUDHEEN MADRASA — KOOMANNA CHENAKKAL
+    </p>
 
 </header>
 
-
 <!-- NAVIGATION -->
-
 <nav>
 
-    <a href="index.html">Home</a>
+    <ul>
 
-    <a href="index.html#teachers">Teachers</a>
+        <li><a href="index.html">Home</a></li>
 
-    <a href="index.html#students">Students</a>
+        <li><a href="index.html#teachers">Teachers</a></li>
 
-    <a href="index.html#events">Events</a>
+        <li><a href="index.html#students">Students</a></li>
 
-    <a href="roohul.html">Roohul Mahabba</a>
+        <li><a href="index.html#events">Events</a></li>
 
-    <a href="index.html#results">Results</a>
+        <li><a href="roohul.html">Roohul Mahabba</a></li>
 
-    <a href="index.html#contact">Contact</a>
+        <li><a href="index.html#results">Results</a></li>
+
+        <li><a href="index.html#contact">Contact</a></li>
+
+    </ul>
 
 </nav>
 
+<!-- PAGE TITLE -->
+<section class="page-title">
 
-<!-- MAIN CONTENT -->
+    <h2>ROOHUL MAHABBA</h2>
 
-<div class="container">
+    <p>
+        Meelad Fest — Event Photos & Competition Winners
+    </p>
 
-    <div class="main-title">
+</section>
 
-        <h2>ROOHUL MAHABBA</h2>
+<!-- EVENT PHOTOS -->
+<section>
 
-        <p>Meelad Fest — Event Photos & Winners</p>
+    <h2>Event Photos</h2>
+
+    <div class="photo-grid">
+
+        <div class="photo-card">
+            <img src="roohul1.jpg"
+                 alt="Roohul Mahabba Photo 1"
+                 onclick="openImage(this.src)">
+        </div>
+
+        <div class="photo-card">
+            <img src="roohul2.jpg"
+                 alt="Roohul Mahabba Photo 2"
+                 onclick="openImage(this.src)">
+        </div>
+
+        <div class="photo-card">
+            <img src="roohul3.jpg"
+                 alt="Roohul Mahabba Photo 3"
+                 onclick="openImage(this.src)">
+        </div>
+
+        <div class="photo-card">
+            <img src="roohul4.jpg"
+                 alt="Roohul Mahabba Photo 4"
+                 onclick="openImage(this.src)">
+        </div>
+
+        <div class="photo-card">
+            <img src="roohul5.jpg"
+                 alt="Roohul Mahabba Photo 5"
+                 onclick="openImage(this.src)">
+        </div>
 
     </div>
 
+</section>
 
-    <!-- PHOTOS -->
+<!-- WINNERS -->
+<section>
 
-    <h2 class="section-title">
-        Event Photos
-    </h2>
+    <h2>Competition Winners</h2>
 
-    <div class="gallery">
+    <div class="winner-grid">
 
-        <img src="roohul1.jpg" alt="Roohul Mahabba Event Photo">
-
-        <img src="roohul2.jpg" alt="Roohul Mahabba Event Photo">
-
-        <img src="roohul3.jpg" alt="Roohul Mahabba Event Photo">
-
-        <img src="roohul4.jpg" alt="Roohul Mahabba Event Photo">
-
-        <img src="roohul5.jpg" alt="Roohul Mahabba Event Photo">
-
-    </div>
-
-
-    <!-- WINNERS -->
-
-    <h2 class="section-title">
-        Competition Winners
-    </h2>
-
-    <div class="winners">
-
-
-        <!-- HAND WRITING -->
-
+        <!-- 1 -->
         <div class="winner-card">
 
             <h3>HAND WRITING - JUNIOR</h3>
 
-            <div class="winner first">
-                🥇 1st — FATHIMA NIDA VV — 8
-                <span class="group">BUKHARA</span>
+            <div class="winner">
+                <span class="position">1st</span> —
+                <span class="student-name">FATHIMA NIDA VV</span>
+                <div class="details">Class 8 • BUKHARA</div>
             </div>
 
-            <div class="winner second">
-                🥈 2nd — RANA K — 8
-                <span class="group">SAMARKAND</span>
+            <div class="winner">
+                <span class="position">2nd</span> —
+                <span class="student-name">RANA K</span>
+                <div class="details">Class 8 • SAMARKAND</div>
             </div>
 
-            <div class="winner third">
-                🥉 3rd — NAZMIN K — 8
-                <span class="group">SAMARKAND</span>
+            <div class="winner">
+                <span class="position">3rd</span> —
+                <span class="student-name">NAZMIN K</span>
+                <div class="details">Class 8 • SAMARKAND</div>
             </div>
 
         </div>
 
-
-        <!-- SHORT STORY -->
-
+        <!-- 2 -->
         <div class="winner-card">
 
             <h3>SHORT STORY - SENIOR</h3>
 
-            <div class="winner first">
-                🥇 1st — FATHIMA RIDA UP — 9
-                <span class="group">SAMARKAND</span>
+            <div class="winner">
+                <span class="position">1st</span> —
+                <span class="student-name">FATHIMA RIDA UP</span>
+                <div class="details">Class 9 • SAMARKAND</div>
             </div>
 
-            <div class="winner second">
-                🥈 2nd — AYSHA RIDA PP — 10
-                <span class="group">SAMARKAND</span>
+            <div class="winner">
+                <span class="position">2nd</span> —
+                <span class="student-name">AYSHA RIDA PP</span>
+                <div class="details">Class 10 • SAMARKAND</div>
             </div>
 
-            <div class="winner third">
-                🥉 3rd — FATHIMA RINSHA PP — 10
-                <span class="group">BUKHARA</span>
+            <div class="winner">
+                <span class="position">3rd</span> —
+                <span class="student-name">FATHIMA RINSHA PP</span>
+                <div class="details">Class 10 • BUKHARA</div>
             </div>
 
         </div>
 
-
-        <!-- ESSAY -->
-
+        <!-- 3 -->
         <div class="winner-card">
 
             <h3>ESSAY - SENIOR</h3>
 
-            <div class="winner first">
-                🥇 1st — NIHLA KT — 10
-                <span class="group">BUKHARA</span>
+            <div class="winner">
+                <span class="position">1st</span> —
+                <span class="student-name">NIHLA KT</span>
+                <div class="details">Class 10 • BUKHARA</div>
             </div>
 
-            <div class="winner second">
-                🥈 2nd — HINA K — 10
-                <span class="group">BUKHARA</span>
+            <div class="winner">
+                <span class="position">2nd</span> —
+                <span class="student-name">HINA K</span>
+                <div class="details">Class 10 • BUKHARA</div>
             </div>
 
-            <div class="winner third">
-                🥉 3rd — RANIYA K — 10
-                <span class="group">BUKHARA</span>
+            <div class="winner">
+                <span class="position">3rd</span> —
+                <span class="student-name">RANIYA K</span>
+                <div class="details">Class 10 • BUKHARA</div>
             </div>
 
         </div>
 
-
-        <!-- DRAWING SUB JUNIOR -->
-
+        <!-- 4 -->
         <div class="winner-card">
 
             <h3>DRAWING - SUB JUNIOR</h3>
 
-            <div class="winner first">
-                🥇 1st — AYSHA AYRIN KT — 4
-                <span class="group">BUKHARA</span>
+            <div class="winner">
+                <span class="position">1st</span> —
+                <span class="student-name">AYSHA AYRIN KT</span>
+                <div class="details">Class 4 • BUKHARA</div>
             </div>
 
-            <div class="winner second">
-                🥈 2nd — FATHIMA RIFA K — 3
-                <span class="group">BUKHARA</span>
+            <div class="winner">
+                <span class="position">2nd</span> —
+                <span class="student-name">FATHIMA RIFA K</span>
+                <div class="details">Class 3 • BUKHARA</div>
             </div>
 
-            <div class="winner third">
-                🥉 3rd — NAFIYA — 4
-                <span class="group">SAMARKAND</span>
+            <div class="winner">
+                <span class="position">3rd</span> —
+                <span class="student-name">NAFIYA</span>
+                <div class="details">Class 4 • SAMARKAND</div>
             </div>
 
         </div>
 
-
-        <!-- HIFZ JUNIOR -->
-
+        <!-- 5 -->
         <div class="winner-card">
 
             <h3>HIFZ - JUNIOR</h3>
 
-            <div class="winner first">
-                🥇 1st — NIHLA KT — 7
-                <span class="group">SAMARKAND</span>
+            <div class="winner">
+                <span class="position">1st</span> —
+                <span class="student-name">NIHLA KT</span>
+                <div class="details">Class 7 • SAMARKAND</div>
             </div>
 
-            <div class="winner second">
-                🥈 2nd — RANA KT — 8
-                <span class="group">SAMARKAND</span>
+            <div class="winner">
+                <span class="position">2nd</span> —
+                <span class="student-name">RANA KT</span>
+                <div class="details">Class 8 • SAMARKAND</div>
             </div>
 
-            <div class="winner third">
-                🥉 3rd — RIFA UP — 6
-                <span class="group">BUKHARA</span>
+            <div class="winner">
+                <span class="position">3rd</span> —
+                <span class="student-name">RIFA UP</span>
+                <div class="details">Class 6 • BUKHARA</div>
             </div>
 
         </div>
 
-
-        <!-- HIFZ SENIOR -->
-
+        <!-- 6 -->
         <div class="winner-card">
 
             <h3>HIFZ - SENIOR</h3>
 
-            <div class="winner first">
-                🥇 1st — JIFNA — +2
-                <span class="group">BUKHARA</span>
+            <div class="winner">
+                <span class="position">1st</span> —
+                <span class="student-name">JIFNA</span>
+                <div class="details">Class +2 • BUKHARA</div>
             </div>
 
-            <div class="winner second">
-                🥈 2nd — AYSHA RIDA PP — 10
-                <span class="group">SAMARKAND</span>
+            <div class="winner">
+                <span class="position">2nd</span> —
+                <span class="student-name">AYSHA RIDA PP</span>
+                <div class="details">Class 10 • SAMARKAND</div>
             </div>
 
-            <div class="winner third">
-                🥉 3rd — DILFA NAJA — 10
-                <span class="group">BUKHARA</span>
+            <div class="winner">
+                <span class="position">3rd</span> —
+                <span class="student-name">DILFA NAJA</span>
+                <div class="details">Class 10 • BUKHARA</div>
             </div>
 
         </div>
 
-
-        <!-- WORD FIGHT -->
-
+        <!-- 7 -->
         <div class="winner-card">
 
             <h3>WORD FIGHT - JUNIOR</h3>
 
-            <div class="winner first">
-                🥇 1st — RANA KT — 8
-                <span class="group">SAMARKAND</span>
+            <div class="winner">
+                <span class="position">1st</span> —
+                <span class="student-name">RANA KT</span>
+                <div class="details">Class 8 • SAMARKAND</div>
             </div>
 
-            <div class="winner second">
-                🥈 2nd — THOYBA PK — 7
-                <span class="group">BUKHARA</span>
+            <div class="winner">
+                <span class="position">2nd</span> —
+                <span class="student-name">THOYBA PK</span>
+                <div class="details">Class 7 • BUKHARA</div>
             </div>
 
-            <div class="winner third">
-                🥉 3rd — SANVA — 6
+            <div class="winner">
+                <span class="position">3rd</span> —
+                <span class="student-name">SANVA</span>
+                <div class="details">Class 6</div>
             </div>
 
         </div>
 
-
-        <!-- DRAWING JUNIOR -->
-
+        <!-- 8 -->
         <div class="winner-card">
 
             <h3>DRAWING - JUNIOR</h3>
 
-            <div class="winner first">
-                🥇 1st — FATHIMA RIFA UP — 6
-                <span class="group">BUKHARA</span>
+            <div class="winner">
+                <span class="position">1st</span> —
+                <span class="student-name">FATHIMA RIFA UP</span>
+                <div class="details">Class 6 • BUKHARA</div>
             </div>
 
-            <div class="winner second">
-                🥈 2nd — MURSHIDA RAJA KT — 6
-                <span class="group">BUKHARA</span>
+            <div class="winner">
+                <span class="position">2nd</span> —
+                <span class="student-name">MURSHIDA RAJA KT</span>
+                <div class="details">Class 6 • BUKHARA</div>
             </div>
 
-            <div class="winner third">
-                🥉 3rd — NAIFA PP — 8
-                <span class="group">BUKHARA</span>
+            <div class="winner">
+                <span class="position">3rd</span> —
+                <span class="student-name">NAIFA PP</span>
+                <div class="details">Class 8 • BUKHARA</div>
             </div>
 
         </div>
 
-
     </div>
 
-
-    <!-- BACK TO HOME -->
-
-    <div class="back">
-
-        <a href="index.html">
-            ← Back to Home
-        </a>
-
+    <!-- BACK HOME -->
+    <div class="back-button">
+        <a href="index.html">← Back to Home</a>
     </div>
+
+</section>
+
+<!-- IMAGE POPUP -->
+<div class="image-popup"
+     id="imagePopup"
+     onclick="closeImage()">
+
+    <span class="close-popup">&times;</span>
+
+    <img id="popupImage"
+         src=""
+         alt="Full Size Image"
+         onclick="event.stopPropagation()">
 
 </div>
 
-
 <!-- FOOTER -->
-
 <footer>
 
-    <p>© 2026 MAADANUDHEEN MADRASA</p>
+    <p>
+        © 2026 <strong>MAADANUDHEEN MADRASA</strong>
+    </p>
 
-    <p>KOOMANNA CHENAKKAL</p>
+    <p>
+        KOOMANNA CHENAKKAL
+    </p>
 
 </footer>
+
+<script>
+function openImage(imageSource) {
+    document.getElementById("popupImage").src = imageSource;
+    document.getElementById("imagePopup").style.display = "flex";
+}
+
+function closeImage() {
+    document.getElementById("imagePopup").style.display = "none";
+}
+</script>
 
 </body>
 </html>
 ```
-
