@@ -1,1 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Maadanudheen Madrasa</title>
 
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #064e3b, #0f766e);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-box {
+            width: 100%;
+            max-width: 420px;
+            background: white;
+            padding: 35px 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+        }
+
+        .logo {
+            width: 90px;
+            height: 90px;
+            object-fit: contain;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            color: #064e3b;
+            font-size: 25px;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #777;
+            margin-bottom: 25px;
+        }
+
+        .login-title {
+            color: #b8860b;
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #0f766e;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            background: #064e3b;
+            color: white;
+            font-size: 17px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0f766e;
+        }
+
+        .back {
+            display: block;
+            margin-top: 20px;
+            color: #064e3b;
+            text-decoration: none;
+        }
+
+        .note {
+            margin-top: 20px;
+            font-size: 13px;
+            color: #888;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-box">
+
+        <img src="logo.png" class="logo" alt="Madrasa Logo">
+
+        <h1>MAADANUDHEEN MADRASA</h1>
+        <p class="subtitle">KOOMANNA CHENAKKAL</p>
+
+        <h2 class="login-title">🎓 Student Login</h2>
+
+        <form>
+            <input type="text" placeholder="Student Username" required>
+
+            <input type="password" placeholder="Password" required>
+
+            <button type="submit">LOGIN</button>
+        </form>
+
+        <a href="index.html" class="back">← Back to Website</a>
+
+        <p class="note">
+            Student login system will be connected to the secure database in the next steps.
+        </p>
+
+    </div>
+
+</body>
+</html>
