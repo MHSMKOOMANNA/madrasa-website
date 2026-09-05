@@ -3,13 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Student Panel - Maadanudheen Madrasa</title>
 
   <script type="module">
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
     const SUPABASE_URL = "https://oqhnaxolmqxifyjyzufj.supabase.co";
-    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_xGFE4JO5yMzYW7fIG3f1xg_1fEn300G";
+
+    const SUPABASE_PUBLISHABLE_KEY =
+      "sb_publishable_xGFE4JO5yMzYW7fIG3f1xg_1fEn300G";
 
     const supabase = createClient(
       SUPABASE_URL,
@@ -17,14 +20,23 @@
     );
 
     async function loadStudent() {
+
       const message = document.getElementById("message");
 
       try {
-        // Check logged-in student
-        const { data: { user }, error: userError } =
-          await supabase.auth.getUser();
 
-        if (userError || !user) {
+        // Check logged-in user
+        const {
+          data: { user },
+          error: userError
+        } = await supabase.auth.getUser();
+
+        if (userError) {
+          message.textContent = "Login error: " + userError.message;
+          return;
+        }
+
+        if (!user) {
           window.location.href = "login.html";
           return;
         }
@@ -32,51 +44,78 @@
         // Get username from login email
         const username = user.email.split("@")[0];
 
-        // Find student
-        const { data, error } = await supabase
-          .from("students")
+        console.log("Logged in email:", user.email);
+        console.log("Username searched:", username);
+
+        // Get student information
+        const {
+          data,
+          error
+        } = await supabase
+          .from("maadanudheen-madrasa")
           .select("student_name, class")
           .eq("username", username)
           .maybeSingle();
 
         if (error) {
-          console.error("Student query error:", error);
-          message.textContent = "Database error: " + error.message;
+
+          console.error("Database error:", error);
+
+          message.textContent =
+            "Database error: " + error.message;
+
           return;
         }
 
         if (!data) {
+
           message.textContent =
             "Student not found. Username searched: " + username;
+
           return;
         }
 
-        // Show student information
+        // Show student name
         document.getElementById("studentName").textContent =
           data.student_name;
 
+        document.getElementById("studentName2").textContent =
+          data.student_name;
+
+        // Show class
         document.getElementById("studentClass").textContent =
           data.class;
 
         message.textContent = "";
 
       } catch (error) {
+
         console.error(error);
-        message.textContent = "Error: " + error.message;
+
+        message.textContent =
+          "Error: " + error.message;
       }
     }
 
+
+    // Logout
     async function logout() {
+
       await supabase.auth.signOut();
+
       window.location.href = "login.html";
     }
 
     window.logout = logout;
 
+    // Load student
     loadStudent();
+
   </script>
 
+
   <style>
+
     * {
       box-sizing: border-box;
     }
@@ -88,12 +127,14 @@
       color: #123d2b;
     }
 
+
     header {
       background: #064d35;
       color: white;
       text-align: center;
       padding: 25px 15px;
     }
+
 
     header img {
       width: 75px;
@@ -104,15 +145,24 @@
       padding: 5px;
     }
 
+
     header h1 {
       margin: 10px 0 5px;
+      font-size: 25px;
     }
+
+
+    header p {
+      margin: 5px;
+    }
+
 
     .container {
       max-width: 900px;
       margin: 30px auto;
       padding: 15px;
     }
+
 
     .card {
       background: white;
@@ -122,23 +172,28 @@
       box-shadow: 0 4px 15px rgba(0,0,0,0.08);
     }
 
+
     .student-info {
       text-align: center;
     }
+
 
     .student-info h2 {
       color: #064d35;
       margin-bottom: 20px;
     }
 
+
     .info-row {
       font-size: 18px;
-      margin: 10px;
+      margin: 12px;
     }
+
 
     .label {
       font-weight: bold;
     }
+
 
     .namaz-list label {
       display: block;
@@ -149,12 +204,14 @@
       cursor: pointer;
     }
 
+
     .namaz-list input {
       width: 20px;
       height: 20px;
       margin-right: 10px;
       vertical-align: middle;
     }
+
 
     textarea {
       width: 100%;
@@ -165,6 +222,7 @@
       resize: vertical;
       font-size: 16px;
     }
+
 
     button {
       background: #064d35;
@@ -177,13 +235,16 @@
       margin-top: 12px;
     }
 
+
     button:hover {
       background: #08734e;
     }
 
+
     .logout {
       background: #a33;
     }
+
 
     #message {
       text-align: center;
@@ -192,6 +253,7 @@
       margin: 15px 0;
     }
 
+
     footer {
       text-align: center;
       padding: 25px;
@@ -199,83 +261,172 @@
       color: white;
       margin-top: 40px;
     }
+
   </style>
+
 </head>
+
 
 <body>
 
-<header>
-  <img src="logo.png" alt="Madrasa Logo">
-  <h1>MAADANUDHEEN MADRASA</h1>
-  <p>Student Panel</p>
-</header>
 
-<div class="container">
+  <header>
 
-  <div id="message"></div>
+    <img src="logo.png" alt="Madrasa Logo">
 
-  <div class="card student-info">
-    <h2>👋 Welcome, <span id="studentName">Loading...</span></h2>
+    <h1>MAADANUDHEEN MADRASA</h1>
 
-    <div class="info-row">
-      <span class="label">Name:</span>
-      <span id="studentName2">Loading...</span>
+    <p>Student Panel</p>
+
+  </header>
+
+
+  <div class="container">
+
+
+    <div id="message"></div>
+
+
+    <!-- STUDENT INFORMATION -->
+
+    <div class="card student-info">
+
+      <h2>
+        👋 Welcome,
+        <span id="studentName">Loading...</span>
+      </h2>
+
+
+      <div class="info-row">
+
+        <span class="label">
+          Name:
+        </span>
+
+        <span id="studentName2">
+          Loading...
+        </span>
+
+      </div>
+
+
+      <div class="info-row">
+
+        <span class="label">
+          Class:
+        </span>
+
+        <span id="studentClass">
+          Loading...
+        </span>
+
+      </div>
+
     </div>
 
-    <div class="info-row">
-      <span class="label">Class:</span>
-      <span id="studentClass">Loading...</span>
+
+
+    <!-- NAMAZ -->
+
+    <div class="card">
+
+      <h2>🕌 Today's Namaz</h2>
+
+
+      <div class="namaz-list">
+
+        <label>
+          <input type="checkbox">
+          Fajr
+        </label>
+
+
+        <label>
+          <input type="checkbox">
+          Dhuhr
+        </label>
+
+
+        <label>
+          <input type="checkbox">
+          Asr
+        </label>
+
+
+        <label>
+          <input type="checkbox">
+          Maghrib
+        </label>
+
+
+        <label>
+          <input type="checkbox">
+          Isha
+        </label>
+
+      </div>
+
+
+      <button onclick="alert('Namaz saving will be connected next.')">
+        Save Namaz
+      </button>
+
     </div>
-  </div>
 
-  <div class="card">
-    <h2>🕌 Today's Namaz</h2>
 
-    <div class="namaz-list">
-      <label><input type="checkbox"> Fajr</label>
-      <label><input type="checkbox"> Dhuhr</label>
-      <label><input type="checkbox"> Asr</label>
-      <label><input type="checkbox"> Maghrib</label>
-      <label><input type="checkbox"> Isha</label>
+
+    <!-- SUGGESTIONS -->
+
+    <div class="card">
+
+      <h2>💡 Suggestions</h2>
+
+
+      <textarea
+        placeholder="Write your suggestion here..."
+      ></textarea>
+
+
+      <button
+        onclick="alert('Suggestions will be connected next.')"
+      >
+        Submit Suggestion
+      </button>
+
     </div>
 
-    <button onclick="alert('Namaz saving will be connected next.')">
-      Save Namaz
-    </button>
+
+
+    <!-- LOGOUT -->
+
+    <div
+      class="card"
+      style="text-align:center;"
+    >
+
+      <button
+        class="logout"
+        onclick="logout()"
+      >
+        Logout
+      </button>
+
+    </div>
+
+
   </div>
 
-  <div class="card">
-    <h2>💡 Suggestions</h2>
 
-    <textarea placeholder="Write your suggestion here..."></textarea>
 
-    <button onclick="alert('Suggestions will be connected next.')">
-      Submit Suggestion
-    </button>
-  </div>
+  <footer>
 
-  <div class="card" style="text-align:center;">
-    <button class="logout" onclick="logout()">Logout</button>
-  </div>
+    MAADANUDHEEN MADRASA
+    <br>
 
-</div>
+    KOOMANNA CHENAKKAL
 
-<footer>
-  MAADANUDHEEN MADRASA<br>
-  KOOMANNA CHENAKKAL
-</footer>
+  </footer>
 
-<script>
-  // Copy the loaded name into the second name field
-  const observer = new MutationObserver(() => {
-    document.getElementById("studentName2").textContent =
-      document.getElementById("studentName").textContent;
-  });
-
-  observer.observe(document.getElementById("studentName"), {
-    childList: true
-  });
-</script>
 
 </body>
 </html>
