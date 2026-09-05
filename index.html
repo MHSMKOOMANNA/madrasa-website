@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Maadanudheen Madrasa</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f5f7f5;
+            color: #222;
+        }
+
+        header {
+            background: #064e3b;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .logo {
+            width: 90px;
+            height: 90px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+
+        header h1 {
+            font-size: 28px;
+        }
+
+        header p {
+            margin-top: 5px;
+            color: #d1fae5;
+        }
+
+        nav {
+            background: #043c2e;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 12px;
+            gap: 20px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            color: #facc15;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 70px 20px;
+            background: linear-gradient(135deg, #065f46, #064e3b);
+            color: white;
+        }
+
+        .hero h2 {
+            font-size: 38px;
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            font-size: 18px;
+            max-width: 650px;
+            margin: auto;
+            line-height: 1.6;
+        }
+
+        .section {
+            padding: 50px 20px;
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        .section h2 {
+            text-align: center;
+            color: #065f46;
+            margin-bottom: 30px;
+            font-size: 30px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .card h3 {
+            color: #065f46;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            line-height: 1.6;
+            color: #555;
+        }
+
+        footer {
+            background: #043c2e;
+            color: white;
+            text-align: center;
+            padding: 25px;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 600px) {
+            .hero h2 {
+                font-size: 28px;
+            }
+
+            header h1 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+
+        <!-- LOGO WILL GO HERE -->
+        <img src="logo.png" alt="Madrasa Logo" class="logo">
+
+        <h1>Maadanudheen Madrasa</h1>
+        <p>Koomanna Chenakkal</p>
+
+    </header>
+
+    <nav>
+        <a href="#home">Home</a>
+        <a href="#teachers">Teachers</a>
+        <a href="#students">Students</a>
+        <a href="#events">Events</a>
+        <a href="#results">Results</a>
+        <a href="#contact">Contact</a>
+    </nav>
+
+    <section class="hero" id="home">
+        <h2>Welcome to Maadanudheen Madrasa</h2>
+        <p>
+            A place for Islamic education, knowledge, character
+            and spiritual development.
+        </p>
+    </section>
+
+    <section class="section" id="teachers">
+        <h2>Our Teachers</h2>
+
+        <div class="cards">
+
+            <div class="card">
+                <h3>Teacher Name</h3>
+                <p>Islamic Studies</p>
+            </div>
+
+            <div class="card">
+                <h3>Teacher Name</h3>
+                <p>Quran & Hifz</p>
+            </div>
+
+            <div class="card">
+                <h3>Teacher Name</h3>
+                <p>Arabic</p>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="section" id="students">
+        <h2>Students</h2>
+
+        <div class="cards">
+
+            <div class="card">
+                <h3>Class 1</h3>
+                <p>Students information will be added here.</p>
+            </div>
+
+            <div class="card">
+                <h3>Class 2</h3>
+                <p>Students information will be added here.</p>
+            </div>
+
+            <div class="card">
+                <h3>Class 3</h3>
+                <p>Students information will be added here.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="section" id="events">
+        <h2>Latest Events</h2>
+
+        <div class="cards">
+
+            <div class="card">
+                <h3>Roohul Mahabba</h3>
+                <p>Meelad Fest</p>
+            </div>
+
+            <div class="card">
+                <h3>Monthly Test</h3>
+                <p>Monthly examination and results.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="section" id="results">
+        <h2>Results</h2>
+
+        <div class="cards">
+
+            <div class="card">
+                <h3>Competition Results</h3>
+                <p>View winners and program results here.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="section" id="contact">
+        <h2>Contact Us</h2>
+
+        <div class="card">
+            <h3>Maadanudheen Madrasa</h3>
+            <p>Koomanna Chenakkal, Kerala</p>
+            <p>Contact information will be added here.</p>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2026 Maadanudheen Madrasa. All Rights Reserved.</p>
+    </footer>
+
+</body>
+</html>
