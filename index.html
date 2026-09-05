@@ -1,11 +1,14 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>MAADANUDHEEN MADRASA</title>
 
 <style>
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -17,6 +20,8 @@ body {
     background: #f4f8f5;
     color: #173d2b;
 }
+
+/* HEADER */
 
 header {
     background: linear-gradient(135deg, #064e3b, #0b6b4f);
@@ -42,6 +47,8 @@ header p {
     font-size: 15px;
 }
 
+/* NAVIGATION */
+
 nav {
     background: #043c2d;
     padding: 12px;
@@ -61,6 +68,8 @@ nav a {
 nav a:hover {
     color: #f5d77a;
 }
+
+/* HERO */
 
 .hero {
     text-align: center;
@@ -91,6 +100,8 @@ nav a:hover {
     border: 4px solid #d4af37;
     box-shadow: 0 6px 20px rgba(0,0,0,0.15);
 }
+
+/* SECTIONS */
 
 section {
     padding: 50px 20px;
@@ -146,11 +157,15 @@ section {
     font-weight: bold;
 }
 
+/* STUDENTS */
+
 .students {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 20px;
 }
+
+/* EVENTS */
 
 .events {
     display: grid;
@@ -170,6 +185,101 @@ section {
     margin-bottom: 10px;
 }
 
+/* ROOHUL MAHABBA */
+
+.roohul {
+    background: linear-gradient(135deg, #064e3b, #0b6b4f);
+    color: white;
+    border-radius: 25px;
+    padding: 35px 20px;
+}
+
+.roohul-title {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.roohul-title h2 {
+    color: #f5d77a;
+    font-size: 32px;
+}
+
+.roohul-title p {
+    margin-top: 8px;
+}
+
+/* PHOTO GALLERY */
+
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 18px;
+    margin-bottom: 45px;
+}
+
+.gallery img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    border-radius: 15px;
+    border: 3px solid #d4af37;
+    transition: 0.3s;
+}
+
+.gallery img:hover {
+    transform: scale(1.03);
+}
+
+/* WINNERS */
+
+.winners-title {
+    text-align: center;
+    color: #f5d77a;
+    font-size: 27px;
+    margin-bottom: 20px;
+}
+
+.winners {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.winner-card {
+    background: white;
+    color: #173d2b;
+    padding: 22px;
+    border-radius: 18px;
+    text-align: center;
+    border-top: 5px solid #d4af37;
+    box-shadow: 0 5px 18px rgba(0,0,0,0.15);
+}
+
+.winner-card h3 {
+    color: #075c43;
+    margin-bottom: 15px;
+    font-size: 19px;
+}
+
+.winner-card p {
+    margin: 9px 0;
+    line-height: 1.4;
+}
+
+.first {
+    font-weight: bold;
+}
+
+.second {
+    font-weight: bold;
+}
+
+.third {
+    font-weight: bold;
+}
+
+/* RESULTS */
+
 .results {
     background: white;
     padding: 25px;
@@ -178,11 +288,16 @@ section {
     box-shadow: 0 4px 15px rgba(0,0,0,0.08);
 }
 
+/* CONTACT */
+
 .contact {
     text-align: center;
     background: #e8f3ed;
     border-radius: 20px;
+    padding: 25px;
 }
+
+/* FOOTER */
 
 footer {
     background: #043c2d;
@@ -192,7 +307,10 @@ footer {
     margin-top: 30px;
 }
 
+/* MOBILE */
+
 @media (max-width: 600px) {
+
     header h1 {
         font-size: 22px;
     }
@@ -209,26 +327,43 @@ footer {
         display: inline-block;
         margin: 5px;
     }
+
 }
+
 </style>
 </head>
 
 <body>
 
+<!-- HEADER -->
+
 <header>
+
     <img src="logo.png" alt="Madrasa Logo">
+
     <h1>MAADANUDHEEN MADRASA</h1>
+
     <p>KOOMANNA CHENAKKAL</p>
+
 </header>
 
+
+<!-- NAVIGATION -->
+
 <nav>
+
     <a href="#home">Home</a>
     <a href="#teachers">Teachers</a>
     <a href="#students">Students</a>
     <a href="#events">Events</a>
+    <a href="#roohul">Roohul Mahabba</a>
     <a href="#results">Results</a>
     <a href="#contact">Contact</a>
+
 </nav>
+
+
+<!-- HOME -->
 
 <section class="hero" id="home">
 
@@ -239,9 +374,16 @@ footer {
         A place for Islamic education, knowledge, discipline and character.
     </p>
 
-    <img src="madrasa.jpg" alt="MAADANUDHEEN MADRASA" class="madrasa-image">
+    <img
+        src="madrasa.jpg"
+        alt="MAADANUDHEEN MADRASA"
+        class="madrasa-image"
+    >
 
 </section>
+
+
+<!-- TEACHERS -->
 
 <section id="teachers">
 
@@ -291,6 +433,9 @@ footer {
 
 </section>
 
+
+<!-- STUDENTS -->
+
 <section id="students">
 
     <div class="section-title">
@@ -299,14 +444,22 @@ footer {
 
     <div class="students">
 
-        <div class="card">
+        <div class="winner-card">
+
             <h3>Student Information</h3>
-            <p>Student details will be added soon.</p>
+
+            <p>
+                Student details will be added soon.
+            </p>
+
         </div>
 
     </div>
 
 </section>
+
+
+<!-- EVENTS -->
 
 <section id="events">
 
@@ -335,40 +488,283 @@ footer {
 
 </section>
 
-<section id="results">
 
-    <div class="section-title">
-        <h2>Results</h2>
-    </div>
+<!-- ROOHUL MAHABBA -->
 
-    <div class="results">
-        <p>Competition results will be displayed here.</p>
-    </div>
+<section id="roohul">
 
-</section>
+    <div class="roohul">
 
-<section id="contact">
+        <div class="roohul-title">
 
-    <div class="section-title">
-        <h2>Contact</h2>
-    </div>
+            <h2>ROOHUL MAHABBA</h2>
 
-    <div class="contact">
+            <p>
+                Meelad Fest — Event Photos & Winners
+            </p>
 
-        <div class="card">
-            <h3>MAADANUDHEEN MADRASA</h3>
-            <p>KOOMANNA CHENAKKAL</p>
-            <p>Kerala, India</p>
+        </div>
+
+
+        <!-- EVENT PHOTOS -->
+
+        <h2 class="winners-title">
+            Event Photos
+        </h2>
+
+        <div class="gallery">
+
+            <img src="roohul1.jpg" alt="Roohul Mahabba Event Photo">
+
+            <img src="roohul2.jpg" alt="Roohul Mahabba Event Photo">
+
+            <img src="roohul3.jpg" alt="Roohul Mahabba Event Photo">
+
+            <img src="roohul4.jpg" alt="Roohul Mahabba Event Photo">
+
+            <img src="roohul5.jpg" alt="Roohul Mahabba Event Photo">
+
+        </div>
+
+
+        <!-- WINNERS -->
+
+        <h2 class="winners-title">
+            Winners
+        </h2>
+
+        <div class="winners">
+
+
+            <!-- 1 -->
+
+            <div class="winner-card">
+
+                <h3>HAND WRITING - JUNIOR</h3>
+
+                <p class="first">
+                    🥇 1st — FATHIMA NIDA VV — 8 — BUKHARA
+                </p>
+
+                <p class="second">
+                    🥈 2nd — RANA K — 8 — SAMARKAND
+                </p>
+
+                <p class="third">
+                    🥉 3rd — NAZMIN K — 8 — SAMARKAND
+                </p>
+
+            </div>
+
+
+            <!-- 2 -->
+
+            <div class="winner-card">
+
+                <h3>SHORT STORY - SENIOR</h3>
+
+                <p class="first">
+                    🥇 1st — FATHIMA RIDA UP — 9 — SAMARKAND
+                </p>
+
+                <p class="second">
+                    🥈 2nd — AYSHA RIDA PP — 10 — SAMARKAND
+                </p>
+
+                <p class="third">
+                    🥉 3rd — FATHIMA RINSHA PP — 10 — BUKHARA
+                </p>
+
+            </div>
+
+
+            <!-- 3 -->
+
+            <div class="winner-card">
+
+                <h3>ESSAY - SENIOR</h3>
+
+                <p class="first">
+                    🥇 1st — NIHLA KT — 10 — BUKHARA
+                </p>
+
+                <p class="second">
+                    🥈 2nd — HINA K — 10 — BUKHARA
+                </p>
+
+                <p class="third">
+                    🥉 3rd — RANIYA K — 10 — BUKHARA
+                </p>
+
+            </div>
+
+
+            <!-- 4 -->
+
+            <div class="winner-card">
+
+                <h3>DRAWING - SUB JUNIOR</h3>
+
+                <p class="first">
+                    🥇 1st — AYSHA AYRIN KT — 4 — BUKHARA
+                </p>
+
+                <p class="second">
+                    🥈 2nd — FATHIMA RIFA K — 3 — BUKHARA
+                </p>
+
+                <p class="third">
+                    🥉 3rd — NAFIYA — 4 — SAMARKAND
+                </p>
+
+            </div>
+
+
+            <!-- 5 -->
+
+            <div class="winner-card">
+
+                <h3>HIFZ - JUNIOR</h3>
+
+                <p class="first">
+                    🥇 1st — NIHLA KT — 7 — SAMARKAND
+                </p>
+
+                <p class="second">
+                    🥈 2nd — RANA KT — 8 — SAMARKAND
+                </p>
+
+                <p class="third">
+                    🥉 3rd — RIFA UP — 6 — BUKHARA
+                </p>
+
+            </div>
+
+
+            <!-- 6 -->
+
+            <div class="winner-card">
+
+                <h3>HIFZ - SENIOR</h3>
+
+                <p class="first">
+                    🥇 1st — JIFNA — +2 — BUKHARA
+                </p>
+
+                <p class="second">
+                    🥈 2nd — AYSHA RIDA PP — 10 — SAMARKAND
+                </p>
+
+                <p class="third">
+                    🥉 3rd — DILFA NAJA — 10 — BUKHARA
+                </p>
+
+            </div>
+
+
+            <!-- 7 -->
+
+            <div class="winner-card">
+
+                <h3>WORD FIGHT - JUNIOR</h3>
+
+                <p class="first">
+                    🥇 1st — RANA KT — 8 — SAMARKAND
+                </p>
+
+                <p class="second">
+                    🥈 2nd — THOYBA PK — 7 — BUKHARA
+                </p>
+
+                <p class="third">
+                    🥉 3rd — SANVA — 6
+                </p>
+
+            </div>
+
+
+            <!-- 8 -->
+
+            <div class="winner-card">
+
+                <h3>DRAWING - JUNIOR</h3>
+
+                <p class="first">
+                    🥇 1st — FATHIMA RIFA UP — 6 — BUKHARA
+                </p>
+
+                <p class="second">
+                    🥈 2nd — MURSHIDA RAJA KT — 6 — BUKHARA
+                </p>
+
+                <p class="third">
+                    🥉 3rd — NAIFA PP — 8 — BUKHARA
+                </p>
+
+            </div>
+
+
         </div>
 
     </div>
 
 </section>
 
+
+<!-- RESULTS -->
+
+<section id="results">
+
+    <div class="section-title">
+
+        <h2>Results</h2>
+
+    </div>
+
+    <div class="results">
+
+        <p>
+            Roohul Mahabba competition results are displayed above.
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- CONTACT -->
+
+<section id="contact">
+
+    <div class="section-title">
+
+        <h2>Contact</h2>
+
+    </div>
+
+    <div class="contact">
+
+        <h3>MAADANUDHEEN MADRASA</h3>
+
+        <p>KOOMANNA CHENAKKAL</p>
+
+        <p>Kerala, India</p>
+
+    </div>
+
+</section>
+
+
+<!-- FOOTER -->
+
 <footer>
+
     <p>© 2026 MAADANUDHEEN MADRASA</p>
+
     <p>KOOMANNA CHENAKKAL</p>
+
 </footer>
 
 </body>
 </html>
+```
