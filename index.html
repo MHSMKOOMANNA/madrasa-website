@@ -11,127 +11,243 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: Arial, sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
-            background: #f5f7f5;
-            color: #222;
+            font-family: Arial, sans-serif;
+            background: #f4f8f5;
+            color: #18352c;
         }
 
+        /* HEADER */
         header {
-            background: #064e3b;
+            background: #063b2c;
             color: white;
-            padding: 20px;
             text-align: center;
+            padding: 25px 15px;
+            border-bottom: 3px solid #d4af37;
         }
 
         .logo {
-            width: 90px;
-            height: 90px;
+            width: 95px;
+            height: 95px;
             object-fit: contain;
             margin-bottom: 10px;
         }
 
         header h1 {
-            font-size: 28px;
+            font-size: 30px;
+            margin-bottom: 6px;
         }
 
         header p {
-            margin-top: 5px;
-            color: #d1fae5;
+            color: #e8d48a;
+            font-size: 16px;
         }
 
+        /* NAVIGATION */
         nav {
-            background: #043c2e;
+            background: #04291f;
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
+            gap: 8px;
             padding: 12px;
-            gap: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
         nav a {
             color: white;
             text-decoration: none;
+            padding: 10px 16px;
+            border-radius: 20px;
             font-weight: bold;
+            font-size: 14px;
         }
 
         nav a:hover {
-            color: #facc15;
+            background: #d4af37;
+            color: #04291f;
         }
 
+        /* HERO */
         .hero {
             text-align: center;
-            padding: 70px 20px;
-            background: linear-gradient(135deg, #065f46, #064e3b);
+            padding: 90px 20px;
+            background: linear-gradient(135deg, #075c43, #063b2c);
             color: white;
         }
 
         .hero h2 {
-            font-size: 38px;
-            margin-bottom: 15px;
+            font-size: 42px;
+            margin-bottom: 18px;
         }
 
         .hero p {
-            font-size: 18px;
-            max-width: 650px;
+            max-width: 700px;
             margin: auto;
-            line-height: 1.6;
+            line-height: 1.8;
+            font-size: 18px;
+            color: #e8f5ee;
         }
 
+        .gold-line {
+            width: 90px;
+            height: 3px;
+            background: #d4af37;
+            margin: 20px auto;
+        }
+
+        /* SECTIONS */
         .section {
-            padding: 50px 20px;
             max-width: 1100px;
             margin: auto;
+            padding: 65px 20px;
         }
 
-        .section h2 {
+        .section-title {
             text-align: center;
-            color: #065f46;
-            margin-bottom: 30px;
-            font-size: 30px;
+            margin-bottom: 40px;
         }
 
+        .section-title h2 {
+            color: #075c43;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .section-title p {
+            color: #66756f;
+        }
+
+        /* CARDS */
         .cards {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-            gap: 20px;
+            gap: 22px;
         }
 
         .card {
             background: white;
-            padding: 25px;
-            border-radius: 12px;
+            padding: 28px 20px;
             text-align: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border-radius: 15px;
+            border-top: 4px solid #d4af37;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
         }
 
         .card h3 {
-            color: #065f46;
-            margin-bottom: 10px;
+            color: #075c43;
+            margin-bottom: 12px;
+            font-size: 20px;
         }
 
         .card p {
+            color: #66756f;
             line-height: 1.6;
-            color: #555;
         }
 
-        footer {
-            background: #043c2e;
+        /* HOME FEATURES */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .feature {
+            text-align: center;
+            background: white;
+            padding: 30px 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.06);
+        }
+
+        .feature-icon {
+            font-size: 38px;
+            margin-bottom: 12px;
+        }
+
+        .feature h3 {
+            color: #075c43;
+            margin-bottom: 8px;
+        }
+
+        /* CONTACT */
+        .contact-box {
+            background: #063b2c;
             color: white;
             text-align: center;
-            padding: 25px;
-            margin-top: 30px;
+            padding: 40px 20px;
+            border-radius: 18px;
         }
 
+        .contact-box h2 {
+            margin-bottom: 15px;
+        }
+
+        .contact-box p {
+            margin: 8px 0;
+            color: #e8f5ee;
+        }
+
+        /* FOOTER */
+        footer {
+            background: #04291f;
+            color: white;
+            text-align: center;
+            padding: 28px 15px;
+        }
+
+        footer p {
+            color: #cbd8d2;
+            margin: 5px;
+        }
+
+        /* MOBILE */
         @media (max-width: 600px) {
-            .hero h2 {
-                font-size: 28px;
-            }
 
             header h1 {
-                font-size: 22px;
+                font-size: 23px;
+            }
+
+            .hero {
+                padding: 65px 18px;
+            }
+
+            .hero h2 {
+                font-size: 30px;
+            }
+
+            .hero p {
+                font-size: 16px;
+            }
+
+            .section {
+                padding: 45px 15px;
+            }
+
+            .section-title h2 {
+                font-size: 27px;
+            }
+
+            nav {
+                gap: 3px;
+            }
+
+            nav a {
+                padding: 8px 10px;
+                font-size: 12px;
             }
         }
     </style>
@@ -139,16 +255,16 @@
 
 <body>
 
+    <!-- HEADER -->
     <header>
+        <img src="logo.png" alt="Maadanudheen Madrasa Logo" class="logo">
 
-        <!-- LOGO WILL GO HERE -->
-        <img src="logo.png" alt="Madrasa Logo" class="logo">
-
-        <h1>Maadanudheen Madrasa</h1>
-        <p>Koomanna Chenakkal</p>
-
+        <h1>MAADANUDHEEN MADRASA</h1>
+        <p>KOOMANNA CHENAKKAL</p>
     </header>
 
+
+    <!-- NAVIGATION -->
     <nav>
         <a href="#home">Home</a>
         <a href="#teachers">Teachers</a>
@@ -158,103 +274,209 @@
         <a href="#contact">Contact</a>
     </nav>
 
+
+    <!-- HOME -->
     <section class="hero" id="home">
-        <h2>Welcome to Maadanudheen Madrasa</h2>
+
+        <h2>Welcome to Our Madrasa</h2>
+
+        <div class="gold-line"></div>
+
         <p>
-            A place for Islamic education, knowledge, character
+            Maadanudheen Madrasa is a place dedicated to
+            Islamic education, knowledge, good character
             and spiritual development.
         </p>
+
     </section>
 
+
+    <!-- FEATURES -->
+    <section class="section">
+
+        <div class="section-title">
+            <h2>Our Madrasa</h2>
+            <p>Learning, character and knowledge</p>
+        </div>
+
+        <div class="features">
+
+            <div class="feature">
+                <div class="feature-icon">📖</div>
+                <h3>Islamic Education</h3>
+                <p>Building knowledge and understanding.</p>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">🕌</div>
+                <h3>Good Character</h3>
+                <p>Encouraging good manners and values.</p>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">🌙</div>
+                <h3>Spiritual Growth</h3>
+                <p>Supporting the spiritual development of students.</p>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- TEACHERS -->
     <section class="section" id="teachers">
-        <h2>Our Teachers</h2>
+
+        <div class="section-title">
+            <h2>Our Teachers</h2>
+            <p>Meet our teaching team</p>
+        </div>
 
         <div class="cards">
 
             <div class="card">
-                <h3>Teacher Name</h3>
-                <p>Islamic Studies</p>
+                <h3>ABDULLA DARIMI</h3>
+                <p>Classes: +2 and 1</p>
             </div>
 
             <div class="card">
-                <h3>Teacher Name</h3>
-                <p>Quran & Hifz</p>
+                <h3>KUNJI MUHAMMED YENMANI</h3>
+                <p>Classes: +1 and 2</p>
             </div>
 
             <div class="card">
-                <h3>Teacher Name</h3>
-                <p>Arabic</p>
+                <h3>MINHAJ HUDAWI</h3>
+                <p>Classes: 8 and 4</p>
+            </div>
+
+            <div class="card">
+                <h3>SHAHIN HUDAWI</h3>
+                <p>Classes: 7 and 3</p>
+            </div>
+
+            <div class="card">
+                <h3>SWALIH HUDAWI</h3>
+                <p>Classes: 6 and 10</p>
+            </div>
+
+            <div class="card">
+                <h3>BASHEER DHARIMI</h3>
+                <p>Classes: 5 and 9</p>
             </div>
 
         </div>
+
     </section>
 
+
+    <!-- STUDENTS -->
     <section class="section" id="students">
-        <h2>Students</h2>
+
+        <div class="section-title">
+            <h2>Students</h2>
+            <p>Student information will be added soon</p>
+        </div>
 
         <div class="cards">
 
             <div class="card">
                 <h3>Class 1</h3>
-                <p>Students information will be added here.</p>
+                <p>Student list will be added here.</p>
             </div>
 
             <div class="card">
                 <h3>Class 2</h3>
-                <p>Students information will be added here.</p>
+                <p>Student list will be added here.</p>
             </div>
 
             <div class="card">
                 <h3>Class 3</h3>
-                <p>Students information will be added here.</p>
+                <p>Student list will be added here.</p>
             </div>
 
         </div>
+
     </section>
 
+
+    <!-- EVENTS -->
     <section class="section" id="events">
-        <h2>Latest Events</h2>
+
+        <div class="section-title">
+            <h2>Events</h2>
+            <p>Our madrasa programs and activities</p>
+        </div>
 
         <div class="cards">
 
             <div class="card">
-                <h3>Roohul Mahabba</h3>
+                <h3>ROOHUL MAHABBA</h3>
                 <p>Meelad Fest</p>
             </div>
 
             <div class="card">
                 <h3>Monthly Test</h3>
-                <p>Monthly examination and results.</p>
+                <p>Monthly examination and academic activities.</p>
+            </div>
+
+            <div class="card">
+                <h3>Quran Parayana</h3>
+                <p>Quran recitation competition and programs.</p>
             </div>
 
         </div>
+
     </section>
 
+
+    <!-- RESULTS -->
     <section class="section" id="results">
-        <h2>Results</h2>
+
+        <div class="section-title">
+            <h2>Results</h2>
+            <p>Competition and examination results</p>
+        </div>
 
         <div class="cards">
 
             <div class="card">
                 <h3>Competition Results</h3>
-                <p>View winners and program results here.</p>
+                <p>Winners and program results will be added here.</p>
+            </div>
+
+            <div class="card">
+                <h3>Monthly Test</h3>
+                <p>Monthly test results will be added here.</p>
             </div>
 
         </div>
+
     </section>
 
+
+    <!-- CONTACT -->
     <section class="section" id="contact">
-        <h2>Contact Us</h2>
 
-        <div class="card">
-            <h3>Maadanudheen Madrasa</h3>
-            <p>Koomanna Chenakkal, Kerala</p>
-            <p>Contact information will be added here.</p>
+        <div class="contact-box">
+
+            <h2>Contact Us</h2>
+
+            <p>MAADANUDHEEN MADRASA</p>
+            <p>KOOMANNA CHENAKKAL, KERALA</p>
+
+            <p>Contact details will be added soon.</p>
+
         </div>
+
     </section>
 
+
+    <!-- FOOTER -->
     <footer>
-        <p>© 2026 Maadanudheen Madrasa. All Rights Reserved.</p>
+
+        <p>MAADANUDHEEN MADRASA</p>
+        <p>© 2026 All Rights Reserved.</p>
+
     </footer>
 
 </body>
