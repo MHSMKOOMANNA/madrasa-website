@@ -165,6 +165,14 @@ section {
     gap: 20px;
 }
 
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
 /* EVENTS */
 
 .events {
@@ -183,99 +191,6 @@ section {
 .event h3 {
     color: #f5d77a;
     margin-bottom: 10px;
-}
-
-/* ROOHUL MAHABBA */
-
-.roohul {
-    background: linear-gradient(135deg, #064e3b, #0b6b4f);
-    color: white;
-    border-radius: 25px;
-    padding: 35px 20px;
-}
-
-.roohul-title {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-.roohul-title h2 {
-    color: #f5d77a;
-    font-size: 32px;
-}
-
-.roohul-title p {
-    margin-top: 8px;
-}
-
-/* PHOTO GALLERY */
-
-.gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 18px;
-    margin-bottom: 45px;
-}
-
-.gallery img {
-    width: 100%;
-    height: 220px;
-    object-fit: cover;
-    border-radius: 15px;
-    border: 3px solid #d4af37;
-    transition: 0.3s;
-}
-
-.gallery img:hover {
-    transform: scale(1.03);
-}
-
-/* WINNERS */
-
-.winners-title {
-    text-align: center;
-    color: #f5d77a;
-    font-size: 27px;
-    margin-bottom: 20px;
-}
-
-.winners {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
-}
-
-.winner-card {
-    background: white;
-    color: #173d2b;
-    padding: 22px;
-    border-radius: 18px;
-    text-align: center;
-    border-top: 5px solid #d4af37;
-    box-shadow: 0 5px 18px rgba(0,0,0,0.15);
-}
-
-.winner-card h3 {
-    color: #075c43;
-    margin-bottom: 15px;
-    font-size: 19px;
-}
-
-.winner-card p {
-    margin: 9px 0;
-    line-height: 1.4;
-}
-
-.first {
-    font-weight: bold;
-}
-
-.second {
-    font-weight: bold;
-}
-
-.third {
-    font-weight: bold;
 }
 
 /* RESULTS */
@@ -353,11 +268,15 @@ footer {
 <nav>
 
     <a href="#home">Home</a>
+
     <a href="#teachers">Teachers</a>
+
     <a href="#students">Students</a>
+
     <a href="#events">Events</a>
-    <a href="#roohul">Roohul Mahabba</a>
+
     <a href="#results">Results</a>
+
     <a href="#contact">Contact</a>
 
 </nav>
@@ -394,39 +313,80 @@ footer {
     <div class="teachers">
 
         <div class="teacher-card">
+
             <img src="teacher1.jpg" alt="Abdulla Darimi">
+
             <h3>ABDULLA DARIMI</h3>
-            <p class="teacher-class">Classes: +2 and 1</p>
+
+            <p class="teacher-class">
+                Classes: +2 and 1
+            </p>
+
         </div>
 
+
         <div class="teacher-card">
+
             <img src="teacher2.jpg" alt="Kunji Muhammed Yenmani">
+
             <h3>KUNJI MUHAMMED YENMANI</h3>
-            <p class="teacher-class">Classes: +1 and 2</p>
+
+            <p class="teacher-class">
+                Classes: +1 and 2
+            </p>
+
         </div>
 
+
         <div class="teacher-card">
+
             <img src="teacher3.jpg" alt="Minhaj Hudawi">
+
             <h3>MINHAJ HUDAWI</h3>
-            <p class="teacher-class">Classes: 8 and 4</p>
+
+            <p class="teacher-class">
+                Classes: 8 and 4
+            </p>
+
         </div>
 
+
         <div class="teacher-card">
+
             <img src="teacher4.jpg" alt="Shahin Hudawi">
+
             <h3>SHAHIN HUDAWI</h3>
-            <p class="teacher-class">Classes: 7 and 3</p>
+
+            <p class="teacher-class">
+                Classes: 7 and 3
+            </p>
+
         </div>
 
+
         <div class="teacher-card">
+
             <img src="teacher5.jpg" alt="Swalih Hudawi">
+
             <h3>SWALIH HUDAWI</h3>
-            <p class="teacher-class">Classes: 6 and 10</p>
+
+            <p class="teacher-class">
+                Classes: 6 and 10
+            </p>
+
         </div>
 
+
         <div class="teacher-card">
+
             <img src="teacher6.jpg" alt="Basheer Dharimi">
+
             <h3>BASHEER DHARIMI</h3>
-            <p class="teacher-class">Classes: 5 and 9</p>
+
+            <p class="teacher-class">
+                Classes: 5 and 9
+            </p>
+
         </div>
 
     </div>
@@ -444,7 +404,7 @@ footer {
 
     <div class="students">
 
-        <div class="winner-card">
+        <div class="card">
 
             <h3>Student Information</h3>
 
@@ -470,239 +430,34 @@ footer {
     <div class="events">
 
         <div class="event">
+
             <h3>ROOHUL MAHABBA</h3>
-            <p>Meelad Fest programs and competitions.</p>
-        </div>
-
-        <div class="event">
-            <h3>Monthly Test</h3>
-            <p>Monthly educational examinations.</p>
-        </div>
-
-        <div class="event">
-            <h3>Quran Parayana</h3>
-            <p>Quran recitation programs and competitions.</p>
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- ROOHUL MAHABBA -->
-
-<section id="roohul">
-
-    <div class="roohul">
-
-        <div class="roohul-title">
-
-            <h2>ROOHUL MAHABBA</h2>
 
             <p>
-                Meelad Fest — Event Photos & Winners
+                Meelad Fest programs and competitions.
             </p>
 
         </div>
 
 
-        <!-- EVENT PHOTOS -->
+        <div class="event">
 
-        <h2 class="winners-title">
-            Event Photos
-        </h2>
+            <h3>Monthly Test</h3>
 
-        <div class="gallery">
-
-            <img src="roohul1.jpg" alt="Roohul Mahabba Event Photo">
-
-            <img src="roohul2.jpg" alt="Roohul Mahabba Event Photo">
-
-            <img src="roohul3.jpg" alt="Roohul Mahabba Event Photo">
-
-            <img src="roohul4.jpg" alt="Roohul Mahabba Event Photo">
-
-            <img src="roohul5.jpg" alt="Roohul Mahabba Event Photo">
+            <p>
+                Monthly educational examinations.
+            </p>
 
         </div>
 
 
-        <!-- WINNERS -->
+        <div class="event">
 
-        <h2 class="winners-title">
-            Winners
-        </h2>
+            <h3>Quran Parayana</h3>
 
-        <div class="winners">
-
-
-            <!-- 1 -->
-
-            <div class="winner-card">
-
-                <h3>HAND WRITING - JUNIOR</h3>
-
-                <p class="first">
-                    🥇 1st — FATHIMA NIDA VV — 8 — BUKHARA
-                </p>
-
-                <p class="second">
-                    🥈 2nd — RANA K — 8 — SAMARKAND
-                </p>
-
-                <p class="third">
-                    🥉 3rd — NAZMIN K — 8 — SAMARKAND
-                </p>
-
-            </div>
-
-
-            <!-- 2 -->
-
-            <div class="winner-card">
-
-                <h3>SHORT STORY - SENIOR</h3>
-
-                <p class="first">
-                    🥇 1st — FATHIMA RIDA UP — 9 — SAMARKAND
-                </p>
-
-                <p class="second">
-                    🥈 2nd — AYSHA RIDA PP — 10 — SAMARKAND
-                </p>
-
-                <p class="third">
-                    🥉 3rd — FATHIMA RINSHA PP — 10 — BUKHARA
-                </p>
-
-            </div>
-
-
-            <!-- 3 -->
-
-            <div class="winner-card">
-
-                <h3>ESSAY - SENIOR</h3>
-
-                <p class="first">
-                    🥇 1st — NIHLA KT — 10 — BUKHARA
-                </p>
-
-                <p class="second">
-                    🥈 2nd — HINA K — 10 — BUKHARA
-                </p>
-
-                <p class="third">
-                    🥉 3rd — RANIYA K — 10 — BUKHARA
-                </p>
-
-            </div>
-
-
-            <!-- 4 -->
-
-            <div class="winner-card">
-
-                <h3>DRAWING - SUB JUNIOR</h3>
-
-                <p class="first">
-                    🥇 1st — AYSHA AYRIN KT — 4 — BUKHARA
-                </p>
-
-                <p class="second">
-                    🥈 2nd — FATHIMA RIFA K — 3 — BUKHARA
-                </p>
-
-                <p class="third">
-                    🥉 3rd — NAFIYA — 4 — SAMARKAND
-                </p>
-
-            </div>
-
-
-            <!-- 5 -->
-
-            <div class="winner-card">
-
-                <h3>HIFZ - JUNIOR</h3>
-
-                <p class="first">
-                    🥇 1st — NIHLA KT — 7 — SAMARKAND
-                </p>
-
-                <p class="second">
-                    🥈 2nd — RANA KT — 8 — SAMARKAND
-                </p>
-
-                <p class="third">
-                    🥉 3rd — RIFA UP — 6 — BUKHARA
-                </p>
-
-            </div>
-
-
-            <!-- 6 -->
-
-            <div class="winner-card">
-
-                <h3>HIFZ - SENIOR</h3>
-
-                <p class="first">
-                    🥇 1st — JIFNA — +2 — BUKHARA
-                </p>
-
-                <p class="second">
-                    🥈 2nd — AYSHA RIDA PP — 10 — SAMARKAND
-                </p>
-
-                <p class="third">
-                    🥉 3rd — DILFA NAJA — 10 — BUKHARA
-                </p>
-
-            </div>
-
-
-            <!-- 7 -->
-
-            <div class="winner-card">
-
-                <h3>WORD FIGHT - JUNIOR</h3>
-
-                <p class="first">
-                    🥇 1st — RANA KT — 8 — SAMARKAND
-                </p>
-
-                <p class="second">
-                    🥈 2nd — THOYBA PK — 7 — BUKHARA
-                </p>
-
-                <p class="third">
-                    🥉 3rd — SANVA — 6
-                </p>
-
-            </div>
-
-
-            <!-- 8 -->
-
-            <div class="winner-card">
-
-                <h3>DRAWING - JUNIOR</h3>
-
-                <p class="first">
-                    🥇 1st — FATHIMA RIFA UP — 6 — BUKHARA
-                </p>
-
-                <p class="second">
-                    🥈 2nd — MURSHIDA RAJA KT — 6 — BUKHARA
-                </p>
-
-                <p class="third">
-                    🥉 3rd — NAIFA PP — 8 — BUKHARA
-                </p>
-
-            </div>
-
+            <p>
+                Quran recitation programs and competitions.
+            </p>
 
         </div>
 
@@ -724,7 +479,7 @@ footer {
     <div class="results">
 
         <p>
-            Roohul Mahabba competition results are displayed above.
+            Competition results will be displayed here.
         </p>
 
     </div>
