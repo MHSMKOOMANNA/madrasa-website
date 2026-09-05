@@ -1,1 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Panel | Maadanudheen Madrasa</title>
 
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f8f5;
+            color: #222;
+        }
+
+        header {
+            background: #064e3b;
+            color: white;
+            text-align: center;
+            padding: 25px 15px;
+        }
+
+        header img {
+            width: 75px;
+            height: 75px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+
+        header h1 {
+            font-size: 24px;
+        }
+
+        header p {
+            margin-top: 6px;
+            color: #d9f5e8;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .welcome {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .welcome h2 {
+            color: #064e3b;
+            margin-bottom: 10px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .card h2 {
+            color: #064e3b;
+            margin-bottom: 20px;
+        }
+
+        .namaz-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .namaz-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            background: #f1f7f3;
+            border-radius: 10px;
+        }
+
+        .namaz-item input {
+            width: 20px;
+            height: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 130px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            resize: vertical;
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 12px 22px;
+            border: none;
+            border-radius: 10px;
+            background: #064e3b;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0f766e;
+        }
+
+        .logout {
+            background: #b8860b;
+        }
+
+        .logout:hover {
+            background: #96720a;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            background: #064e3b;
+            color: white;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <img src="logo.png" alt="Madrasa Logo">
+    <h1>MAADANUDHEEN MADRASA</h1>
+    <p>KOOMANNA CHENAKKAL</p>
+</header>
+
+<div class="container">
+
+    <div class="welcome">
+        <h2>👋 Welcome, Student</h2>
+        <p>Your student panel</p>
+    </div>
+
+    <div class="card">
+        <h2>🕌 Today's Namaz</h2>
+
+        <div class="namaz-list">
+
+            <label class="namaz-item">
+                <input type="checkbox">
+                <span>Fajr</span>
+            </label>
+
+            <label class="namaz-item">
+                <input type="checkbox">
+                <span>Dhuhr</span>
+            </label>
+
+            <label class="namaz-item">
+                <input type="checkbox">
+                <span>Asr</span>
+            </label>
+
+            <label class="namaz-item">
+                <input type="checkbox">
+                <span>Maghrib</span>
+            </label>
+
+            <label class="namaz-item">
+                <input type="checkbox">
+                <span>Isha</span>
+            </label>
+
+        </div>
+
+        <button onclick="saveNamaz()">Save Namaz Update</button>
+    </div>
+
+    <div class="card">
+        <h2>💡 Suggestions</h2>
+
+        <textarea id="suggestion"
+            placeholder="Write your suggestion here..."></textarea>
+
+        <button onclick="submitSuggestion()">
+            Submit Suggestion
+        </button>
+    </div>
+
+    <div class="card">
+        <h2>🚪 Account</h2>
+        <button class="logout" onclick="logout()">
+            Logout
+        </button>
+    </div>
+
+</div>
+
+<footer>
+    © 2026 MAADANUDHEEN MADRASA
+</footer>
+
+<script>
+    function saveNamaz() {
+        alert("Namaz update will be connected to the database next.");
+    }
+
+    function submitSuggestion() {
+        const suggestion = document.getElementById("suggestion").value.trim();
+
+        if (suggestion === "") {
+            alert("Please write a suggestion first.");
+            return;
+        }
+
+        alert("Suggestion will be connected to the database next.");
+    }
+
+    function logout() {
+        window.location.href = "login.html";
+    }
+</script>
+
+</body>
+</html>
