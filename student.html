@@ -60,6 +60,11 @@
             margin-bottom: 10px;
         }
 
+        .student-info {
+            margin-top: 15px;
+            line-height: 1.8;
+        }
+
         .card {
             background: white;
             padding: 25px;
@@ -125,6 +130,11 @@
             background: #96720a;
         }
 
+        #message {
+            margin-top: 15px;
+            color: #c0392b;
+        }
+
         footer {
             text-align: center;
             padding: 25px;
@@ -146,8 +156,14 @@
 <div class="container">
 
     <div class="welcome">
-        <h2>👋 Welcome, Student</h2>
-        <p>Your student panel</p>
+        <h2>👋 Welcome, <span id="studentName">Loading...</span></h2>
+
+        <div class="student-info">
+            <p><strong>Name:</strong> <span id="name">Loading...</span></p>
+            <p><strong>Class:</strong> <span id="studentClass">Loading...</span></p>
+        </div>
+
+        <p id="message"></p>
     </div>
 
     <div class="card">
@@ -156,27 +172,27 @@
         <div class="namaz-list">
 
             <label class="namaz-item">
-                <input type="checkbox">
+                <input type="checkbox" id="fajr">
                 <span>Fajr</span>
             </label>
 
             <label class="namaz-item">
-                <input type="checkbox">
+                <input type="checkbox" id="dhuhr">
                 <span>Dhuhr</span>
             </label>
 
             <label class="namaz-item">
-                <input type="checkbox">
+                <input type="checkbox" id="asr">
                 <span>Asr</span>
             </label>
 
             <label class="namaz-item">
-                <input type="checkbox">
+                <input type="checkbox" id="maghrib">
                 <span>Maghrib</span>
             </label>
 
             <label class="namaz-item">
-                <input type="checkbox">
+                <input type="checkbox" id="isha">
                 <span>Isha</span>
             </label>
 
@@ -188,8 +204,10 @@
     <div class="card">
         <h2>💡 Suggestions</h2>
 
-        <textarea id="suggestion"
-            placeholder="Write your suggestion here..."></textarea>
+        <textarea
+            id="suggestion"
+            placeholder="Write your suggestion here..."
+        ></textarea>
 
         <button onclick="submitSuggestion()">
             Submit Suggestion
@@ -198,6 +216,7 @@
 
     <div class="card">
         <h2>🚪 Account</h2>
+
         <button class="logout" onclick="logout()">
             Logout
         </button>
@@ -209,25 +228,113 @@
     © 2026 MAADANUDHEEN MADRASA
 </footer>
 
-<script>
-    function saveNamaz() {
-        alert("Namaz update will be connected to the database next.");
+<script type="module">
+
+    import { createClient } from
+    "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+    const SUPABASE_URL =
+        "https://oqhnaxolmqxifyjyzufj.supabase.co";
+
+    const SUPABASE_PUBLISHABLE_KEY =
+        "sb_publishable_xGFE4JO5yMzYW7fIG3f1xg_1fEn300G";
+
+    const supabase = createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+    );
+
+
+    // ==========================================
+    // LOAD LOGGED-IN STUDENT
+    // ==========================================
+
+    async function loadStudent() {
+
+        const {
+            data: { user },
+            error: authError
+        } = await supabase.auth.getUser();
+
+        if (authError || !user) {
+
+            window.location.href = "login.html";
+            return;
+        }
+
+        const { data, error } = await supabase
+            .from("students")
+            .select("student_name, class")
+            .eq("username", user.email.split("@")[0])
+            .single();
+
+        if (error) {
+
+            document.getElementById("message").textContent =
+                "Student information could not be loaded.";
+
+            console.error(error);
+            return;
+        }
+
+        document.getElementById("studentName").textContent =
+            data.student_name;
+
+        document.getElementById("name").textContent =
+            data.student_name;
+
+        document.getElementById("studentClass").textContent =
+            data.class;
     }
 
-    function submitSuggestion() {
-        const suggestion = document.getElementById("suggestion").value.trim();
+
+    // ==========================================
+    // NAMAZ
+    // ==========================================
+
+    window.saveNamaz = function() {
+
+        alert(
+            "Namaz saving will be connected to the database in the next step."
+        );
+    };
+
+
+    // ==========================================
+    // SUGGESTION
+    // ==========================================
+
+    window.submitSuggestion = function() {
+
+        const suggestion =
+            document.getElementById("suggestion").value.trim();
 
         if (suggestion === "") {
+
             alert("Please write a suggestion first.");
             return;
         }
 
-        alert("Suggestion will be connected to the database next.");
-    }
+        alert(
+            "Suggestion saving will be connected to the database in the next step."
+        );
+    };
 
-    function logout() {
+
+    // ==========================================
+    // LOGOUT
+    // ==========================================
+
+    window.logout = async function() {
+
+        await supabase.auth.signOut();
+
         window.location.href = "login.html";
-    }
+    };
+
+
+    loadStudent();
+
 </script>
 
 </body>
