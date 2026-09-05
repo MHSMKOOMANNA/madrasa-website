@@ -32,7 +32,8 @@
         } = await supabase.auth.getUser();
 
         if (userError) {
-          message.textContent = "Login error: " + userError.message;
+          message.textContent =
+            "Login error: " + userError.message;
           return;
         }
 
@@ -53,7 +54,7 @@
           error
         } = await supabase
           .from("maadanudheen-madrasa")
-          .select("student_name, class")
+          .select('student_name, "class"')
           .eq("username", username)
           .maybeSingle();
 
@@ -75,14 +76,14 @@
           return;
         }
 
-        // Show student name
+        // Display student name
         document.getElementById("studentName").textContent =
           data.student_name;
 
         document.getElementById("studentName2").textContent =
           data.student_name;
 
-        // Show class
+        // Display class
         document.getElementById("studentClass").textContent =
           data.class;
 
@@ -108,7 +109,7 @@
 
     window.logout = logout;
 
-    // Load student
+    // Load student information
     loadStudent();
 
   </script>
@@ -127,14 +128,12 @@
       color: #123d2b;
     }
 
-
     header {
       background: #064d35;
       color: white;
       text-align: center;
       padding: 25px 15px;
     }
-
 
     header img {
       width: 75px;
@@ -145,24 +144,20 @@
       padding: 5px;
     }
 
-
     header h1 {
       margin: 10px 0 5px;
       font-size: 25px;
     }
 
-
     header p {
       margin: 5px;
     }
-
 
     .container {
       max-width: 900px;
       margin: 30px auto;
       padding: 15px;
     }
-
 
     .card {
       background: white;
@@ -172,28 +167,23 @@
       box-shadow: 0 4px 15px rgba(0,0,0,0.08);
     }
 
-
     .student-info {
       text-align: center;
     }
-
 
     .student-info h2 {
       color: #064d35;
       margin-bottom: 20px;
     }
 
-
     .info-row {
       font-size: 18px;
       margin: 12px;
     }
 
-
     .label {
       font-weight: bold;
     }
-
 
     .namaz-list label {
       display: block;
@@ -204,14 +194,12 @@
       cursor: pointer;
     }
 
-
     .namaz-list input {
       width: 20px;
       height: 20px;
       margin-right: 10px;
       vertical-align: middle;
     }
-
 
     textarea {
       width: 100%;
@@ -222,7 +210,6 @@
       resize: vertical;
       font-size: 16px;
     }
-
 
     button {
       background: #064d35;
@@ -235,16 +222,13 @@
       margin-top: 12px;
     }
 
-
     button:hover {
       background: #08734e;
     }
 
-
     .logout {
       background: #a33;
     }
-
 
     #message {
       text-align: center;
@@ -252,7 +236,6 @@
       font-weight: bold;
       margin: 15px 0;
     }
-
 
     footer {
       text-align: center;
@@ -269,7 +252,6 @@
 
 <body>
 
-
   <header>
 
     <img src="logo.png" alt="Madrasa Logo">
@@ -283,7 +265,6 @@
 
   <div class="container">
 
-
     <div id="message"></div>
 
 
@@ -296,7 +277,6 @@
         <span id="studentName">Loading...</span>
       </h2>
 
-
       <div class="info-row">
 
         <span class="label">
@@ -308,7 +288,6 @@
         </span>
 
       </div>
-
 
       <div class="info-row">
 
@@ -325,13 +304,11 @@
     </div>
 
 
-
     <!-- NAMAZ -->
 
     <div class="card">
 
       <h2>🕌 Today's Namaz</h2>
-
 
       <div class="namaz-list">
 
@@ -340,24 +317,20 @@
           Fajr
         </label>
 
-
         <label>
           <input type="checkbox">
           Dhuhr
         </label>
-
 
         <label>
           <input type="checkbox">
           Asr
         </label>
 
-
         <label>
           <input type="checkbox">
           Maghrib
         </label>
-
 
         <label>
           <input type="checkbox">
@@ -366,13 +339,11 @@
 
       </div>
 
-
       <button onclick="alert('Namaz saving will be connected next.')">
         Save Namaz
       </button>
 
     </div>
-
 
 
     <!-- SUGGESTIONS -->
@@ -381,11 +352,9 @@
 
       <h2>💡 Suggestions</h2>
 
-
       <textarea
         placeholder="Write your suggestion here..."
       ></textarea>
-
 
       <button
         onclick="alert('Suggestions will be connected next.')"
@@ -394,7 +363,6 @@
       </button>
 
     </div>
-
 
 
     <!-- LOGOUT -->
@@ -413,9 +381,7 @@
 
     </div>
 
-
   </div>
-
 
 
   <footer>
@@ -426,7 +392,6 @@
     KOOMANNA CHENAKKAL
 
   </footer>
-
 
 </body>
 </html>
