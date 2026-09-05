@@ -142,24 +142,22 @@
     import { createClient } from
     "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
-    // ==========================================
-    // PUT YOUR SUPABASE DETAILS HERE
-    // ==========================================
-
-    const SUPABASE_URL = "https://oqhnaxolmqxifyjyzufj.supabase.co/rest/v1/";
+    const SUPABASE_URL =
+        "https://oqhnaxolmqxifyjyzufj.supabase.co";
 
     const SUPABASE_PUBLISHABLE_KEY =
         "sb_publishable_xGFE4JO5yMzYW7fIG3f1xg_1fEn300G";
-
-    // ==========================================
 
     const supabase = createClient(
         SUPABASE_URL,
         SUPABASE_PUBLISHABLE_KEY
     );
 
-    const loginForm = document.getElementById("loginForm");
-    const message = document.getElementById("message");
+    const loginForm =
+        document.getElementById("loginForm");
+
+    const message =
+        document.getElementById("message");
 
     loginForm.addEventListener("submit", async function(event) {
 
@@ -171,6 +169,7 @@
         const password =
             document.getElementById("password").value;
 
+        message.style.color = "#c0392b";
         message.textContent = "Logging in...";
 
         const { data, error } =
@@ -188,7 +187,8 @@
         }
 
         message.style.color = "#064e3b";
-        message.textContent = "Login successful!";
+        message.textContent =
+            "Login successful!";
 
         setTimeout(function() {
             window.location.href = "student.html";
