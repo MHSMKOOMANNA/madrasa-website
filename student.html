@@ -41,7 +41,6 @@
 
         console.log("Logged in email:", user.email);
         console.log("User ID:", user.id);
-        console.log("Session user role should be authenticated");
         console.log("User role:", user.role);
         console.log("Username searched:", username);
 
@@ -83,6 +82,7 @@
       }
     }
 
+
     async function saveNamaz() {
       const message = document.getElementById("message");
 
@@ -103,37 +103,50 @@
         console.log("User ID:", user.id);
         console.log("User role:", user.role);
 
-        const { error } = await supabase
+        const namazData = {
+          username: username,
+          date: new Date().toISOString().split("T")[0],
+          fajr: document.getElementById("fajr").checked,
+          dhuhr: document.getElementById("dhuhr").checked,
+          asr: document.getElementById("asr").checked,
+          maghrib: document.getElementById("maghrib").checked,
+          isha: document.getElementById("isha").checked
+        };
+
+        console.log("Namaz data:", namazData);
+
+        const { data, error } = await supabase
           .from("namaz")
-          .upsert({
-            username: username,
-            date: new Date().toISOString().split("T")[0],
-            fajr: document.getElementById("fajr").checked,
-            dhuhr: document.getElementById("dhuhr").checked,
-            asr: document.getElementById("asr").checked,
-            maghrib: document.getElementById("maghrib").checked,
-            isha: document.getElementById("isha").checked
-          }, {
-            onConflict: "username,date"
-          });
+          .insert(namazData)
+          .select();
 
         if (error) {
           console.error("Namaz save error:", error);
+
           message.style.color = "#a33";
+
           message.textContent =
             "Could not save Namaz: " + error.message;
+
           return;
         }
 
+        console.log("Namaz saved:", data);
+
         message.style.color = "green";
-        message.textContent = "Namaz saved successfully! ✅";
+        message.textContent =
+          "Namaz saved successfully! ✅";
 
       } catch (error) {
         console.error(error);
+
         message.style.color = "#a33";
-        message.textContent = "Error: " + error.message;
+
+        message.textContent =
+          "Error: " + error.message;
       }
     }
+
 
     async function logout() {
       await supabase.auth.signOut();
@@ -145,6 +158,7 @@
 
     loadStudent();
   </script>
+
 
   <style>
     * {
@@ -265,23 +279,31 @@
       margin-top: 40px;
     }
   </style>
-
 </head>
+
 
 <body>
 
 <header>
   <img src="logo.png" alt="Madrasa Logo">
+
   <h1>MAADANUDHEEN MADRASA</h1>
+
   <p>Student Panel</p>
 </header>
+
 
 <div class="container">
 
   <div id="message"></div>
 
+
   <div class="card student-info">
-    <h2>👋 Welcome, <span id="studentName">Loading...</span></h2>
+
+    <h2>
+      👋 Welcome,
+      <span id="studentName">Loading...</span>
+    </h2>
 
     <div class="info-row">
       <span class="label">Name:</span>
@@ -295,16 +317,40 @@
 
   </div>
 
+
   <div class="card">
+
     <h2>🕌 Today's Namaz</h2>
 
     <div class="namaz-list">
-      <label><input type="checkbox" id="fajr"> Fajr</label>
-      <label><input type="checkbox" id="dhuhr"> Dhuhr</label>
-      <label><input type="checkbox" id="asr"> Asr</label>
-      <label><input type="checkbox" id="maghrib"> Maghrib</label>
-      <label><input type="checkbox" id="isha"> Isha</label>
+
+      <label>
+        <input type="checkbox" id="fajr">
+        Fajr
+      </label>
+
+      <label>
+        <input type="checkbox" id="dhuhr">
+        Dhuhr
+      </label>
+
+      <label>
+        <input type="checkbox" id="asr">
+        Asr
+      </label>
+
+      <label>
+        <input type="checkbox" id="maghrib">
+        Maghrib
+      </label>
+
+      <label>
+        <input type="checkbox" id="isha">
+        Isha
+      </label>
+
     </div>
+
 
     <button onclick="saveNamaz()">
       Save Namaz
@@ -312,26 +358,44 @@
 
   </div>
 
+
   <div class="card">
+
     <h2>💡 Suggestions</h2>
 
-    <textarea placeholder="Write your suggestion here..."></textarea>
+    <textarea
+      placeholder="Write your suggestion here..."
+    ></textarea>
 
-    <button onclick="alert('Suggestions will be connected next.')">
+    <button
+      onclick="alert('Suggestions will be connected next.')"
+    >
       Submit Suggestion
     </button>
 
   </div>
 
+
   <div class="card" style="text-align:center;">
-    <button class="logout" onclick="logout()">Logout</button>
+
+    <button
+      class="logout"
+      onclick="logout()"
+    >
+      Logout
+    </button>
+
   </div>
 
 </div>
 
+
 <footer>
+
   MAADANUDHEEN MADRASA<br>
+
   KOOMANNA CHENAKKAL
+
 </footer>
 
 </body>
