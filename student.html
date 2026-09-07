@@ -18,6 +18,7 @@
       SUPABASE_PUBLISHABLE_KEY
     );
 
+
     async function loadStudent() {
       const message = document.getElementById("message");
 
@@ -44,6 +45,7 @@
         console.log("User role:", user.role);
         console.log("Username searched:", username);
 
+
         const {
           data,
           error
@@ -53,17 +55,21 @@
           .eq("username", username)
           .maybeSingle();
 
+
         if (error) {
           console.error("Database error:", error);
-          message.textContent = "Database error: " + error.message;
+          message.textContent =
+            "Database error: " + error.message;
           return;
         }
+
 
         if (!data) {
           message.textContent =
             "Student not found. Username searched: " + username;
           return;
         }
+
 
         document.getElementById("studentName").textContent =
           data.student_name;
@@ -76,68 +82,112 @@
 
         message.textContent = "";
 
+
       } catch (error) {
         console.error(error);
-        message.textContent = "Error: " + error.message;
+        message.textContent =
+          "Error: " + error.message;
       }
     }
+
 
 
     async function saveNamaz() {
       const message = document.getElementById("message");
 
       try {
+
         const {
           data: { user },
           error: userError
         } = await supabase.auth.getUser();
 
+
         if (userError || !user) {
-          message.textContent = "Please login again.";
+          message.textContent =
+            "Please login again.";
           return;
         }
 
+
         const username = user.email.split("@")[0];
+
 
         console.log("Saving Namaz for:", username);
         console.log("User ID:", user.id);
         console.log("User role:", user.role);
 
+
         const namazData = {
+
+          user_id: user.id,
+
           username: username,
-          date: new Date().toISOString().split("T")[0],
-          fajr: document.getElementById("fajr").checked,
-          dhuhr: document.getElementById("dhuhr").checked,
-          asr: document.getElementById("asr").checked,
-          maghrib: document.getElementById("maghrib").checked,
-          isha: document.getElementById("isha").checked
+
+          date: new Date()
+            .toISOString()
+            .split("T")[0],
+
+          fajr:
+            document.getElementById("fajr").checked,
+
+          dhuhr:
+            document.getElementById("dhuhr").checked,
+
+          asr:
+            document.getElementById("asr").checked,
+
+          maghrib:
+            document.getElementById("maghrib").checked,
+
+          isha:
+            document.getElementById("isha").checked
         };
 
-        console.log("Namaz data:", namazData);
+
+        console.log(
+          "Namaz data:",
+          namazData
+        );
+
 
         const { data, error } = await supabase
           .from("namaz")
           .insert(namazData)
           .select();
 
+
         if (error) {
-          console.error("Namaz save error:", error);
+
+          console.error(
+            "Namaz save error:",
+            error
+          );
 
           message.style.color = "#a33";
 
           message.textContent =
-            "Could not save Namaz: " + error.message;
+            "Could not save Namaz: " +
+            error.message;
 
           return;
         }
 
-        console.log("Namaz saved:", data);
+
+        console.log(
+          "Namaz saved:",
+          data
+        );
+
 
         message.style.color = "green";
+
         message.textContent =
           "Namaz saved successfully! ✅";
 
+
       } catch (error) {
+
         console.error(error);
 
         message.style.color = "#a33";
@@ -148,22 +198,33 @@
     }
 
 
+
     async function logout() {
+
       await supabase.auth.signOut();
-      window.location.href = "login.html";
+
+      window.location.href =
+        "login.html";
     }
 
+
     window.logout = logout;
-    window.saveNamaz = saveNamaz;
+
+    window.saveNamaz =
+      saveNamaz;
+
 
     loadStudent();
+
   </script>
 
 
   <style>
+
     * {
       box-sizing: border-box;
     }
+
 
     body {
       margin: 0;
@@ -172,12 +233,14 @@
       color: #123d2b;
     }
 
+
     header {
       background: #064d35;
       color: white;
       text-align: center;
       padding: 25px 15px;
     }
+
 
     header img {
       width: 75px;
@@ -188,10 +251,12 @@
       padding: 5px;
     }
 
+
     header h1 {
       margin: 10px 0 5px;
       font-size: 25px;
     }
+
 
     .container {
       max-width: 900px;
@@ -199,30 +264,37 @@
       padding: 15px;
     }
 
+
     .card {
       background: white;
       border-radius: 15px;
       padding: 25px;
       margin-bottom: 20px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      box-shadow:
+        0 4px 15px rgba(0,0,0,0.08);
     }
+
 
     .student-info {
       text-align: center;
     }
 
+
     .student-info h2 {
       color: #064d35;
     }
+
 
     .info-row {
       font-size: 18px;
       margin: 12px;
     }
 
+
     .label {
       font-weight: bold;
     }
+
 
     .namaz-list label {
       display: block;
@@ -232,12 +304,14 @@
       border-radius: 10px;
     }
 
+
     .namaz-list input {
       width: 20px;
       height: 20px;
       margin-right: 10px;
       vertical-align: middle;
     }
+
 
     textarea {
       width: 100%;
@@ -248,6 +322,7 @@
       font-size: 16px;
       resize: vertical;
     }
+
 
     button {
       background: #064d35;
@@ -260,9 +335,11 @@
       margin-top: 12px;
     }
 
+
     .logout {
       background: #a33;
     }
+
 
     #message {
       text-align: center;
@@ -271,6 +348,7 @@
       margin: 15px 0;
     }
 
+
     footer {
       text-align: center;
       padding: 25px;
@@ -278,22 +356,36 @@
       color: white;
       margin-top: 40px;
     }
+
   </style>
+
 </head>
 
 
 <body>
 
+
 <header>
-  <img src="logo.png" alt="Madrasa Logo">
 
-  <h1>MAADANUDHEEN MADRASA</h1>
+  <img
+    src="logo.png"
+    alt="Madrasa Logo"
+  >
 
-  <p>Student Panel</p>
+  <h1>
+    MAADANUDHEEN MADRASA
+  </h1>
+
+  <p>
+    Student Panel
+  </p>
+
 </header>
 
 
+
 <div class="container">
+
 
   <div id="message"></div>
 
@@ -302,70 +394,120 @@
 
     <h2>
       👋 Welcome,
-      <span id="studentName">Loading...</span>
+      <span id="studentName">
+        Loading...
+      </span>
     </h2>
 
-    <div class="info-row">
-      <span class="label">Name:</span>
-      <span id="studentName2">Loading...</span>
-    </div>
 
     <div class="info-row">
-      <span class="label">Class:</span>
-      <span id="studentClass">Loading...</span>
+
+      <span class="label">
+        Name:
+      </span>
+
+      <span id="studentName2">
+        Loading...
+      </span>
+
+    </div>
+
+
+    <div class="info-row">
+
+      <span class="label">
+        Class:
+      </span>
+
+      <span id="studentClass">
+        Loading...
+      </span>
+
     </div>
 
   </div>
 
 
+
   <div class="card">
 
-    <h2>🕌 Today's Namaz</h2>
+    <h2>
+      🕌 Today's Namaz
+    </h2>
+
 
     <div class="namaz-list">
 
+
       <label>
-        <input type="checkbox" id="fajr">
+        <input
+          type="checkbox"
+          id="fajr"
+        >
         Fajr
       </label>
 
+
       <label>
-        <input type="checkbox" id="dhuhr">
+        <input
+          type="checkbox"
+          id="dhuhr"
+        >
         Dhuhr
       </label>
 
+
       <label>
-        <input type="checkbox" id="asr">
+        <input
+          type="checkbox"
+          id="asr"
+        >
         Asr
       </label>
 
+
       <label>
-        <input type="checkbox" id="maghrib">
+        <input
+          type="checkbox"
+          id="maghrib"
+        >
         Maghrib
       </label>
 
+
       <label>
-        <input type="checkbox" id="isha">
+        <input
+          type="checkbox"
+          id="isha"
+        >
         Isha
       </label>
+
 
     </div>
 
 
-    <button onclick="saveNamaz()">
+    <button
+      onclick="saveNamaz()"
+    >
       Save Namaz
     </button>
 
   </div>
 
 
+
   <div class="card">
 
-    <h2>💡 Suggestions</h2>
+    <h2>
+      💡 Suggestions
+    </h2>
+
 
     <textarea
       placeholder="Write your suggestion here..."
     ></textarea>
+
 
     <button
       onclick="alert('Suggestions will be connected next.')"
@@ -376,7 +518,11 @@
   </div>
 
 
-  <div class="card" style="text-align:center;">
+
+  <div
+    class="card"
+    style="text-align:center;"
+  >
 
     <button
       class="logout"
@@ -387,16 +533,21 @@
 
   </div>
 
+
 </div>
+
 
 
 <footer>
 
-  MAADANUDHEEN MADRASA<br>
+  MAADANUDHEEN MADRASA
+
+  <br>
 
   KOOMANNA CHENAKKAL
 
 </footer>
+
 
 </body>
 </html>
