@@ -81,12 +81,61 @@
       }
     }
 
+    async function saveNamaz() {
+      const message = document.getElementById("message");
+
+      try {
+        const {
+          data: { user },
+          error: userError
+        } = await supabase.auth.getUser();
+
+        if (userError || !user) {
+          message.textContent = "Please login again.";
+          return;
+        }
+
+        const username = user.email.split("@")[0];
+
+        const { error } = await supabase
+          .from("namaz")
+          .upsert({
+            username: username,
+            date: new Date().toISOString().split("T")[0],
+            fajr: document.getElementById("fajr").checked,
+            dhuhr: document.getElementById("dhuhr").checked,
+            asr: document.getElementById("asr").checked,
+            maghrib: document.getElementById("maghrib").checked,
+            isha: document.getElementById("isha").checked
+          }, {
+            onConflict: "username,date"
+          });
+
+        if (error) {
+          console.error("Namaz save error:", error);
+          message.style.color = "#a33";
+          message.textContent =
+            "Could not save Namaz: " + error.message;
+          return;
+        }
+
+        message.style.color = "green";
+        message.textContent = "Namaz saved successfully! ✅";
+
+      } catch (error) {
+        console.error(error);
+        message.style.color = "#a33";
+        message.textContent = "Error: " + error.message;
+      }
+    }
+
     async function logout() {
       await supabase.auth.signOut();
       window.location.href = "login.html";
     }
 
     window.logout = logout;
+    window.saveNamaz = saveNamaz;
 
     loadStudent();
   </script>
