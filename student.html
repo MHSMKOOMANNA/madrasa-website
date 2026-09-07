@@ -20,30 +20,54 @@
 
 
     async function loadStudent() {
-      const message = document.getElementById("message");
+
+      const message =
+        document.getElementById("message");
 
       try {
+
         const {
           data: { user },
           error: userError
         } = await supabase.auth.getUser();
 
+
         if (userError) {
-          message.textContent = "Login error: " + userError.message;
+
+          message.textContent =
+            "Login error: " + userError.message;
+
           return;
         }
+
 
         if (!user) {
-          window.location.href = "login.html";
+
+          window.location.href =
+            "login.html";
+
           return;
         }
 
-        const username = user.email.split("@")[0];
 
-        console.log("Logged in email:", user.email);
-        console.log("User ID:", user.id);
-        console.log("User role:", user.role);
-        console.log("Username searched:", username);
+        const username =
+          user.email.split("@")[0];
+
+
+        console.log(
+          "Logged in email:",
+          user.email
+        );
+
+        console.log(
+          "User ID:",
+          user.id
+        );
+
+        console.log(
+          "User role:",
+          user.role
+        );
 
 
         const {
@@ -57,34 +81,58 @@
 
 
         if (error) {
-          console.error("Database error:", error);
+
+          console.error(
+            "Database error:",
+            error
+          );
+
           message.textContent =
-            "Database error: " + error.message;
+            "Database error: " +
+            error.message;
+
           return;
         }
 
 
         if (!data) {
+
           message.textContent =
-            "Student not found. Username searched: " + username;
+            "Student not found. Username searched: " +
+            username;
+
           return;
         }
 
 
-        document.getElementById("studentName").textContent =
+        document.getElementById(
+          "studentName"
+        ).textContent =
           data.student_name;
 
-        document.getElementById("studentName2").textContent =
+
+        document.getElementById(
+          "studentName2"
+        ).textContent =
           data.student_name;
 
-        document.getElementById("studentClass").textContent =
+
+        document.getElementById(
+          "studentClass"
+        ).textContent =
           data.class;
+
 
         message.textContent = "";
 
 
+        // Load today's saved Namaz
+        await loadTodayNamaz(user.id);
+
       } catch (error) {
+
         console.error(error);
+
         message.textContent =
           "Error: " + error.message;
       }
@@ -92,8 +140,86 @@
 
 
 
+    async function loadTodayNamaz(userId) {
+
+      const today =
+        new Date()
+          .toISOString()
+          .split("T")[0];
+
+
+      const {
+        data,
+        error
+      } = await supabase
+        .from("namaz")
+        .select(
+          "fajr, dhuhr, asr, maghrib, isha"
+        )
+        .eq("user_id", userId)
+        .eq("date", today)
+        .maybeSingle();
+
+
+      if (error) {
+
+        console.error(
+          "Namaz loading error:",
+          error
+        );
+
+        return;
+      }
+
+
+      if (!data) {
+
+        console.log(
+          "No Namaz record for today yet."
+        );
+
+        return;
+      }
+
+
+      document.getElementById(
+        "fajr"
+      ).checked = data.fajr;
+
+
+      document.getElementById(
+        "dhuhr"
+      ).checked = data.dhuhr;
+
+
+      document.getElementById(
+        "asr"
+      ).checked = data.asr;
+
+
+      document.getElementById(
+        "maghrib"
+      ).checked = data.maghrib;
+
+
+      document.getElementById(
+        "isha"
+      ).checked = data.isha;
+
+
+      console.log(
+        "Today's Namaz loaded:",
+        data
+      );
+    }
+
+
+
     async function saveNamaz() {
-      const message = document.getElementById("message");
+
+      const message =
+        document.getElementById("message");
+
 
       try {
 
@@ -104,18 +230,22 @@
 
 
         if (userError || !user) {
+
           message.textContent =
             "Please login again.";
+
           return;
         }
 
 
-        const username = user.email.split("@")[0];
+        const username =
+          user.email.split("@")[0];
 
 
-        console.log("Saving Namaz for:", username);
-        console.log("User ID:", user.id);
-        console.log("User role:", user.role);
+        const today =
+          new Date()
+            .toISOString()
+            .split("T")[0];
 
 
         const namazData = {
@@ -124,36 +254,53 @@
 
           username: username,
 
-          date: new Date()
-            .toISOString()
-            .split("T")[0],
+          date: today,
 
           fajr:
-            document.getElementById("fajr").checked,
+            document.getElementById(
+              "fajr"
+            ).checked,
 
           dhuhr:
-            document.getElementById("dhuhr").checked,
+            document.getElementById(
+              "dhuhr"
+            ).checked,
 
           asr:
-            document.getElementById("asr").checked,
+            document.getElementById(
+              "asr"
+            ).checked,
 
           maghrib:
-            document.getElementById("maghrib").checked,
+            document.getElementById(
+              "maghrib"
+            ).checked,
 
           isha:
-            document.getElementById("isha").checked
+            document.getElementById(
+              "isha"
+            ).checked
         };
 
 
         console.log(
-          "Namaz data:",
+          "Saving Namaz:",
           namazData
         );
 
 
-        const { data, error } = await supabase
+        const {
+          data,
+          error
+        } = await supabase
           .from("namaz")
-          .insert(namazData)
+          .upsert(
+            namazData,
+            {
+              onConflict:
+                "username,date"
+            }
+          )
           .select();
 
 
@@ -164,7 +311,8 @@
             error
           );
 
-          message.style.color = "#a33";
+          message.style.color =
+            "#a33";
 
           message.textContent =
             "Could not save Namaz: " +
@@ -180,7 +328,8 @@
         );
 
 
-        message.style.color = "green";
+        message.style.color =
+          "green";
 
         message.textContent =
           "Namaz saved successfully! ✅";
@@ -190,10 +339,12 @@
 
         console.error(error);
 
-        message.style.color = "#a33";
+        message.style.color =
+          "#a33";
 
         message.textContent =
-          "Error: " + error.message;
+          "Error: " +
+          error.message;
       }
     }
 
@@ -271,7 +422,8 @@
       padding: 25px;
       margin-bottom: 20px;
       box-shadow:
-        0 4px 15px rgba(0,0,0,0.08);
+        0 4px 15px
+        rgba(0,0,0,0.08);
     }
 
 
