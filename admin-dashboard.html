@@ -4,157 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Admin Dashboard - Madrasa</title>
-
-  <script type="module">
-    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
-
-    const SUPABASE_URL = "https://oqhnaxolmqxifyjyzufj.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_xGFE4JO5yMzYW7fIG3f1xg_1fEn300G";
-
-    const supabase = createClient(
-      SUPABASE_URL,
-      SUPABASE_KEY
-    );
-
-    window.supabaseClient = supabase;
-
-    async function checkAdmin() {
-      const { data: { user } } = await supabase.auth.getUser();
-
-      if (!user) {
-        window.location.href = "admin.html";
-        return;
-      }
-
-      const { data: admin, error } = await supabase
-        .from("admins")
-        .select("id")
-        .eq("id", user.id)
-        .maybeSingle();
-
-      if (error || !admin) {
-        await supabase.auth.signOut();
-        window.location.href = "admin.html";
-        return;
-      }
-
-      document.getElementById("dashboard").style.display = "block";
-      document.getElementById("loading").style.display = "none";
-    }
-
-    window.logout = async function () {
-      await supabase.auth.signOut();
-      window.location.href = "admin.html";
-    };
-
-    window.addStudent = async function () {
-      const studentName =
-        document.getElementById("studentName").value.trim();
-
-      const studentClass =
-        document.getElementById("studentClass").value.trim();
-
-      const username =
-        document.getElementById("loginId").value.trim();
-
-      const password =
-        document.getElementById("studentPassword").value;
-
-      const message =
-        document.getElementById("message");
-
-      if (!studentName) {
-        message.textContent = "Please enter student name.";
-        message.className = "message error";
-        return;
-      }
-
-      if (!studentClass) {
-        message.textContent = "Please enter class.";
-        message.className = "message error";
-        return;
-      }
-
-      if (!username) {
-        message.textContent = "Please enter login ID.";
-        message.className = "message error";
-        return;
-      }
-
-      // Password requirement changed to 1 character
-      if (password.length < 1) {
-        message.textContent = "Password must be at least 1 character.";
-        message.className = "message error";
-        return;
-      }
-
-      const button =
-        document.getElementById("createButton");
-
-      button.disabled = true;
-      button.textContent = "CREATING...";
-
-      message.textContent = "Creating student...";
-      message.className = "message";
-
-      try {
-        const {
-          data: { session },
-          error: sessionError
-        } = await supabase.auth.getSession();
-
-        if (sessionError || !session) {
-          throw new Error("Admin session expired. Please login again.");
-        }
-
-        const { data, error } =
-          await supabase.functions.invoke(
-            "create-student",
-            {
-              body: {
-                studentName: studentName,
-                studentClass: studentClass,
-                username: username,
-                password: password
-              }
-            }
-          );
-
-        if (error) {
-          throw new Error(error.message);
-        }
-
-        if (data && data.error) {
-          throw new Error(data.error);
-        }
-
-        message.textContent =
-          "Student created successfully.";
-
-        message.className = "message success";
-
-        document.getElementById("studentName").value = "";
-        document.getElementById("studentClass").value = "";
-        document.getElementById("loginId").value = "";
-        document.getElementById("studentPassword").value = "";
-
-      } catch (error) {
-        console.error(error);
-
-        message.textContent =
-          "Error: " + error.message;
-
-        message.className = "message error";
-
-      } finally {
-        button.disabled = false;
-        button.textContent = "CREATE STUDENT";
-      }
-    };
-
-    window.addEventListener("DOMContentLoaded", checkAdmin);
-  </script>
+  <title>Admin Dashboard</title>
 
   <style>
     * {
@@ -164,51 +14,44 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: #f4f7f6;
+      background: #f4f7f5;
       color: #222;
     }
 
     .header {
-      background: #075e54;
+      background: #075e45;
       color: white;
       padding: 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      text-align: center;
     }
 
     .header h1 {
       margin: 0;
-      font-size: 24px;
+      font-size: 28px;
     }
 
-    .logout {
-      background: white;
-      color: #075e54;
-      border: none;
-      padding: 10px 18px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: bold;
+    .header p {
+      margin: 6px 0 0;
+      opacity: 0.9;
     }
 
     .container {
       max-width: 700px;
-      margin: 30px auto;
+      margin: 35px auto;
       padding: 20px;
     }
 
     .card {
       background: white;
+      border-radius: 14px;
       padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+      box-shadow: 0 4px 18px rgba(0,0,0,0.08);
       margin-bottom: 20px;
     }
 
     .card h2 {
       margin-top: 0;
-      color: #075e54;
+      color: #075e45;
     }
 
     label {
@@ -218,157 +61,629 @@
       font-weight: bold;
     }
 
-    input {
+    input,
+    select {
       width: 100%;
-      padding: 12px;
+      padding: 13px;
       border: 1px solid #ccc;
-      border-radius: 6px;
+      border-radius: 8px;
       font-size: 16px;
     }
 
-    input:focus {
-      outline: none;
-      border-color: #075e54;
-    }
-
-    .create-btn {
+    button {
       width: 100%;
-      margin-top: 20px;
-      padding: 13px;
-      background: #075e54;
-      color: white;
+      padding: 14px;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
       font-size: 16px;
       font-weight: bold;
       cursor: pointer;
+      margin-top: 20px;
+    }
+
+    .create-btn {
+      background: #075e45;
+      color: white;
     }
 
     .create-btn:hover {
-      background: #064e46;
+      background: #064d39;
     }
 
-    .create-btn:disabled {
-      background: #999;
-      cursor: not-allowed;
+    .logout-btn {
+      background: #b42318;
+      color: white;
     }
 
     .message {
-      margin-top: 15px;
+      margin-top: 18px;
       padding: 12px;
-      border-radius: 6px;
+      border-radius: 8px;
+      display: none;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .success {
       display: block;
+      background: #e7f6ec;
+      color: #176b35;
     }
 
-    .message.success {
-      background: #d4edda;
-      color: #155724;
-    }
-
-    .message.error {
-      background: #f8d7da;
-      color: #721c24;
-    }
-
-    #loading {
-      text-align: center;
-      padding: 50px;
-      font-size: 18px;
+    .error {
+      display: block;
+      background: #fdecec;
+      color: #b42318;
     }
 
     #dashboard {
       display: none;
     }
 
-    .note {
-      margin-top: 8px;
-      font-size: 13px;
-      color: #666;
+    .loading {
+      text-align: center;
+      padding: 40px;
+      font-size: 18px;
     }
   </style>
 </head>
 
 <body>
 
-  <div id="loading">
-    Checking admin access...
+  <div class="header">
+    <h1>Admin Dashboard</h1>
+    <p>Madarsa Student Management</p>
   </div>
 
-  <div id="dashboard">
+  <div class="container">
 
-    <div class="header">
-      <h1>Admin Dashboard</h1>
-
-      <button class="logout" onclick="logout()">
-        LOGOUT
-      </button>
+    <div id="loading" class="loading">
+      Checking admin login...
     </div>
 
-    <div class="container">
+    <div id="dashboard">
 
       <div class="card">
-
         <h2>Create Student Account</h2>
 
-        <label for="studentName">
-          Student Name
-        </label>
-
+        <label for="studentName">Student Name</label>
         <input
           type="text"
           id="studentName"
           placeholder="Enter student name"
         >
 
-        <label for="studentClass">
-          Class
-        </label>
-
+        <label for="studentClass">Class</label>
         <input
           type="text"
           id="studentClass"
           placeholder="Enter class"
         >
 
-        <label for="loginId">
-          Login ID
-        </label>
-
+        <label for="loginId">Login ID</label>
         <input
           type="text"
           id="loginId"
           placeholder="Enter login ID"
         >
 
-        <label for="studentPassword">
-          Password
-        </label>
-
+        <label for="studentPassword">Password</label>
         <input
           type="password"
           id="studentPassword"
           placeholder="Enter password"
         >
 
-        <div class="note">
-          Password must contain at least 1 character.
-        </div>
-
         <button
-          id="createButton"
           class="create-btn"
+          id="createButton"
           onclick="addStudent()"
         >
           CREATE STUDENT
         </button>
 
-        <div id="message"></div>
+        <div id="message" class="message"></div>
+      </div>
 
+      <div class="card">
+        <h2>Admin Account</h2>
+
+        <button
+          class="logout-btn"
+          onclick="logout()"
+        >
+          LOGOUT
+        </button>
       </div>
 
     </div>
 
   </div>
+
+
+  <script type="module">
+
+    import { createClient } from
+      "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+
+    const SUPABASE_URL =
+      "https://oqhnaxolmqxifyjyzufj.supabase.co";
+
+    const SUPABASE_ANON_KEY =
+      "sb_publishable_xGFE4JO5yMzYW7fIG3f1xg_1fEn300G";
+
+
+    const supabase = createClient(
+      SUPABASE_URL,
+      SUPABASE_ANON_KEY
+    );
+
+
+    // --------------------------------------------------
+    // CHECK ADMIN
+    // --------------------------------------------------
+
+    async function checkAdmin() {
+
+      const loading =
+        document.getElementById("loading");
+
+      const dashboard =
+        document.getElementById("dashboard");
+
+
+      try {
+
+        const {
+          data: {
+            session
+          },
+          error: sessionError
+        } = await supabase.auth.getSession();
+
+
+        if (sessionError) {
+          console.error(
+            "Session error:",
+            sessionError
+          );
+
+          window.location.href = "admin.html";
+          return;
+        }
+
+
+        if (!session) {
+
+          window.location.href =
+            "admin.html";
+
+          return;
+        }
+
+
+        const user =
+          session.user;
+
+
+        console.log(
+          "Logged in user:",
+          user.id
+        );
+
+
+        const {
+          data: admin,
+          error: adminError
+        } = await supabase
+          .from("admins")
+          .select("id")
+          .eq("id", user.id)
+          .maybeSingle();
+
+
+        if (adminError) {
+
+          console.error(
+            "Admin check error:",
+            adminError
+          );
+
+          loading.textContent =
+            "Admin verification failed.";
+
+          return;
+        }
+
+
+        if (!admin) {
+
+          loading.textContent =
+            "You are not authorized as an admin.";
+
+          return;
+        }
+
+
+        loading.style.display =
+          "none";
+
+        dashboard.style.display =
+          "block";
+
+      }
+
+      catch (error) {
+
+        console.error(
+          "Unexpected admin check error:",
+          error
+        );
+
+        loading.textContent =
+          "Something went wrong.";
+
+      }
+
+    }
+
+
+    // --------------------------------------------------
+    // CREATE STUDENT
+    // --------------------------------------------------
+
+    window.addStudent = async function () {
+
+      const studentName =
+        document
+          .getElementById("studentName")
+          .value
+          .trim();
+
+
+      const studentClass =
+        document
+          .getElementById("studentClass")
+          .value
+          .trim();
+
+
+      const username =
+        document
+          .getElementById("loginId")
+          .value
+          .trim();
+
+
+      const password =
+        document
+          .getElementById("studentPassword")
+          .value;
+
+
+      const message =
+        document.getElementById("message");
+
+
+      const createButton =
+        document.getElementById("createButton");
+
+
+      // Clear old message
+
+      message.className =
+        "message";
+
+      message.textContent =
+        "";
+
+
+      // --------------------------------------------------
+      // BASIC VALIDATION
+      // --------------------------------------------------
+
+      if (!studentName) {
+
+        message.textContent =
+          "Please enter the student name.";
+
+        message.className =
+          "message error";
+
+        return;
+
+      }
+
+
+      if (!studentClass) {
+
+        message.textContent =
+          "Please enter the class.";
+
+        message.className =
+          "message error";
+
+        return;
+
+      }
+
+
+      if (!username) {
+
+        message.textContent =
+          "Please enter the Login ID.";
+
+        message.className =
+          "message error";
+
+        return;
+
+      }
+
+
+      if (password.length < 1) {
+
+        message.textContent =
+          "Password must be at least 1 character.";
+
+        message.className =
+          "message error";
+
+        return;
+
+      }
+
+
+      // --------------------------------------------------
+      // GET CURRENT SESSION
+      // --------------------------------------------------
+
+      const {
+        data: {
+          session
+        },
+        error: sessionError
+      } = await supabase.auth.getSession();
+
+
+      if (sessionError) {
+
+        console.error(
+          "Session error:",
+          sessionError
+        );
+
+        message.textContent =
+          "Could not get your admin session.";
+
+        message.className =
+          "message error";
+
+        return;
+
+      }
+
+
+      if (!session) {
+
+        message.textContent =
+          "Your admin session has expired. Please login again.";
+
+        message.className =
+          "message error";
+
+        return;
+
+      }
+
+
+      // --------------------------------------------------
+      // DISABLE BUTTON
+      // --------------------------------------------------
+
+      createButton.disabled =
+        true;
+
+      createButton.textContent =
+        "CREATING...";
+
+
+      try {
+
+        console.log(
+          "Calling create-student function..."
+        );
+
+
+        const {
+          data,
+          error
+        } = await supabase.functions.invoke(
+          "create-student",
+          {
+            body: {
+              studentName:
+                studentName,
+
+              studentClass:
+                studentClass,
+
+              username:
+                username,
+
+              password:
+                password
+            }
+          }
+        );
+
+
+        // --------------------------------------------------
+        // IMPORTANT DEBUG INFORMATION
+        // --------------------------------------------------
+
+        console.log(
+          "Function returned data:",
+          data
+        );
+
+        console.log(
+          "Function returned error:",
+          error
+        );
+
+
+        // --------------------------------------------------
+        // SHOW REAL ERROR
+        // --------------------------------------------------
+
+        if (error) {
+
+          console.error(
+            "Function error:",
+            error
+          );
+
+
+          console.error(
+            "Function response data:",
+            data
+          );
+
+
+          let realError =
+            data?.error ||
+            data?.message ||
+            error.message ||
+            "Unknown error";
+
+
+          message.textContent =
+            "ERROR: " + realError;
+
+
+          message.className =
+            "message error";
+
+
+          return;
+
+        }
+
+
+        // --------------------------------------------------
+        // CHECK FUNCTION RESPONSE
+        // --------------------------------------------------
+
+        if (data?.error) {
+
+          console.error(
+            "Server error:",
+            data.error
+          );
+
+
+          message.textContent =
+            "ERROR: " + data.error;
+
+
+          message.className =
+            "message error";
+
+
+          return;
+
+        }
+
+
+        // --------------------------------------------------
+        // SUCCESS
+        // --------------------------------------------------
+
+        message.textContent =
+          "Student created successfully.";
+
+        message.className =
+          "message success";
+
+
+        // Clear form
+
+        document
+          .getElementById("studentName")
+          .value = "";
+
+        document
+          .getElementById("studentClass")
+          .value = "";
+
+        document
+          .getElementById("loginId")
+          .value = "";
+
+        document
+          .getElementById("studentPassword")
+          .value = "";
+
+
+      }
+
+      catch (error) {
+
+        console.error(
+          "Unexpected error:",
+          error
+        );
+
+
+        message.textContent =
+          "ERROR: " +
+          (
+            error?.message ||
+            "Unexpected error occurred."
+          );
+
+
+        message.className =
+          "message error";
+
+      }
+
+      finally {
+
+        createButton.disabled =
+          false;
+
+        createButton.textContent =
+          "CREATE STUDENT";
+
+      }
+
+    };
+
+
+    // --------------------------------------------------
+    // LOGOUT
+    // --------------------------------------------------
+
+    window.logout = async function () {
+
+      await supabase.auth.signOut();
+
+      window.location.href =
+        "admin.html";
+
+    };
+
+
+    // --------------------------------------------------
+    // START
+    // --------------------------------------------------
+
+    checkAdmin();
+
+  </script>
 
 </body>
 </html>
