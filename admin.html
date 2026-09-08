@@ -1,1 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login - MAADANUDHEEN MADRASA</title>
 
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #064e3b, #0f766e);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .login-box {
+      width: 100%;
+      max-width: 400px;
+      background: white;
+      padding: 35px;
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 8px;
+      color: #064e3b;
+      font-size: 28px;
+    }
+
+    .subtitle {
+      color: #666;
+      margin-bottom: 25px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 15px;
+      border: none;
+      border-radius: 10px;
+      background: #064e3b;
+      color: white;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #043c2e;
+    }
+
+    #message {
+      margin-top: 18px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="login-box">
+
+    <h1>Admin Login</h1>
+
+    <div class="subtitle">
+      MAADANUDHEEN MADRASA
+    </div>
+
+    <input
+      type="email"
+      id="email"
+      placeholder="Admin Email"
+      autocomplete="username"
+    >
+
+    <input
+      type="password"
+      id="password"
+      placeholder="Password"
+      autocomplete="current-password"
+    >
+
+    <button onclick="loginAdmin()">LOGIN</button>
+
+    <div id="message"></div>
+
+  </div>
+
+
+  <script type="module">
+
+    import { createClient } from
+      "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+
+    const SUPABASE_URL =
+      "https://oqhnaxolmqxifyjyzufj.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_xGFE4JO5yMzYW7fIG3f1xg_1fEn300G";
+
+
+    const supabase = createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+
+    window.loginAdmin = async function () {
+
+      const email =
+        document.getElementById("email").value.trim();
+
+      const password =
+        document.getElementById("password").value;
+
+      const message =
+        document.getElementById("message");
+
+
+      if (!email || !password) {
+
+        message.textContent =
+          "Please enter email and password.";
+
+        message.style.color = "red";
+
+        return;
+      }
+
+
+      message.textContent = "Logging in...";
+      message.style.color = "#064e3b";
+
+
+      const { data, error } =
+        await supabase.auth.signInWithPassword({
+          email: email,
+          password: password
+        });
+
+
+      if (error) {
+
+        console.error(error);
+
+        message.textContent =
+          "Login failed: " + error.message;
+
+        message.style.color = "red";
+
+        return;
+      }
+
+
+      console.log("Admin logged in:", data.user);
+
+
+      message.textContent =
+        "Login successful!";
+
+      message.style.color = "green";
+
+
+      setTimeout(() => {
+
+        window.location.href = "admin-dashboard.html";
+
+      }, 1000);
+
+    };
+
+  </script>
+
+</body>
+</html>
