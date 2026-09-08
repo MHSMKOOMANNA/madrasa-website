@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Student Dashboard</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f7f5;
+      color: #222;
+    }
+
+    .header {
+      background: #075e45;
+      color: white;
+      padding: 25px 20px;
+      text-align: center;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    .header p {
+      margin: 7px 0 0;
+      opacity: 0.9;
+    }
+
+    .logout-btn {
+      position: fixed;
+      top: 15px;
+      right: 20px;
+      width: auto;
+      padding: 9px 16px;
+      margin: 0;
+      background: #b42318;
+      color: white;
+      border: none;
+      border-radius: 7px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 1000;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 30px auto;
+      padding: 20px;
+    }
+
+    .welcome {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .welcome h2 {
+      color: #075e45;
+      margin-bottom: 5px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 14px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+    }
+
+    .card h3 {
+      margin-top: 0;
+      color: #075e45;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 13px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .info-row:last-child {
+      border-bottom: none;
+    }
+
+    .label {
+      font-weight: bold;
+      color: #555;
+    }
+
+    .value {
+      color: #222;
+    }
+
+    #dashboard {
+      display: none;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 50px 20px;
+      font-size: 18px;
+    }
+
+    .error {
+      text-align: center;
+      color: #b42318;
+      padding: 30px;
+    }
+
+    @media (max-width: 600px) {
+
+      .header {
+        padding-top: 60px;
+      }
+
+      .logout-btn {
+        top: 10px;
+        right: 10px;
+        padding: 8px 12px;
+        font-size: 13px;
+      }
+
+      .container {
+        padding: 15px;
+      }
+
+      .info-row {
+        gap: 15px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+
+    <h1>
+      Student Dashboard
+    </h1>
+
+    <p>
+      Madrasa Student Portal
+    </p>
+
+  </div>
+
+
+  <button
+    class="logout-btn"
+    onclick="logout()"
+  >
+    LOG OUT
+  </button>
+
+
+  <div class="container">
+
+    <div
+      id="loading"
+      class="loading"
+    >
+      Loading student information...
+    </div>
+
+
+    <div
+      id="dashboard"
+    >
+
+      <div class="welcome">
+
+        <h2 id="welcomeName">
+          Welcome
+        </h2>
+
+        <p>
+          Welcome to your student portal.
+        </p>
+
+      </div>
+
+
+      <div class="card">
+
+        <h3>
+          Student Information
+        </h3>
+
+
+        <div class="info-row">
+
+          <span class="label">
+            Name
+          </span>
+
+          <span
+            class="value"
+            id="studentName"
+          >
+            -
+          </span>
+
+        </div>
+
+
+        <div class="info-row">
+
+          <span class="label">
+            Class
+          </span>
+
+          <span
+            class="value"
+            id="studentClass"
+          >
+            -
+          </span>
+
+        </div>
+
+
+        <div class="info-row">
+
+          <span class="label">
+            Login ID
+          </span>
+
+          <span
+            class="value"
+            id="studentUsername"
+          >
+            -
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="card">
+
+        <h3>
+          Student Portal
+        </h3>
+
+        <p>
+          More student features will be added here.
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <div
+      id="error"
+      class="error"
+      style="display:none;"
+    ></div>
+
+  </div>
+
+
+  <script type="module">
+
+    import {
+      createClient
+    } from
+      "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+
+    const SUPABASE_URL =
+      "https://oqhnaxolmqxifyjyzufj.supabase.co";
+
+
+    const SUPABASE_ANON_KEY =
+      "sb_publishable_xGFE4JO5yMzYW7fIG3f1xg_1fEn300G";
+
+
+    const supabase =
+      createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+      );
+
+
+    async function loadStudent() {
+
+      const loading =
+        document.getElementById(
+          "loading"
+        );
+
+      const dashboard =
+        document.getElementById(
+          "dashboard"
+        );
+
+      const errorBox =
+        document.getElementById(
+          "error"
+        );
+
+
+      try {
+
+        // Get logged-in user
+
+        const {
+          data: {
+            session
+          },
+          error: sessionError
+        } =
+          await supabase.auth.getSession();
+
+
+        if (
+          sessionError ||
+          !session
+        ) {
+
+          window.location.href =
+            "student-login.html";
+
+          return;
+        }
+
+
+        const user =
+          session.user;
+
+
+        console.log(
+          "Student Auth ID:",
+          user.id
+        );
+
+
+        // Find student using auth_user_id
+
+        const {
+          data: student,
+          error: studentError
+        } =
+          await supabase
+            .from("students")
+            .select(
+              "student_name, username, class, auth_user_id"
+            )
+            .eq(
+              "auth_user_id",
+              user.id
+            )
+            .maybeSingle();
+
+
+        if (studentError) {
+
+          console.error(
+            "Student database error:",
+            studentError
+          );
+
+
+          loading.style.display =
+            "none";
+
+          errorBox.textContent =
+            "Could not load student information: " +
+            studentError.message;
+
+          errorBox.style.display =
+            "block";
+
+          return;
+        }
+
+
+        if (!student) {
+
+          loading.style.display =
+            "none";
+
+          errorBox.textContent =
+            "Student account was found, but no student record is linked to it.";
+
+          errorBox.style.display =
+            "block";
+
+          return;
+        }
+
+
+        // Display information
+
+        document.getElementById(
+          "welcomeName"
+        ).textContent =
+          "Welcome, " +
+          student.student_name;
+
+
+        document.getElementById(
+          "studentName"
+        ).textContent =
+          student.student_name;
+
+
+        document.getElementById(
+          "studentClass"
+        ).textContent =
+          student.class;
+
+
+        document.getElementById(
+          "studentUsername"
+        ).textContent =
+          student.username;
+
+
+        loading.style.display =
+          "none";
+
+        dashboard.style.display =
+          "block";
+
+      }
+
+      catch (error) {
+
+        console.error(
+          "Unexpected error:",
+          error
+        );
+
+
+        loading.style.display =
+          "none";
+
+        errorBox.textContent =
+          "Something went wrong: " +
+          (
+            error?.message ||
+            "Unknown error"
+          );
+
+        errorBox.style.display =
+          "block";
+
+      }
+
+    }
+
+
+    // LOG OUT
+
+    window.logout =
+      async function () {
+
+        await supabase.auth.signOut();
+
+        window.location.href =
+          "student-login.html";
+
+      };
+
+
+    // Start
+
+    loadStudent();
+
+  </script>
+
+</body>
+</html>
