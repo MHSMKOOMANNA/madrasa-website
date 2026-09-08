@@ -244,25 +244,32 @@
            * email format.
            */
 
-          const email =
-            loginId.toLowerCase() +
-            "@student.madrasa.example";
+          const candidateEmail =
+            loginId.includes("@")
+              ? loginId
+              : loginId.toLowerCase() + "@student.madrasa.example";
 
-
-          const {
+          let {
             data,
             error
           } =
             await supabase.auth.signInWithPassword({
-
               email:
-                email,
-
+                candidateEmail,
               password:
                 password
-
             });
 
+          if (error && candidateEmail !== loginId) {
+            const retry = await supabase.auth.signInWithPassword({
+              email: loginId,
+              password: password
+            });
+            if (!retry.error) {
+              data = retry.data;
+              error = null;
+            }
+          }
 
           if (error) {
 

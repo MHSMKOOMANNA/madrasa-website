@@ -114,9 +114,10 @@
     <form id="loginForm">
 
         <input
-            type="email"
+            type="text"
             id="email"
-            placeholder="Student Email"
+            placeholder="Login ID or Email"
+            autocomplete="username"
             required
         >
 
@@ -163,7 +164,7 @@
 
         event.preventDefault();
 
-        const email =
+        const inputVal =
             document.getElementById("email").value.trim();
 
         const password =
@@ -172,11 +173,28 @@
         message.style.color = "#c0392b";
         message.textContent = "Logging in...";
 
-        const { data, error } =
+        // Try username formatted as internal email first if no domain was provided
+        const candidateEmail = inputVal.includes("@")
+            ? inputVal
+            : inputVal.toLowerCase() + "@student.madrasa.example";
+
+        let { data, error } =
             await supabase.auth.signInWithPassword({
-                email: email,
+                email: candidateEmail,
                 password: password
             });
+
+        // Fallback: if candidate was modified and failed, try exact input
+        if (error && candidateEmail !== inputVal) {
+            const retry = await supabase.auth.signInWithPassword({
+                email: inputVal,
+                password: password
+            });
+            if (!retry.error) {
+                data = retry.data;
+                error = null;
+            }
+        }
 
         if (error) {
 
