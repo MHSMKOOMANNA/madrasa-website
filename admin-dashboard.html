@@ -98,16 +98,11 @@
       font-size: 14px;
     }
 
-    .form-group input,
-    .form-group select {
+    .form-group input {
       padding: 12px;
       border: 1px solid #ccc;
       border-radius: 8px;
       font-size: 15px;
-    }
-
-    .full-width {
-      grid-column: 1 / -1;
     }
 
     .add-btn {
@@ -124,6 +119,11 @@
 
     .add-btn:hover {
       background: #043c2e;
+    }
+
+    .add-btn:disabled {
+      background: #999;
+      cursor: not-allowed;
     }
 
     .message {
@@ -154,10 +154,6 @@
       .form-grid {
         grid-template-columns: 1fr;
       }
-
-      .full-width {
-        grid-column: auto;
-      }
     }
   </style>
 </head>
@@ -175,11 +171,9 @@
     </button>
   </header>
 
-
   <div id="loading" class="loading">
     Checking admin access...
   </div>
-
 
   <main class="container" id="dashboard" style="display:none;">
 
@@ -187,7 +181,6 @@
       <h2>Welcome, Admin 👋</h2>
       <p>Manage your madrasa website from here.</p>
     </div>
-
 
     <!-- STUDENT MANAGEMENT -->
 
@@ -213,7 +206,6 @@
           >
         </div>
 
-
         <div class="form-group">
           <label>Class</label>
           <input
@@ -223,7 +215,6 @@
           >
         </div>
 
-
         <div class="form-group">
           <label>Login ID</label>
           <input
@@ -232,7 +223,6 @@
             placeholder="Example: nizam"
           >
         </div>
-
 
         <div class="form-group">
           <label>Password</label>
@@ -245,15 +235,13 @@
 
       </div>
 
-
-      <button class="add-btn" onclick="addStudent()">
+      <button class="add-btn" id="createStudentBtn" onclick="addStudent()">
         ➕ CREATE STUDENT
       </button>
 
       <div id="studentMessage" class="message"></div>
 
     </section>
-
 
     <!-- FUTURE FEATURES -->
 
@@ -348,19 +336,151 @@
     }
 
 
-    // ADD STUDENT
-    // Secure account creation will be connected next.
+    // CREATE STUDENT
 
-    window.addStudent = function () {
+    window.addStudent = async function () {
 
       const message =
         document.getElementById("studentMessage");
 
+      const button =
+        document.getElementById("createStudentBtn");
 
-      message.textContent =
-        "Student creation will be connected in the next step.";
+
+      const studentName =
+        document.getElementById("studentName").value.trim();
+
+      const studentClass =
+        document.getElementById("studentClass").value.trim();
+
+      const username =
+        document.getElementById("loginId").value.trim();
+
+      const password =
+        document.getElementById("studentPassword").value;
+
+
+      // CHECK EMPTY FIELDS
+
+      if (!studentName || !studentClass || !username || !password) {
+
+        message.textContent =
+          "Please fill in all fields.";
+
+        message.style.color = "red";
+
+        return;
+      }
+
+
+      // PASSWORD CHECK
+
+      if (password.length < 6) {
+
+        message.textContent =
+          "Password must be at least 6 characters.";
+
+        message.style.color = "red";
+
+        return;
+      }
+
+
+      button.disabled = true;
+
+      button.textContent = "CREATING...";
+
+      message.textContent = "Creating student...";
 
       message.style.color = "#064e3b";
+
+
+      try {
+
+        // Get current admin session
+
+        const {
+          data: { session },
+          error: sessionError
+        } = await supabase.auth.getSession();
+
+
+        if (sessionError || !session) {
+
+          throw new Error(
+            "Your admin session has expired. Please login again."
+          );
+        }
+
+
+        // Call secure Edge Function
+
+        const {
+          data,
+          error
+        } = await supabase.functions.invoke(
+          "create-student",
+          {
+            body: {
+              studentName: studentName,
+              studentClass: studentClass,
+              username: username,
+              password: password
+            }
+          }
+        );
+
+
+        if (error) {
+
+          throw new Error(error.message);
+        }
+
+
+        if (!data || !data.success) {
+
+          throw new Error(
+            data?.error || "Student creation failed."
+          );
+        }
+
+
+        // SUCCESS
+
+        message.textContent =
+          "✅ Student created successfully!";
+
+        message.style.color = "#064e3b";
+
+
+        // Clear form
+
+        document.getElementById("studentName").value = "";
+
+        document.getElementById("studentClass").value = "";
+
+        document.getElementById("loginId").value = "";
+
+        document.getElementById("studentPassword").value = "";
+
+
+      } catch (error) {
+
+        console.error("Create student error:", error);
+
+        message.textContent =
+          "❌ " + error.message;
+
+        message.style.color = "red";
+
+
+      } finally {
+
+        button.disabled = false;
+
+        button.textContent = "➕ CREATE STUDENT";
+      }
+
     };
 
 
@@ -373,6 +493,8 @@
       window.location.href = "admin.html";
     };
 
+
+    // START
 
     checkAdmin();
 
