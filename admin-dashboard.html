@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Admin Dashboard</title>
 
   <style>
@@ -61,8 +60,7 @@
       font-weight: bold;
     }
 
-    input,
-    select {
+    input {
       width: 100%;
       padding: 13px;
       border: 1px solid #ccc;
@@ -197,7 +195,6 @@
       </div>
 
     </div>
-
   </div>
 
 
@@ -220,9 +217,9 @@
     );
 
 
-    // --------------------------------------------------
+    // ==============================
     // CHECK ADMIN
-    // --------------------------------------------------
+    // ==============================
 
     async function checkAdmin() {
 
@@ -243,18 +240,7 @@
         } = await supabase.auth.getSession();
 
 
-        if (sessionError) {
-          console.error(
-            "Session error:",
-            sessionError
-          );
-
-          window.location.href = "admin.html";
-          return;
-        }
-
-
-        if (!session) {
+        if (sessionError || !session) {
 
           window.location.href =
             "admin.html";
@@ -265,12 +251,6 @@
 
         const user =
           session.user;
-
-
-        console.log(
-          "Logged in user:",
-          user.id
-        );
 
 
         const {
@@ -316,10 +296,7 @@
 
       catch (error) {
 
-        console.error(
-          "Unexpected admin check error:",
-          error
-        );
+        console.error(error);
 
         loading.textContent =
           "Something went wrong.";
@@ -329,9 +306,9 @@
     }
 
 
-    // --------------------------------------------------
+    // ==============================
     // CREATE STUDENT
-    // --------------------------------------------------
+    // ==============================
 
     window.addStudent = async function () {
 
@@ -370,8 +347,6 @@
         document.getElementById("createButton");
 
 
-      // Clear old message
-
       message.className =
         "message";
 
@@ -379,9 +354,7 @@
         "";
 
 
-      // --------------------------------------------------
-      // BASIC VALIDATION
-      // --------------------------------------------------
+      // VALIDATION
 
       if (!studentName) {
 
@@ -392,7 +365,6 @@
           "message error";
 
         return;
-
       }
 
 
@@ -405,7 +377,6 @@
           "message error";
 
         return;
-
       }
 
 
@@ -418,26 +389,22 @@
           "message error";
 
         return;
-
       }
 
 
       if (password.length < 1) {
 
         message.textContent =
-          "Password must be at least 1 character.";
+          "Please enter a password.";
 
         message.className =
           "message error";
 
         return;
-
       }
 
 
-      // --------------------------------------------------
-      // GET CURRENT SESSION
-      // --------------------------------------------------
+      // GET SESSION
 
       const {
         data: {
@@ -447,40 +414,17 @@
       } = await supabase.auth.getSession();
 
 
-      if (sessionError) {
-
-        console.error(
-          "Session error:",
-          sessionError
-        );
+      if (sessionError || !session) {
 
         message.textContent =
-          "Could not get your admin session.";
+          "Admin session expired. Please login again.";
 
         message.className =
           "message error";
 
         return;
-
       }
 
-
-      if (!session) {
-
-        message.textContent =
-          "Your admin session has expired. Please login again.";
-
-        message.className =
-          "message error";
-
-        return;
-
-      }
-
-
-      // --------------------------------------------------
-      // DISABLE BUTTON
-      // --------------------------------------------------
 
       createButton.disabled =
         true;
@@ -492,71 +436,98 @@
       try {
 
         console.log(
-          "Calling create-student function..."
+          "Calling create-student..."
         );
 
 
-        const {
-          data,
-          error
-        } = await supabase.functions.invoke(
-          "create-student",
-          {
-            body: {
-              studentName:
-                studentName,
+        // DIRECT FETCH
+        // This lets us see the real 400 response.
 
-              studentClass:
-                studentClass,
+        const response =
+          await fetch(
+            SUPABASE_URL +
+            "/functions/v1/create-student",
+            {
+              method: "POST",
 
-              username:
-                username,
+              headers: {
+                "Authorization":
+                  "Bearer " + session.access_token,
 
-              password:
-                password
+                "apikey":
+                  SUPABASE_ANON_KEY,
+
+                "Content-Type":
+                  "application/json"
+              },
+
+              body: JSON.stringify({
+
+                studentName:
+                  studentName,
+
+                studentClass:
+                  studentClass,
+
+                username:
+                  username,
+
+                password:
+                  password
+
+              })
             }
-          }
-        );
-
-
-        // --------------------------------------------------
-        // IMPORTANT DEBUG INFORMATION
-        // --------------------------------------------------
-
-        console.log(
-          "Function returned data:",
-          data
-        );
-
-        console.log(
-          "Function returned error:",
-          error
-        );
-
-
-        // --------------------------------------------------
-        // SHOW REAL ERROR
-        // --------------------------------------------------
-
-        if (error) {
-
-          console.error(
-            "Function error:",
-            error
           );
 
 
-          console.error(
-            "Function response data:",
-            data
-          );
+        // READ RESPONSE AS TEXT FIRST
+
+        const responseText =
+          await response.text();
 
 
-          let realError =
-            data?.error ||
-            data?.message ||
-            error.message ||
+        console.log(
+          "HTTP status:",
+          response.status
+        );
+
+        console.log(
+          "Raw response:",
+          responseText
+        );
+
+
+        // TRY JSON
+
+        let responseData = null;
+
+        try {
+
+          responseData =
+            JSON.parse(responseText);
+
+        } catch {
+
+          responseData = null;
+
+        }
+
+
+        // ERROR
+
+        if (!response.ok) {
+
+          const realError =
+            responseData?.error ||
+            responseData?.message ||
+            responseText ||
             "Unknown error";
+
+
+          console.error(
+            "REAL SUPABASE ERROR:",
+            realError
+          );
 
 
           message.textContent =
@@ -568,47 +539,21 @@
 
 
           return;
-
         }
 
 
-        // --------------------------------------------------
-        // CHECK FUNCTION RESPONSE
-        // --------------------------------------------------
-
-        if (data?.error) {
-
-          console.error(
-            "Server error:",
-            data.error
-          );
-
-
-          message.textContent =
-            "ERROR: " + data.error;
-
-
-          message.className =
-            "message error";
-
-
-          return;
-
-        }
-
-
-        // --------------------------------------------------
         // SUCCESS
-        // --------------------------------------------------
 
         message.textContent =
+          responseData?.message ||
           "Student created successfully.";
+
 
         message.className =
           "message success";
 
 
-        // Clear form
+        // CLEAR FORM
 
         document
           .getElementById("studentName")
@@ -632,7 +577,7 @@
       catch (error) {
 
         console.error(
-          "Unexpected error:",
+          "FETCH ERROR:",
           error
         );
 
@@ -641,7 +586,7 @@
           "ERROR: " +
           (
             error?.message ||
-            "Unexpected error occurred."
+            "Could not connect to the Edge Function."
           );
 
 
@@ -663,9 +608,9 @@
     };
 
 
-    // --------------------------------------------------
+    // ==============================
     // LOGOUT
-    // --------------------------------------------------
+    // ==============================
 
     window.logout = async function () {
 
@@ -677,9 +622,7 @@
     };
 
 
-    // --------------------------------------------------
     // START
-    // --------------------------------------------------
 
     checkAdmin();
 
