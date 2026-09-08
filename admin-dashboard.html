@@ -1,1 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <title>Admin Dashboard - MAADANUDHEEN MADRASA</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f7f6;
+      color: #222;
+    }
+
+    header {
+      background: #064e3b;
+      color: white;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    header p {
+      margin: 5px 0 0;
+      opacity: 0.85;
+      font-size: 14px;
+    }
+
+    .logout-btn {
+      background: white;
+      color: #064e3b;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    .welcome {
+      margin-bottom: 25px;
+    }
+
+    .welcome h2 {
+      margin-bottom: 5px;
+      color: #064e3b;
+    }
+
+    .welcome p {
+      color: #666;
+    }
+
+    .card {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      color: #064e3b;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group label {
+      margin-bottom: 7px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .form-group input,
+    .form-group select {
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 15px;
+    }
+
+    .full-width {
+      grid-column: 1 / -1;
+    }
+
+    .add-btn {
+      margin-top: 20px;
+      padding: 13px 25px;
+      background: #064e3b;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .add-btn:hover {
+      background: #043c2e;
+    }
+
+    .message {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    .info-box {
+      background: #eef7f3;
+      border-left: 4px solid #064e3b;
+      padding: 15px;
+      border-radius: 8px;
+      line-height: 1.5;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 50px;
+      font-size: 18px;
+    }
+
+    @media (max-width: 700px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .full-width {
+        grid-column: auto;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div>
+      <h1>MAADANUDHEEN MADRASA</h1>
+      <p>Admin Dashboard</p>
+    </div>
+
+    <button class="logout-btn" onclick="logout()">
+      LOGOUT
+    </button>
+  </header>
+
+
+  <div id="loading" class="loading">
+    Checking admin access...
+  </div>
+
+
+  <main class="container" id="dashboard" style="display:none;">
+
+    <div class="welcome">
+      <h2>Welcome, Admin 👋</h2>
+      <p>Manage your madrasa website from here.</p>
+    </div>
+
+
+    <!-- STUDENT MANAGEMENT -->
+
+    <section class="card">
+
+      <h2>👨‍🎓 Student Management</h2>
+
+      <div class="info-box">
+        Add students here with their name, class, Login ID and password.
+        The student's portal account will be created automatically.
+      </div>
+
+      <br>
+
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label>Student Name</label>
+          <input
+            type="text"
+            id="studentName"
+            placeholder="Example: Nizam"
+          >
+        </div>
+
+
+        <div class="form-group">
+          <label>Class</label>
+          <input
+            type="text"
+            id="studentClass"
+            placeholder="Example: 6"
+          >
+        </div>
+
+
+        <div class="form-group">
+          <label>Login ID</label>
+          <input
+            type="text"
+            id="loginId"
+            placeholder="Example: nizam"
+          >
+        </div>
+
+
+        <div class="form-group">
+          <label>Password</label>
+          <input
+            type="password"
+            id="studentPassword"
+            placeholder="Create password"
+          >
+        </div>
+
+      </div>
+
+
+      <button class="add-btn" onclick="addStudent()">
+        ➕ CREATE STUDENT
+      </button>
+
+      <div id="studentMessage" class="message"></div>
+
+    </section>
+
+
+    <!-- FUTURE FEATURES -->
+
+    <section class="card">
+
+      <h2>📚 More Features</h2>
+
+      <div class="info-box">
+        <strong>Coming next:</strong><br><br>
+
+        📋 Student List & Management<br>
+        🕐 Timetable Management<br>
+        🕌 Namaz Records<br>
+        💬 Parent Requests & Messages<br>
+        💡 Suggestions
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <script type="module">
+
+    import { createClient } from
+      "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+
+    const SUPABASE_URL =
+      "https://oqhnaxolmqxifyjyzufj.supabase.co";
+
+
+    const SUPABASE_KEY =
+      "sb_publishable_xGFE4JO5yMzYW7fIG3f1xg_1fEn300G";
+
+
+    const supabase = createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+
+    // CHECK ADMIN LOGIN
+
+    async function checkAdmin() {
+
+      const {
+        data: { user },
+        error
+      } = await supabase.auth.getUser();
+
+
+      if (error || !user) {
+
+        window.location.href = "admin.html";
+
+        return;
+      }
+
+
+      // Check whether this user exists in admins table
+
+      const {
+        data: admin,
+        error: adminError
+      } = await supabase
+        .from("admins")
+        .select("id")
+        .eq("id", user.id)
+        .maybeSingle();
+
+
+      if (adminError || !admin) {
+
+        alert("You do not have admin permission.");
+
+        await supabase.auth.signOut();
+
+        window.location.href = "admin.html";
+
+        return;
+      }
+
+
+      // ADMIN VERIFIED
+
+      document.getElementById("loading").style.display = "none";
+
+      document.getElementById("dashboard").style.display = "block";
+
+      console.log("Admin verified:", user.id);
+    }
+
+
+    // ADD STUDENT
+    // Secure account creation will be connected next.
+
+    window.addStudent = function () {
+
+      const message =
+        document.getElementById("studentMessage");
+
+
+      message.textContent =
+        "Student creation will be connected in the next step.";
+
+      message.style.color = "#064e3b";
+    };
+
+
+    // LOGOUT
+
+    window.logout = async function () {
+
+      await supabase.auth.signOut();
+
+      window.location.href = "admin.html";
+    };
+
+
+    checkAdmin();
+
+  </script>
+
+</body>
+</html>
