@@ -372,6 +372,7 @@ body {
   padding: 120px 0 80px;
 }
 
+
 .hero-badge {
   display: inline-flex;
   align-items: center;
@@ -1290,19 +1291,49 @@ footer {
   .nav-links { display: none; }
   .hamburger { display: flex; }
   .hero-h1 { font-size: clamp(28px, 8vw, 44px); }
-  .hero-desc { font-size: 16px; }
+  .hero-desc { font-size: 15px; }
   .events-grid { grid-template-columns: 1fr; }
   .teacher-grid { grid-template-columns: 1fr 1fr; }
   .about-features { grid-template-columns: 1fr; }
+  /* Give hero content breathing room from screen edges */
+  .hero-content { padding: 110px 20px 70px; }
+  .hero-badge { font-size: 10px; padding: 6px 14px; }
+  .hero-subtitle { letter-spacing: 2px; }
+  /* Compact buttons on mobile */
+  .btn-primary {
+    font-size: 13px;
+    padding: 12px 22px;
+    width: auto;
+    align-self: flex-start;
+  }
+  .btn-outline {
+    font-size: 13px;
+    padding: 11px 22px;
+    width: auto;
+    align-self: flex-start;
+  }
+  .hero-actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
 }
 
 @media (max-width: 500px) {
   .teacher-grid { grid-template-columns: 1fr; }
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
-  .hero-actions { flex-direction: column; }
-  .btn-primary, .btn-outline { justify-content: center; }
-  .results-card { padding: 40px 24px; }
-  .students-card { padding: 40px 28px; }
+  /* Stack buttons vertically only on very small screens, but keep them compact */
+  .hero-actions { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .btn-primary, .btn-outline {
+    font-size: 13px;
+    padding: 11px 22px;
+    width: auto;
+    align-self: flex-start;
+    justify-content: flex-start;
+  }
+  .results-card { padding: 40px 20px; }
+  .students-card { padding: 36px 22px; }
+  .hero-content { padding: 100px 18px 60px; }
 }
 </style>
 </head>
