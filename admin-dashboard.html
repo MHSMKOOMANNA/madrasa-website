@@ -58,9 +58,169 @@
     }
 
     .container {
-      max-width: 700px;
-      margin: 35px auto;
-      padding: 20px;
+      max-width: 960px;
+      margin: 30px auto;
+      padding: 15px;
+    }
+
+    /* TABS */
+    .dash-tabs {
+      display: flex;
+      gap: 10px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+      border-top: 1px solid #eee;
+      padding-top: 14px;
+    }
+
+    .dash-tab {
+      width: auto;
+      margin: 0;
+      padding: 10px 18px;
+      background: #e8f0ec;
+      color: #075e45;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .dash-tab:hover {
+      background: #d3e5dc;
+    }
+
+    .dash-tab.active {
+      background: #075e45;
+      color: white;
+    }
+
+    .tab-pane {
+      display: none;
+    }
+
+    .tab-pane.active {
+      display: block;
+    }
+
+    /* FILTER HEADER */
+    .filter-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .filter-select-wrap select {
+      padding: 10px 16px;
+      font-size: 15px;
+      font-weight: bold;
+      border-radius: 8px;
+      border: 2px solid #075e45;
+      background: white;
+      color: #075e45;
+      cursor: pointer;
+      outline: none;
+    }
+
+    /* DATA TABLES */
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+      margin-top: 10px;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      text-align: left;
+    }
+
+    .data-table th {
+      background: #f0f7f3;
+      color: #075e45;
+      padding: 12px 14px;
+      border-bottom: 2px solid #ddd;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .data-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid #eee;
+      vertical-align: middle;
+    }
+
+    .data-table tr:hover {
+      background: #fcfdfc;
+    }
+
+    .badge-check {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 12px;
+    }
+
+    .badge-yes {
+      background: #e7f6ec;
+      color: #176b35;
+    }
+
+    .badge-no {
+      background: #fdecec;
+      color: #b42318;
+    }
+
+    /* FEED */
+    .suggestions-feed {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-height: 450px;
+      overflow-y: auto;
+      padding-right: 5px;
+    }
+
+    .msg-card {
+      background: #fbfdfc;
+      border: 1px solid #e1ebe5;
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+
+    .msg-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      font-size: 13px;
+    }
+
+    .msg-author {
+      font-weight: bold;
+      color: #075e45;
+    }
+
+    .msg-date {
+      color: #888;
+    }
+
+    .msg-text {
+      color: #333;
+      font-size: 14px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+    }
+
+    .send-remark-box {
+      background: #f5f9f7;
+      border: 1px solid #d9e9e1;
+      border-radius: 12px;
+      padding: 18px;
     }
 
     .card {
@@ -179,82 +339,157 @@
 
     <div id="dashboard">
 
-      <!-- CREATE STUDENT -->
+      <!-- TOP CONTROLS & CLASS FILTER -->
+      <div class="card teacher-filter-card">
+        <div class="filter-header">
+          <div>
+            <h3 style="margin:0; color:#075e45;">Teacher &amp; Class Selection</h3>
+            <p style="margin:4px 0 0; font-size:13px; color:#666;">Select your assigned class to inspect student records, Namaz, and messages.</p>
+          </div>
+          <div class="filter-select-wrap">
+            <select id="classSelector" onchange="onClassFilterChange()">
+              <option value="ALL">All Classes</option>
+              <option value="1">Class 1 (Principal)</option>
+              <option value="+2">Class +2 (Principal)</option>
+              <option value="2">Class 2 (Kunji Muhammed Yenmani)</option>
+              <option value="+1">Class +1 (Kunji Muhammed Yenmani)</option>
+              <option value="3">Class 3 (Shahin Hudawi)</option>
+              <option value="7">Class 7 (Shahin Hudawi)</option>
+              <option value="4" selected>Class 4 (Minhaj Hudawi)</option>
+              <option value="8">Class 8 (Minhaj Hudawi)</option>
+              <option value="5">Class 5 (Basheer Dharimi)</option>
+              <option value="9">Class 9 (Basheer Dharimi)</option>
+              <option value="6">Class 6 (Swalih Hudawi)</option>
+              <option value="10">Class 10 (Swalih Hudawi)</option>
+            </select>
+          </div>
+        </div>
 
-      <div class="card">
-
-        <h2>Create Student Account</h2>
-
-
-        <label for="studentName">
-          Student Name
-        </label>
-
-        <input
-          type="text"
-          id="studentName"
-          placeholder="Enter student name"
-        >
-
-
-        <label for="studentClass">
-          Class
-        </label>
-
-        <input
-          type="text"
-          id="studentClass"
-          placeholder="Enter class"
-        >
-
-
-        <label for="loginId">
-          Login ID
-        </label>
-
-        <input
-          type="text"
-          id="loginId"
-          placeholder="Enter login ID"
-        >
-
-
-        <label for="studentPassword">
-          Password
-        </label>
-
-        <input
-          type="password"
-          id="studentPassword"
-          placeholder="Enter password"
-        >
-
-
-        <button
-          class="create-btn"
-          id="createButton"
-          onclick="addStudent()"
-        >
-          CREATE STUDENT
-        </button>
-
-
-        <div
-          id="message"
-          class="message"
-        ></div>
-
+        <!-- NAVIGATION TABS -->
+        <div class="dash-tabs">
+          <button class="dash-tab active" id="tabBtnNamaz" onclick="switchTab('namaz')">🕌 Namaz Tracker</button>
+          <button class="dash-tab" id="tabBtnSuggestions" onclick="switchTab('suggestions')">💡 Student Messages</button>
+          <button class="dash-tab" id="tabBtnCreate" onclick="switchTab('create')">➕ Add Student</button>
+          <button class="dash-tab" id="tabBtnStudents" onclick="switchTab('students')">👥 Students List</button>
+        </div>
       </div>
 
+      <!-- TAB 1: NAMAZ TRACKER -->
+      <div id="tabNamaz" class="tab-pane active">
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:18px;">
+            <h2 style="margin:0;">Daily Namaz Attendance</h2>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <label for="namazDateInput" style="margin:0; font-size:14px;">Date:</label>
+              <input type="date" id="namazDateInput" onchange="loadNamazRecords()" style="width:auto; padding:8px 12px; margin:0;">
+              <button onclick="loadNamazRecords()" style="width:auto; padding:8px 14px; margin:0; background:#075e45; color:white; border-radius:6px; font-size:14px;">Refresh</button>
+            </div>
+          </div>
+          <p id="namazStatusNote" style="font-size:13px; color:#666; margin-bottom:14px;">Showing records for selected class and date.</p>
+
+          <div class="table-responsive">
+            <table class="data-table" id="namazTable">
+              <thead>
+                <tr>
+                  <th>Student Name</th>
+                  <th>Class</th>
+                  <th>Username</th>
+                  <th>Fajr</th>
+                  <th>Dhuhr</th>
+                  <th>Asr</th>
+                  <th>Maghrib</th>
+                  <th>Isha</th>
+                  <th>Score</th>
+                </tr>
+              </thead>
+              <tbody id="namazTableBody">
+                <tr><td colspan="9" style="text-align:center; padding:20px; color:#888;">Loading Namaz records...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: SUGGESTIONS & REMARKS -->
+      <div id="tabSuggestions" class="tab-pane">
+        <div class="card">
+          <h2>Student Suggestions &amp; Teacher Remarks</h2>
+          <p style="font-size:14px; color:#666; margin-bottom:20px;">Read suggestions sent by students from their portal and send announcements or remarks back to them.</p>
+
+          <!-- SEND REMARK TO CLASS -->
+          <div class="send-remark-box">
+            <h3 style="margin-top:0; font-size:16px; color:#075e45;">📢 Send Announcement / Remark to Selected Class</h3>
+            <textarea id="teacherRemarkInput" placeholder="Write advice, announcement, or remark for students..." style="width:100%; min-height:80px; padding:10px; border-radius:8px; border:1px solid #ccc; font-size:14px; margin-top:8px;"></textarea>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+              <span id="remarkClassTarget" style="font-weight:bold; font-size:13px; color:#075e45;">Target: Selected Class</span>
+              <button onclick="sendTeacherRemark()" style="width:auto; margin:0; padding:10px 20px; background:#075e45; color:white; border-radius:8px; font-size:14px;">Send to Class</button>
+            </div>
+            <div id="remarkMessage" class="message" style="margin-top:10px;"></div>
+          </div>
+
+          <hr style="margin:25px 0; border:none; border-top:1px solid #eee;">
+
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <h3 style="margin:0; font-size:16px; color:#075e45;">Incoming Student Messages</h3>
+            <button onclick="loadSuggestions()" style="width:auto; margin:0; padding:6px 12px; background:#eee; color:#333; font-size:12px; border-radius:5px;">Refresh Messages</button>
+          </div>
+          <div id="suggestionsList" class="suggestions-feed">
+            <p style="text-align:center; color:#888; padding:20px;">Loading messages...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: CREATE STUDENT -->
+      <div id="tabCreate" class="tab-pane">
+        <div class="card">
+          <h2>Create Student Account</h2>
+          <p style="color:#666; font-size:14px; margin-bottom:15px;">Add a new student to any class. An account will be generated in Supabase for them.</p>
+
+          <label for="studentName">Student Name</label>
+          <input type="text" id="studentName" placeholder="Enter student name">
+
+          <label for="studentClass">Class</label>
+          <input type="text" id="studentClass" placeholder="e.g. 4 or 8">
+
+          <label for="loginId">Login ID (Username)</label>
+          <input type="text" id="loginId" placeholder="e.g. ali123">
+
+          <label for="studentPassword">Password</label>
+          <input type="password" id="studentPassword" placeholder="Enter password">
+
+          <button class="create-btn" id="createButton" onclick="addStudent()">CREATE STUDENT</button>
+
+          <div id="message" class="message"></div>
+        </div>
+      </div>
+
+      <!-- TAB 4: ALL STUDENTS DIRECTORY -->
+      <div id="tabStudents" class="tab-pane">
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
+            <h2 style="margin:0;">Students Directory</h2>
+            <button onclick="loadStudentsList()" style="width:auto; margin:0; padding:8px 14px; background:#075e45; color:white; font-size:13px; border-radius:6px;">Refresh Directory</button>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table" id="studentsDirectoryTable">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Student Name</th>
+                  <th>Class</th>
+                  <th>Login ID</th>
+                </tr>
+              </thead>
+              <tbody id="studentsTableBody">
+                <tr><td colspan="4" style="text-align:center; padding:20px; color:#888;">Loading directory...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
 
       <!-- LOGOUT -->
-
-      <button
-        class="logout-btn"
-        onclick="logout()"
-      >
-        LOG OUT
-      </button>
+      <button class="logout-btn" onclick="logout()">LOG OUT</button>
 
     </div>
 
@@ -755,6 +990,258 @@
 
 
     // ==========================================
+    // TABS & FILTER CONTROLS
+    // ==========================================
+
+    let currentSelectedClass = "4"; // default Minhaj Hudawi Class 4
+
+    window.switchTab = function (tabName) {
+      document.querySelectorAll(".dash-tab").forEach(tab => tab.classList.remove("active"));
+      document.querySelectorAll(".tab-pane").forEach(pane => pane.classList.remove("active"));
+
+      if (tabName === "namaz") {
+        document.getElementById("tabBtnNamaz").classList.add("active");
+        document.getElementById("tabNamaz").classList.add("active");
+        loadNamazRecords();
+      } else if (tabName === "suggestions") {
+        document.getElementById("tabBtnSuggestions").classList.add("active");
+        document.getElementById("tabSuggestions").classList.add("active");
+        loadSuggestions();
+      } else if (tabName === "create") {
+        document.getElementById("tabBtnCreate").classList.add("active");
+        document.getElementById("tabCreate").classList.add("active");
+      } else if (tabName === "students") {
+        document.getElementById("tabBtnStudents").classList.add("active");
+        document.getElementById("tabStudents").classList.add("active");
+        loadStudentsList();
+      }
+    };
+
+    window.onClassFilterChange = function () {
+      currentSelectedClass = document.getElementById("classSelector").value;
+      const targetText = currentSelectedClass === "ALL" ? "All Classes" : "Class " + currentSelectedClass;
+      document.getElementById("remarkClassTarget").textContent = "Target: " + targetText;
+      document.getElementById("namazStatusNote").textContent = "Showing records for " + targetText + " on selected date.";
+      
+      // Auto reload active tab data
+      const activeTab = document.querySelector(".dash-tab.active");
+      if (activeTab && activeTab.id === "tabBtnNamaz") loadNamazRecords();
+      if (activeTab && activeTab.id === "tabBtnStudents") loadStudentsList();
+      if (activeTab && activeTab.id === "tabBtnSuggestions") loadSuggestions();
+    };
+
+    // ==========================================
+    // LOAD NAMAZ RECORDS FOR SELECTED CLASS & DATE
+    // ==========================================
+
+    window.loadNamazRecords = async function () {
+      const tbody = document.getElementById("namazTableBody");
+      const dateInput = document.getElementById("namazDateInput");
+      
+      if (!dateInput.value) {
+        dateInput.value = new Date().toISOString().split("T")[0];
+      }
+      const selectedDate = dateInput.value;
+
+      tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:20px; color:#666;">Fetching student Namaz records...</td></tr>';
+
+      try {
+        // 1. Fetch students (filtered by class if not ALL)
+        let studentsQuery = supabase.from("students").select("student_name, class, username");
+        if (currentSelectedClass !== "ALL") {
+          studentsQuery = studentsQuery.eq("class", currentSelectedClass);
+        }
+        const { data: students, error: studentsErr } = await studentsQuery;
+
+        if (studentsErr) {
+          tbody.innerHTML = `<tr><td colspan="9" style="color:#b42318; padding:15px; text-align:center;">Could not load students: ${studentsErr.message}</td></tr>`;
+          return;
+        }
+
+        if (!students || students.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:20px; color:#888;">No students found for ${currentSelectedClass === "ALL" ? "any class" : "Class " + currentSelectedClass}.</td></tr>`;
+          return;
+        }
+
+        // 2. Fetch namaz records for this date
+        const usernames = students.map(s => s.username);
+        const { data: namazList, error: namazErr } = await supabase
+          .from("namaz")
+          .select("username, fajr, dhuhr, asr, maghrib, isha")
+          .eq("date", selectedDate)
+          .in("username", usernames);
+
+        const namazMap = {};
+        if (namazList) {
+          namazList.forEach(n => { namazMap[n.username] = n; });
+        }
+
+        let html = "";
+        students.forEach(s => {
+          const rec = namazMap[s.username] || { fajr: false, dhuhr: false, asr: false, maghrib: false, isha: false };
+          let score = (rec.fajr ? 1 : 0) + (rec.dhuhr ? 1 : 0) + (rec.asr ? 1 : 0) + (rec.maghrib ? 1 : 0) + (rec.isha ? 1 : 0);
+          
+          const badge = (val) => val
+            ? '<span class="badge-check badge-yes">✅ Yes</span>'
+            : '<span class="badge-check badge-no">❌ No</span>';
+
+          html += `
+            <tr>
+              <td><strong>${s.student_name}</strong></td>
+              <td>${s.class}</td>
+              <td style="color:#666;">${s.username}</td>
+              <td>${badge(rec.fajr)}</td>
+              <td>${badge(rec.dhuhr)}</td>
+              <td>${badge(rec.asr)}</td>
+              <td>${badge(rec.maghrib)}</td>
+              <td>${badge(rec.isha)}</td>
+              <td><span style="font-weight:bold; color:${score >= 4 ? '#176b35' : score >= 2 ? '#d97706' : '#b42318'}">${score} / 5</span></td>
+            </tr>
+          `;
+        });
+
+        tbody.innerHTML = html;
+      } catch (err) {
+        console.error("Namaz load error:", err);
+        tbody.innerHTML = `<tr><td colspan="9" style="color:#b42318; padding:15px; text-align:center;">Error: ${err.message || "Failed to load"}</td></tr>`;
+      }
+    };
+
+    // ==========================================
+    // LOAD SUGGESTIONS & REMARKS
+    // ==========================================
+
+    window.loadSuggestions = async function () {
+      const feed = document.getElementById("suggestionsList");
+      feed.innerHTML = '<p style="text-align:center; color:#888; padding:20px;">Loading student messages...</p>';
+
+      try {
+        let query = supabase.from("messages").select("*").order("created_at", { ascending: false }).limit(30);
+        if (currentSelectedClass !== "ALL") {
+          query = query.or(`class.eq.${currentSelectedClass},class.eq.ALL`);
+        }
+        const { data: messages, error } = await query;
+
+        if (error) {
+          // Table might not exist yet; provide friendly fallback
+          feed.innerHTML = `
+            <div class="msg-card">
+              <p style="color:#666; margin:0;">
+                No messages yet. (Messages sent by students from their portal will appear here automatically).
+              </p>
+            </div>
+          `;
+          return;
+        }
+
+        if (!messages || messages.length === 0) {
+          feed.innerHTML = '<p style="text-align:center; color:#888; padding:20px;">No messages or suggestions found for this class.</p>';
+          return;
+        }
+
+        let html = "";
+        messages.forEach(m => {
+          const isTeacher = m.sender_type === "teacher";
+          html += `
+            <div class="msg-card" style="border-left: 4px solid ${isTeacher ? '#075e45' : '#d4af37'};">
+              <div class="msg-header">
+                <span class="msg-author">${isTeacher ? '👨‍🏫 Teacher / Admin' : '🎓 ' + (m.student_name || m.username || 'Student')} <small style="color:#888;">(Class ${m.class || 'All'})</small></span>
+                <span class="msg-date">${m.created_at ? new Date(m.created_at).toLocaleDateString() : ''}</span>
+              </div>
+              <div class="msg-text">${m.content}</div>
+            </div>
+          `;
+        });
+        feed.innerHTML = html;
+      } catch (err) {
+        feed.innerHTML = `<p style="color:#b42318; padding:15px; text-align:center;">Could not load messages: ${err.message || 'Unknown error'}</p>`;
+      }
+    };
+
+    // ==========================================
+    // SEND REMARK / ANNOUNCEMENT TO STUDENTS
+    // ==========================================
+
+    window.sendTeacherRemark = async function () {
+      const remarkInput = document.getElementById("teacherRemarkInput");
+      const msgBox = document.getElementById("remarkMessage");
+      const content = remarkInput.value.trim();
+
+      if (!content) {
+        msgBox.textContent = "Please write a message before sending.";
+        msgBox.className = "message error";
+        return;
+      }
+
+      msgBox.textContent = "Sending...";
+      msgBox.className = "message";
+
+      try {
+        const { error } = await supabase.from("messages").insert([{
+          sender_type: "teacher",
+          class: currentSelectedClass,
+          content: content
+        }]);
+
+        if (error) {
+          msgBox.textContent = "Could not send: " + error.message;
+          msgBox.className = "message error";
+          return;
+        }
+
+        msgBox.textContent = "Remark sent successfully! Students will see it in their portal.";
+        msgBox.className = "message success";
+        remarkInput.value = "";
+        loadSuggestions();
+      } catch (err) {
+        msgBox.textContent = "Error: " + (err.message || "Failed to send");
+        msgBox.className = "message error";
+      }
+    };
+
+    // ==========================================
+    // LOAD STUDENTS DIRECTORY
+    // ==========================================
+
+    window.loadStudentsList = async function () {
+      const tbody = document.getElementById("studentsTableBody");
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px; color:#888;">Loading directory...</td></tr>';
+
+      try {
+        let query = supabase.from("students").select("student_name, class, username").order("class");
+        if (currentSelectedClass !== "ALL") {
+          query = query.eq("class", currentSelectedClass);
+        }
+        const { data: students, error } = await query;
+
+        if (error) {
+          tbody.innerHTML = `<tr><td colspan="4" style="color:#b42318; padding:15px; text-align:center;">Could not load: ${error.message}</td></tr>`;
+          return;
+        }
+
+        if (!students || students.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:20px; color:#888;">No students found in this class.</td></tr>`;
+          return;
+        }
+
+        let html = "";
+        students.forEach((s, idx) => {
+          html += `
+            <tr>
+              <td>${idx + 1}</td>
+              <td><strong>${s.student_name}</strong></td>
+              <td>Class ${s.class}</td>
+              <td style="color:#075e45; font-family:monospace; font-weight:bold;">${s.username}</td>
+            </tr>
+          `;
+        });
+        tbody.innerHTML = html;
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="4" style="color:#b42318; padding:15px; text-align:center;">Error: ${err.message}</td></tr>`;
+      }
+    };
+
+    // ==========================================
     // LOGOUT
     // ==========================================
 
@@ -772,6 +1259,11 @@
     // ==========================================
     // START
     // ==========================================
+
+    // Initialize default date
+    const todayStr = new Date().toISOString().split("T")[0];
+    const datePicker = document.getElementById("namazDateInput");
+    if (datePicker) datePicker.value = todayStr;
 
     checkAdmin();
 

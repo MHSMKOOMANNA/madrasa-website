@@ -114,9 +114,12 @@
 
         message.textContent = "";
 
+        // Store student state for sending suggestions
+        window.currentStudent = data;
 
-        // Load today's saved Namaz
+        // Load today's saved Namaz & Teacher announcements
         await loadTodayNamaz(user.id);
+        await loadTeacherRemarks(data.class);
 
       } catch (error) {
 
@@ -126,6 +129,75 @@
           "Error: " + error.message;
       }
     }
+
+    async function loadTeacherRemarks(studentClass) {
+      try {
+        const { data: remarks, error } = await supabase
+          .from("messages")
+          .select("*")
+          .eq("sender_type", "teacher")
+          .or(`class.eq.${studentClass},class.eq.ALL`)
+          .order("created_at", { ascending: false })
+          .limit(3);
+
+        if (!error && remarks && remarks.length > 0) {
+          const card = document.getElementById("teacherRemarksCard");
+          const list = document.getElementById("teacherRemarksList");
+          card.style.display = "block";
+          list.innerHTML = remarks.map(r => `
+            <div style="padding:10px; background:#f0f7f3; border-radius:8px; margin-bottom:8px;">
+              <p style="margin:0; font-weight:500;">${r.content}</p>
+              <span style="font-size:11px; color:#666;">${r.created_at ? new Date(r.created_at).toLocaleDateString() : 'Recent'}</span>
+            </div>
+          `).join("");
+        }
+      } catch (e) {
+        console.log("Could not load remarks:", e);
+      }
+    }
+
+    async function submitStudentSuggestion() {
+      const text = document.getElementById("suggestionText").value.trim();
+      const status = document.getElementById("suggestionMsg");
+      const btn = document.getElementById("submitSuggestionBtn");
+
+      if (!text) {
+        status.style.color = "#a33";
+        status.textContent = "Please write a suggestion first.";
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = "Submitting...";
+
+      try {
+        const student = window.currentStudent || {};
+        const { error } = await supabase.from("messages").insert([{
+          sender_type: "student",
+          student_name: student.student_name || "Student",
+          username: student.username || "student",
+          class: student.class || "Unknown",
+          content: text
+        }]);
+
+        if (error) {
+          status.style.color = "#a33";
+          status.textContent = "Error submitting suggestion: " + error.message;
+        } else {
+          status.style.color = "green";
+          status.textContent = "Thank you! Your suggestion has been sent to your teachers. ✅";
+          document.getElementById("suggestionText").value = "";
+        }
+      } catch (err) {
+        status.style.color = "#a33";
+        status.textContent = "Could not submit: " + (err.message || "Network issue");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Submit Suggestion";
+      }
+    }
+
+    window.submitStudentSuggestion = submitStudentSuggestion;
 
 
 
@@ -638,23 +710,31 @@
 
 
 
+  <!-- TEACHER REMARKS & ANNOUNCEMENTS -->
+  <div class="card" id="teacherRemarksCard" style="display:none; border-left: 5px solid #075e45;">
+    <h2 style="color:#075e45;">📢 Teacher Remarks &amp; Announcements</h2>
+    <div id="teacherRemarksList" style="margin-top:12px; font-size:15px; line-height:1.6; color:#222;"></div>
+  </div>
+
   <div class="card">
 
     <h2>
-      💡 Suggestions
+      💡 Send Suggestion to Madrasa
     </h2>
 
-
     <textarea
-      placeholder="Write your suggestion here..."
+      id="suggestionText"
+      placeholder="Write your suggestion, request, or message for teachers here..."
     ></textarea>
 
-
     <button
-      onclick="alert('Suggestions will be connected next.')"
+      id="submitSuggestionBtn"
+      onclick="submitStudentSuggestion()"
     >
       Submit Suggestion
     </button>
+
+    <div id="suggestionMsg" style="margin-top:10px; font-size:14px; font-weight:bold;"></div>
 
   </div>
 
