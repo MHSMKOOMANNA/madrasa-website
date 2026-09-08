@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Student Login</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background: #f4f7f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .login-card {
+      width: 90%;
+      max-width: 420px;
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 5px 25px rgba(0,0,0,0.10);
+    }
+
+    .title {
+      text-align: center;
+      color: #075e45;
+      margin-bottom: 5px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      margin-bottom: 7px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    .login-btn {
+      width: 100%;
+      margin-top: 25px;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      background: #075e45;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .login-btn:hover {
+      background: #064d39;
+    }
+
+    .message {
+      margin-top: 18px;
+      padding: 12px;
+      border-radius: 8px;
+      display: none;
+      text-align: center;
+    }
+
+    .error {
+      display: block;
+      background: #fdecec;
+      color: #b42318;
+    }
+
+    .success {
+      display: block;
+      background: #e7f6ec;
+      color: #176b35;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="login-card">
+
+    <h1 class="title">
+      Student Login
+    </h1>
+
+    <p class="subtitle">
+      Madrasa Student Portal
+    </p>
+
+    <label for="loginId">
+      Login ID
+    </label>
+
+    <input
+      type="text"
+      id="loginId"
+      placeholder="Enter your Login ID"
+      autocomplete="username"
+    >
+
+
+    <label for="password">
+      Password
+    </label>
+
+    <input
+      type="password"
+      id="password"
+      placeholder="Enter your password"
+      autocomplete="current-password"
+    >
+
+
+    <button
+      class="login-btn"
+      id="loginButton"
+      onclick="studentLogin()"
+    >
+      LOGIN
+    </button>
+
+
+    <div
+      id="message"
+      class="message"
+    ></div>
+
+  </div>
+
+
+  <script type="module">
+
+    import {
+      createClient
+    } from
+      "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+
+    const SUPABASE_URL =
+      "https://oqhnaxolmqxifyjyzufj.supabase.co";
+
+
+    const SUPABASE_ANON_KEY =
+      "sb_publishable_xGFE4JO5yMzYW7fIG3f1xg_1fEn300G";
+
+
+    const supabase =
+      createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+      );
+
+
+    window.studentLogin =
+      async function () {
+
+        const loginId =
+          document
+            .getElementById("loginId")
+            .value
+            .trim();
+
+
+        const password =
+          document
+            .getElementById("password")
+            .value;
+
+
+        const message =
+          document
+            .getElementById("message");
+
+
+        const loginButton =
+          document
+            .getElementById("loginButton");
+
+
+        message.className =
+          "message";
+
+        message.textContent =
+          "";
+
+
+        if (!loginId) {
+
+          message.textContent =
+            "Please enter your Login ID.";
+
+          message.className =
+            "message error";
+
+          return;
+        }
+
+
+        if (!password) {
+
+          message.textContent =
+            "Please enter your password.";
+
+          message.className =
+            "message error";
+
+          return;
+        }
+
+
+        loginButton.disabled =
+          true;
+
+        loginButton.textContent =
+          "LOGGING IN...";
+
+
+        try {
+
+          /*
+           * The student account was created in
+           * Supabase Auth using this internal
+           * email format.
+           */
+
+          const email =
+            loginId.toLowerCase() +
+            "@student.madrasa.example";
+
+
+          const {
+            data,
+            error
+          } =
+            await supabase.auth.signInWithPassword({
+
+              email:
+                email,
+
+              password:
+                password
+
+            });
+
+
+          if (error) {
+
+            console.error(
+              "Login error:",
+              error
+            );
+
+            message.textContent =
+              "Login failed: " +
+              error.message;
+
+            message.className =
+              "message error";
+
+            return;
+          }
+
+
+          if (!data.session) {
+
+            message.textContent =
+              "Login failed. No session created.";
+
+            message.className =
+              "message error";
+
+            return;
+          }
+
+
+          message.textContent =
+            "Login successful!";
+
+          message.className =
+            "message success";
+
+
+          /*
+           * Student dashboard will be created
+           * in the next step.
+           */
+
+          setTimeout(() => {
+
+            window.location.href =
+              "student-dashboard.html";
+
+          }, 700);
+
+
+        }
+
+        catch (error) {
+
+          console.error(
+            "Unexpected login error:",
+            error
+          );
+
+          message.textContent =
+            "Login failed: " +
+            (
+              error?.message ||
+              "Something went wrong."
+            );
+
+          message.className =
+            "message error";
+
+        }
+
+
+        finally {
+
+          loginButton.disabled =
+            false;
+
+          loginButton.textContent =
+            "LOGIN";
+
+        }
+
+      };
+
+  </script>
+
+</body>
+</html>
