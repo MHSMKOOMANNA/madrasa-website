@@ -3,130 +3,57 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Student Panel - Maadanudheen Madrasa</title>
+  <title>Student Dashboard - Maadanudheen Madrasa</title>
+  <meta name="description" content="Student portal for Maadanudheen Madrasa - Track your daily Namaz and receive class updates.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
 
   <script type="module">
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
     const SUPABASE_URL = "https://oqhnaxolmqxifyjyzufj.supabase.co";
-
-    const SUPABASE_PUBLISHABLE_KEY =
-      "sb_publishable_xGFE4JO5yMzYW7fIG3f1xg_1fEn300G";
-
-    const supabase = createClient(
-      SUPABASE_URL,
-      SUPABASE_PUBLISHABLE_KEY
-    );
-
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_xGFE4JO5yMzYW7fIG3f1xg_1fEn300G";
+    const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
     async function loadStudent() {
-
-      const message =
-        document.getElementById("message");
-
+      const message = document.getElementById("message");
       try {
-
-        const {
-          data: { session },
-          error: sessionError
-        } = await supabase.auth.getSession();
-
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
         if (sessionError || !session || !session.user) {
           window.location.href = "login.html";
           return;
         }
-
         const user = session.user;
+        const username = user.email.split("@")[0];
 
-
-        const username =
-          user.email.split("@")[0];
-
-
-        console.log(
-          "Logged in email:",
-          user.email
-        );
-
-        console.log(
-          "User ID:",
-          user.id
-        );
-
-        console.log(
-          "User role:",
-          user.role
-        );
-
-
-        const {
-          data,
-          error
-        } = await supabase
+        const { data, error } = await supabase
           .from("students")
           .select("student_name, class")
           .eq("username", username)
           .maybeSingle();
 
-
         if (error) {
-
-          console.error(
-            "Database error:",
-            error
-          );
-
-          message.textContent =
-            "Database error: " +
-            error.message;
-
+          message.textContent = "Database error: " + error.message;
           return;
         }
-
-
         if (!data) {
-
-          message.textContent =
-            "Student not found. Username searched: " +
-            username;
-
+          message.textContent = "Student not found. Username searched: " + username;
           return;
         }
 
-
-        document.getElementById(
-          "studentName"
-        ).textContent =
-          data.student_name;
-
-
-        document.getElementById(
-          "studentName2"
-        ).textContent =
-          data.student_name;
-
-
-        document.getElementById(
-          "studentClass"
-        ).textContent =
-          data.class;
-
-
+        // Update profile elements
+        document.getElementById("studentName").textContent = data.student_name;
+        document.getElementById("studentName2").textContent = data.student_name;
+        document.getElementById("studentClass").textContent = "Class " + data.class;
+        document.getElementById("studentInitial").textContent = data.student_name.charAt(0).toUpperCase();
         message.textContent = "";
 
-        // Store student state for sending suggestions
         window.currentStudent = data;
 
-        // Load today's saved Namaz & Teacher announcements
         await loadTodayNamaz(user.id);
         await loadTeacherRemarks(data.class);
-
+        updateNamazProgress();
       } catch (error) {
-
-        console.error(error);
-
-        message.textContent =
-          "Error: " + error.message;
+        message.textContent = "Error: " + error.message;
       }
     }
 
@@ -138,18 +65,25 @@
           .eq("sender_type", "teacher")
           .or(`class.eq.${studentClass},class.eq.ALL`)
           .order("created_at", { ascending: false })
-          .limit(3);
+          .limit(5);
+
+        const container = document.getElementById("announcementsContainer");
+        const card = document.getElementById("teacherRemarksCard");
 
         if (!error && remarks && remarks.length > 0) {
-          const card = document.getElementById("teacherRemarksCard");
-          const list = document.getElementById("teacherRemarksList");
           card.style.display = "block";
-          list.innerHTML = remarks.map(r => `
-            <div style="padding:10px; background:#f0f7f3; border-radius:8px; margin-bottom:8px;">
-              <p style="margin:0; font-weight:500;">${r.content}</p>
-              <span style="font-size:11px; color:#666;">${r.created_at ? new Date(r.created_at).toLocaleDateString() : 'Recent'}</span>
+          container.innerHTML = remarks.map((r, i) => `
+            <div class="announcement-item" style="animation-delay: ${i * 0.1}s">
+              <div class="ann-icon">📢</div>
+              <div class="ann-content">
+                <p class="ann-text">${r.content}</p>
+                <span class="ann-date">${r.created_at ? new Date(r.created_at).toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric'}) : 'Recent'}</span>
+              </div>
             </div>
           `).join("");
+        } else {
+          card.style.display = "block";
+          container.innerHTML = `<div class="no-announcements"><div style="font-size:2rem;">🕌</div><p>No announcements yet. Check back soon.</p></div>`;
         }
       } catch (e) {
         console.log("Could not load remarks:", e);
@@ -162,13 +96,13 @@
       const btn = document.getElementById("submitSuggestionBtn");
 
       if (!text) {
-        status.style.color = "#a33";
-        status.textContent = "Please write a suggestion first.";
+        status.className = "msg-status error";
+        status.textContent = "⚠️ Please write a suggestion first.";
         return;
       }
 
       btn.disabled = true;
-      btn.textContent = "Submitting...";
+      btn.innerHTML = '<span class="btn-spinner"></span> Submitting...';
 
       try {
         const student = window.currentStudent || {};
@@ -181,594 +115,1063 @@
         }]);
 
         if (error) {
-          status.style.color = "#a33";
-          status.textContent = "Error submitting suggestion: " + error.message;
+          status.className = "msg-status error";
+          status.textContent = "❌ Error: " + error.message;
         } else {
-          status.style.color = "green";
-          status.textContent = "Thank you! Your suggestion has been sent to your teachers. ✅";
+          status.className = "msg-status success";
+          status.textContent = "✅ Thank you! Your message has been sent to your teachers.";
           document.getElementById("suggestionText").value = "";
         }
       } catch (err) {
-        status.style.color = "#a33";
-        status.textContent = "Could not submit: " + (err.message || "Network issue");
+        status.className = "msg-status error";
+        status.textContent = "❌ Could not submit: " + (err.message || "Network issue");
       } finally {
         btn.disabled = false;
-        btn.textContent = "Submit Suggestion";
+        btn.innerHTML = '📨 Send Message';
       }
     }
 
     window.submitStudentSuggestion = submitStudentSuggestion;
 
-
-
     async function loadTodayNamaz(userId) {
-
-      const today =
-        new Date()
-          .toISOString()
-          .split("T")[0];
-
-
-      const {
-        data,
-        error
-      } = await supabase
+      const today = new Date().toISOString().split("T")[0];
+      const { data, error } = await supabase
         .from("namaz")
-        .select(
-          "fajr, dhuhr, asr, maghrib, isha"
-        )
+        .select("fajr, dhuhr, asr, maghrib, isha")
         .eq("user_id", userId)
         .eq("date", today)
         .maybeSingle();
 
+      if (error || !data) return;
 
-      if (error) {
+      const prayers = ["fajr", "dhuhr", "asr", "maghrib", "isha"];
+      prayers.forEach(p => {
+        const cb = document.getElementById(p);
+        if (cb) cb.checked = data[p];
+        updatePrayerCard(p, data[p]);
+      });
 
-        console.error(
-          "Namaz loading error:",
-          error
-        );
-
-        return;
-      }
-
-
-      if (!data) {
-
-        console.log(
-          "No Namaz record for today yet."
-        );
-
-        return;
-      }
-
-
-      document.getElementById(
-        "fajr"
-      ).checked = data.fajr;
-
-
-      document.getElementById(
-        "dhuhr"
-      ).checked = data.dhuhr;
-
-
-      document.getElementById(
-        "asr"
-      ).checked = data.asr;
-
-
-      document.getElementById(
-        "maghrib"
-      ).checked = data.maghrib;
-
-
-      document.getElementById(
-        "isha"
-      ).checked = data.isha;
-
-
-      console.log(
-        "Today's Namaz loaded:",
-        data
-      );
+      updateNamazProgress();
     }
 
+    function updatePrayerCard(prayerId, checked) {
+      const card = document.getElementById("card-" + prayerId);
+      if (card) {
+        if (checked) {
+          card.classList.add("prayer-done");
+        } else {
+          card.classList.remove("prayer-done");
+        }
+      }
+    }
 
+    function updateNamazProgress() {
+      const prayers = ["fajr", "dhuhr", "asr", "maghrib", "isha"];
+      const count = prayers.filter(p => {
+        const cb = document.getElementById(p);
+        return cb && cb.checked;
+      }).length;
+
+      const bar = document.getElementById("progressBar");
+      const label = document.getElementById("progressLabel");
+      const ring = document.getElementById("progressRing");
+
+      if (bar) bar.style.width = (count / 5 * 100) + "%";
+      if (label) label.textContent = count + " / 5 Prayers";
+      if (ring) {
+        const circumference = 2 * Math.PI * 36;
+        const offset = circumference - (count / 5) * circumference;
+        ring.style.strokeDasharray = circumference;
+        ring.style.strokeDashoffset = offset;
+      }
+
+      const scoreEl = document.getElementById("namazScore");
+      if (scoreEl) {
+        scoreEl.textContent = count;
+        scoreEl.style.color = count === 5 ? "#10b981" : count >= 3 ? "#f59e0b" : "#ef4444";
+      }
+    }
+
+    window.togglePrayer = function(prayerId) {
+      const cb = document.getElementById(prayerId);
+      updatePrayerCard(prayerId, cb.checked);
+      updateNamazProgress();
+    };
 
     async function saveNamaz() {
+      const saveBtn = document.getElementById("saveNamazBtn");
+      const statusEl = document.getElementById("saveStatus");
 
-      const message =
-        document.getElementById("message");
-
+      saveBtn.disabled = true;
+      saveBtn.innerHTML = '<span class="btn-spinner"></span> Saving...';
 
       try {
-
-        const {
-          data: { user },
-          error: userError
-        } = await supabase.auth.getUser();
-
-
+        const { data: { user }, error: userError } = await supabase.auth.getUser();
         if (userError || !user) {
-
-          message.textContent =
-            "Please login again.";
-
+          showSaveStatus("Please login again.", "error");
           return;
         }
 
-
-        const username =
-          user.email.split("@")[0];
-
-
-        const today =
-          new Date()
-            .toISOString()
-            .split("T")[0];
-
+        const username = user.email.split("@")[0];
+        const today = new Date().toISOString().split("T")[0];
 
         const namazData = {
-
           user_id: user.id,
-
           username: username,
-
           date: today,
-
-          fajr:
-            document.getElementById(
-              "fajr"
-            ).checked,
-
-          dhuhr:
-            document.getElementById(
-              "dhuhr"
-            ).checked,
-
-          asr:
-            document.getElementById(
-              "asr"
-            ).checked,
-
-          maghrib:
-            document.getElementById(
-              "maghrib"
-            ).checked,
-
-          isha:
-            document.getElementById(
-              "isha"
-            ).checked
+          fajr: document.getElementById("fajr").checked,
+          dhuhr: document.getElementById("dhuhr").checked,
+          asr: document.getElementById("asr").checked,
+          maghrib: document.getElementById("maghrib").checked,
+          isha: document.getElementById("isha").checked
         };
 
-
-        console.log(
-          "Saving Namaz:",
-          namazData
-        );
-
-
-        const {
-          data,
-          error
-        } = await supabase
+        const { error } = await supabase
           .from("namaz")
-          .upsert(
-            namazData,
-            {
-              onConflict:
-                "username,date"
-            }
-          )
+          .upsert(namazData, { onConflict: "username,date" })
           .select();
 
-
         if (error) {
-
-          console.error(
-            "Namaz save error:",
-            error
-          );
-
-          message.style.color =
-            "#a33";
-
-          message.textContent =
-            "Could not save Namaz: " +
-            error.message;
-
-          return;
+          showSaveStatus("❌ Could not save: " + error.message, "error");
+        } else {
+          showSaveStatus("✅ Namaz saved successfully!", "success");
         }
-
-
-        console.log(
-          "Namaz saved:",
-          data
-        );
-
-
-        message.style.color =
-          "green";
-
-        message.textContent =
-          "Namaz saved successfully! ✅";
-
-
       } catch (error) {
-
-        console.error(error);
-
-        message.style.color =
-          "#a33";
-
-        message.textContent =
-          "Error: " +
-          error.message;
+        showSaveStatus("❌ Error: " + error.message, "error");
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = '💾 Save Today\'s Namaz';
       }
     }
 
-
-
-    async function logout() {
-
-      await supabase.auth.signOut();
-
-      window.location.href =
-        "login.html";
+    function showSaveStatus(msg, type) {
+      const el = document.getElementById("saveStatus");
+      el.textContent = msg;
+      el.className = "msg-status " + type;
+      el.style.display = "block";
+      setTimeout(() => { el.style.display = "none"; }, 4000);
     }
 
+    async function logout() {
+      await supabase.auth.signOut();
+      window.location.href = "login.html";
+    }
 
     window.logout = logout;
+    window.saveNamaz = saveNamaz;
 
-    window.saveNamaz =
-      saveNamaz;
-
-
+    // Run on load
     loadStudent();
 
+    // Update live time
+    function updateTime() {
+      const now = new Date();
+      const timeEl = document.getElementById("liveTime");
+      if (timeEl) {
+        timeEl.textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+      }
+      const dateEl = document.getElementById("liveDate");
+      if (dateEl) {
+        dateEl.textContent = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+      }
+    }
+    updateTime();
+    setInterval(updateTime, 1000);
   </script>
 
-
   <style>
+    :root {
+      --primary: #064d35;
+      --primary-light: #075e45;
+      --primary-glow: rgba(6, 77, 53, 0.15);
+      --accent: #10b981;
+      --accent2: #d4af37;
+      --bg: #0a1628;
+      --bg2: #0f2040;
+      --surface: rgba(255,255,255,0.04);
+      --surface2: rgba(255,255,255,0.08);
+      --border: rgba(255,255,255,0.1);
+      --text: #f0f4f8;
+      --text-muted: #94a3b8;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --success: #10b981;
+      --radius: 18px;
+      --radius-sm: 12px;
+    }
 
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
-
 
     body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f4f8f5;
-      color: #123d2b;
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
     }
 
-
-    header {
-      background: #064d35;
-      color: white;
-      text-align: center;
-      padding: 25px 15px;
+    /* ANIMATED BACKGROUND */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(ellipse at 20% 20%, rgba(6,77,53,0.3) 0%, transparent 50%),
+                  radial-gradient(ellipse at 80% 80%, rgba(16,185,129,0.1) 0%, transparent 50%),
+                  radial-gradient(ellipse at 50% 50%, rgba(15,32,64,0.5) 0%, transparent 70%);
+      z-index: -1;
+      animation: bgShift 15s ease-in-out infinite alternate;
     }
 
+    @keyframes bgShift {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(2%, 2%); }
+    }
 
-    header img {
-      width: 75px;
-      height: 75px;
+    /* ─── HEADER ─── */
+    .site-header {
+      background: linear-gradient(135deg, rgba(6,77,53,0.95) 0%, rgba(7,94,69,0.9) 100%);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(16,185,129,0.2);
+      padding: 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 30px rgba(0,0,0,0.4);
+    }
+
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 24px;
+      gap: 16px;
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .header-logo {
+      width: 52px;
+      height: 52px;
       object-fit: contain;
-      background: white;
       border-radius: 50%;
-      padding: 5px;
-    }
-
-
-    header h1 {
-      margin: 10px 0 5px;
-      font-size: 25px;
-    }
-
-
-    .container {
-      max-width: 900px;
-      margin: 30px auto;
-      padding: 15px;
-    }
-
-
-    .card {
       background: white;
-      border-radius: 15px;
-      padding: 25px;
-      margin-bottom: 20px;
-      box-shadow:
-        0 4px 15px
-        rgba(0,0,0,0.08);
+      padding: 4px;
+      box-shadow: 0 0 0 2px var(--accent), 0 4px 15px rgba(16,185,129,0.3);
     }
 
-
-    .student-info {
-      text-align: center;
-    }
-
-
-    .student-info h2 {
-      color: #064d35;
-    }
-
-
-    .info-row {
-      font-size: 18px;
-      margin: 12px;
-    }
-
-
-    .label {
-      font-weight: bold;
-    }
-
-
-    .namaz-list label {
-      display: block;
-      padding: 12px;
-      margin: 8px 0;
-      background: #f1f7f3;
-      border-radius: 10px;
-    }
-
-
-    .namaz-list input {
-      width: 20px;
-      height: 20px;
-      margin-right: 10px;
-      vertical-align: middle;
-    }
-
-
-    textarea {
-      width: 100%;
-      min-height: 120px;
-      padding: 12px;
-      border: 1px solid #ccc;
-      border-radius: 10px;
+    .brand-text h1 {
       font-size: 16px;
-      resize: vertical;
-    }
-
-
-    button {
-      background: #064d35;
+      font-weight: 700;
       color: white;
-      border: none;
-      padding: 12px 22px;
-      border-radius: 8px;
+      line-height: 1.2;
+      letter-spacing: 0.5px;
+    }
+
+    .brand-text p {
+      font-size: 11px;
+      color: rgba(255,255,255,0.65);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .header-time {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #liveTime {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--accent);
+      font-variant-numeric: tabular-nums;
+    }
+
+    #liveDate {
+      font-size: 11px;
+      color: rgba(255,255,255,0.55);
+      margin-top: 1px;
+    }
+
+    .logout-btn {
+      background: rgba(239,68,68,0.15);
+      border: 1px solid rgba(239,68,68,0.4);
+      color: #fca5a5;
+      padding: 9px 18px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
       cursor: pointer;
-      font-size: 16px;
-      margin-top: 12px;
+      transition: all 0.2s;
+      white-space: nowrap;
     }
 
-
-    .logout {
-      background: #a33;
+    .logout-btn:hover {
+      background: rgba(239,68,68,0.3);
+      border-color: #ef4444;
+      color: white;
+      transform: translateY(-1px);
     }
 
+    /* ─── MAIN LAYOUT ─── */
+    .main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 28px 20px 60px;
+    }
 
     #message {
       text-align: center;
-      color: #a33;
-      font-weight: bold;
-      margin: 15px 0;
+      color: var(--danger);
+      font-weight: 600;
+      padding: 12px;
+      margin-bottom: 16px;
     }
 
+    /* ─── PROFILE HERO CARD ─── */
+    .profile-hero {
+      background: linear-gradient(135deg, rgba(6,77,53,0.7) 0%, rgba(7,94,69,0.5) 100%);
+      border: 1px solid rgba(16,185,129,0.25);
+      border-radius: 24px;
+      padding: 28px 32px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin-bottom: 28px;
+      backdrop-filter: blur(15px);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+      position: relative;
+      overflow: hidden;
+    }
 
-    footer {
-      text-align: center;
-      padding: 25px;
-      background: #064d35;
+    .profile-hero::before {
+      content: '';
+      position: absolute;
+      top: -50px;
+      right: -50px;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, rgba(16,185,129,0.15), transparent 70%);
+      pointer-events: none;
+    }
+
+    .profile-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), #064d35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: 800;
       color: white;
-      margin-top: 40px;
+      flex-shrink: 0;
+      box-shadow: 0 0 0 3px rgba(16,185,129,0.4), 0 8px 20px rgba(0,0,0,0.3);
     }
 
+    .profile-details {
+      flex: 1;
+    }
+
+    .greeting {
+      font-size: 13px;
+      color: var(--accent);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 4px;
+    }
+
+    .student-name-big {
+      font-size: 26px;
+      font-weight: 800;
+      color: white;
+      line-height: 1.2;
+    }
+
+    .student-class-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16,185,129,0.15);
+      border: 1px solid rgba(16,185,129,0.3);
+      color: var(--accent);
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-top: 10px;
+    }
+
+    .namaz-score-mini {
+      text-align: center;
+    }
+
+    .namaz-score-mini svg {
+      filter: drop-shadow(0 0 8px rgba(16,185,129,0.4));
+    }
+
+    .score-ring-bg { fill: none; stroke: rgba(255,255,255,0.1); stroke-width: 6; }
+    .score-ring-fill {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 6;
+      stroke-linecap: round;
+      transform: rotate(-90deg);
+      transform-origin: 40px 40px;
+      transition: stroke-dashoffset 0.6s ease;
+    }
+
+    .score-center {
+      font-size: 18px;
+      font-weight: 800;
+      fill: white;
+      dominant-baseline: middle;
+      text-anchor: middle;
+    }
+
+    .score-label {
+      font-size: 10px;
+      fill: var(--accent);
+      dominant-baseline: middle;
+      text-anchor: middle;
+    }
+
+    /* ─── GRID LAYOUT ─── */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .grid-full { grid-column: 1 / -1; }
+
+    /* ─── CARD ─── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 26px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 22px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .card-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .icon-green { background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.3); }
+    .icon-gold { background: rgba(212,175,55,0.15); border: 1px solid rgba(212,175,55,0.3); }
+    .icon-blue { background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.3); }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: white;
+    }
+
+    .card-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* ─── NAMAZ SECTION ─── */
+    .prayer-progress {
+      margin-bottom: 20px;
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    #progressLabel {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .progress-track {
+      height: 8px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), #34d399);
+      border-radius: 999px;
+      transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      width: 0%;
+      box-shadow: 0 0 8px rgba(16,185,129,0.5);
+    }
+
+    /* Prayer Cards */
+    .prayer-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .prayer-card {
+      background: rgba(255,255,255,0.04);
+      border: 1.5px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      padding: 14px 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    .prayer-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(6,77,53,0.2));
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+
+    .prayer-card:hover {
+      border-color: rgba(16,185,129,0.4);
+      transform: translateY(-3px);
+    }
+
+    .prayer-card.prayer-done {
+      background: rgba(16,185,129,0.12);
+      border-color: rgba(16,185,129,0.5);
+      box-shadow: 0 0 16px rgba(16,185,129,0.2);
+    }
+
+    .prayer-card.prayer-done::before {
+      opacity: 1;
+    }
+
+    .prayer-card.prayer-done .prayer-emoji {
+      transform: scale(1.1);
+    }
+
+    .prayer-card.prayer-done .prayer-name {
+      color: var(--accent);
+    }
+
+    .prayer-card.prayer-done .prayer-check {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .prayer-emoji {
+      font-size: 22px;
+      display: block;
+      margin-bottom: 6px;
+      transition: transform 0.2s;
+    }
+
+    .prayer-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      display: block;
+      margin-bottom: 6px;
+      transition: color 0.25s;
+    }
+
+    .prayer-time-label {
+      font-size: 10px;
+      color: rgba(255,255,255,0.3);
+      display: block;
+    }
+
+    .prayer-check {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 18px;
+      height: 18px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: white;
+      opacity: 0;
+      transform: scale(0.5);
+      transition: all 0.25s;
+    }
+
+    input[type="checkbox"].prayer-cb {
+      display: none;
+    }
+
+    .save-namaz-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--primary-light), var(--accent));
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.25s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    .save-namaz-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(16,185,129,0.35);
+    }
+
+    .save-namaz-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    /* ─── ANNOUNCEMENTS ─── */
+    .announcement-item {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 14px 16px;
+      background: rgba(212,175,55,0.06);
+      border: 1px solid rgba(212,175,55,0.15);
+      border-radius: 12px;
+      margin-bottom: 10px;
+      animation: slideIn 0.4s ease both;
+      transition: all 0.2s;
+    }
+
+    .announcement-item:hover {
+      background: rgba(212,175,55,0.1);
+      border-color: rgba(212,175,55,0.3);
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .ann-icon {
+      font-size: 20px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .ann-content { flex: 1; }
+
+    .ann-text {
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.6;
+      margin-bottom: 4px;
+    }
+
+    .ann-date {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .no-announcements {
+      text-align: center;
+      padding: 28px;
+      color: var(--text-muted);
+    }
+
+    .no-announcements p {
+      margin-top: 8px;
+      font-size: 14px;
+    }
+
+    /* ─── SUGGESTION BOX ─── */
+    .suggestion-textarea {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      padding: 14px;
+      resize: vertical;
+      min-height: 110px;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+
+    .suggestion-textarea:focus {
+      border-color: rgba(16,185,129,0.5);
+      background: rgba(255,255,255,0.07);
+    }
+
+    .suggestion-textarea::placeholder {
+      color: var(--text-muted);
+    }
+
+    .send-btn {
+      width: 100%;
+      padding: 13px;
+      background: rgba(16,185,129,0.15);
+      border: 1px solid rgba(16,185,129,0.35);
+      color: var(--accent);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s;
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .send-btn:hover:not(:disabled) {
+      background: rgba(16,185,129,0.25);
+      border-color: var(--accent);
+      color: white;
+      transform: translateY(-1px);
+    }
+
+    .send-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    /* ─── STATUS MESSAGES ─── */
+    .msg-status {
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      margin-top: 12px;
+      display: block;
+    }
+
+    .msg-status.success {
+      background: rgba(16,185,129,0.12);
+      border: 1px solid rgba(16,185,129,0.3);
+      color: var(--accent);
+    }
+
+    .msg-status.error {
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.3);
+      color: #fca5a5;
+    }
+
+    #saveStatus { display: none; }
+
+    /* ─── SPINNER ─── */
+    .btn-spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      display: inline-block;
+      animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ─── NAMAZ SCORE TABLE ─── */
+    .namaz-summary {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin-top: 16px;
+      text-align: center;
+    }
+
+    .prayer-stat {
+      padding: 10px 6px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .prayer-stat-name {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* ─── FOOTER ─── */
+    .site-footer {
+      background: rgba(6,77,53,0.5);
+      border-top: 1px solid rgba(16,185,129,0.15);
+      text-align: center;
+      padding: 24px;
+      color: rgba(255,255,255,0.5);
+      font-size: 13px;
+    }
+
+    .site-footer strong {
+      color: rgba(255,255,255,0.8);
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 768px) {
+      .dashboard-grid { grid-template-columns: 1fr; }
+      .grid-full { grid-column: 1; }
+      .prayer-grid { grid-template-columns: repeat(5, 1fr); gap: 6px; }
+      .prayer-card { padding: 10px 4px; }
+      .prayer-emoji { font-size: 18px; }
+      .prayer-name { font-size: 10px; }
+      .profile-hero { flex-direction: column; text-align: center; padding: 22px; }
+      .namaz-score-mini { display: none; }
+      .header-time { display: none; }
+    }
+
+    @media (max-width: 480px) {
+      .prayer-grid { grid-template-columns: repeat(3, 1fr); }
+    }
   </style>
-
 </head>
-
 
 <body>
 
+<!-- ─── HEADER ─── -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="header-brand">
+      <img src="logo.png" alt="Madrasa Logo" class="header-logo">
+      <div class="brand-text">
+        <h1>MAADANUDHEEN MADRASA</h1>
+        <p>Koomanna Chenakkal · Student Portal</p>
+      </div>
+    </div>
 
-<header>
+    <div class="header-time">
+      <div id="liveTime">--:--</div>
+      <div id="liveDate">Loading...</div>
+    </div>
 
-  <img
-    src="logo.png"
-    alt="Madrasa Logo"
-  >
-
-  <h1>
-    MAADANUDHEEN MADRASA
-  </h1>
-
-  <p>
-    Student Panel
-  </p>
-
+    <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+  </div>
 </header>
 
-
-
-<div class="container">
-
+<!-- ─── MAIN ─── -->
+<main class="main">
 
   <div id="message"></div>
 
-
-  <div class="card student-info">
-
-    <h2>
-      👋 Welcome,
-      <span id="studentName">
-        Loading...
-      </span>
-    </h2>
-
-
-    <div class="info-row">
-
-      <span class="label">
-        Name:
-      </span>
-
-      <span id="studentName2">
-        Loading...
-      </span>
-
+  <!-- PROFILE HERO -->
+  <div class="profile-hero">
+    <div class="profile-avatar" id="studentInitial">?</div>
+    <div class="profile-details">
+      <div class="greeting">🌙 Assalamu Alaikum</div>
+      <div class="student-name-big" id="studentName">Loading...</div>
+      <div>
+        <span id="studentName2" style="display:none"></span>
+        <div class="student-class-badge">🎓 <span id="studentClass">Loading...</span></div>
+      </div>
     </div>
 
+    <!-- Ring Progress -->
+    <div class="namaz-score-mini">
+      <svg width="80" height="80" viewBox="0 0 80 80">
+        <circle class="score-ring-bg" cx="40" cy="40" r="32"/>
+        <circle class="score-ring-fill" id="progressRing" cx="40" cy="40" r="32"
+          style="stroke-dasharray: 201.06; stroke-dashoffset: 201.06;"/>
+        <text class="score-center" x="40" y="37"><tspan id="namazScore">0</tspan></text>
+        <text class="score-label" x="40" y="51">of 5</text>
+      </svg>
+      <div style="font-size:10px; color:var(--text-muted); margin-top:4px; text-align:center;">Today's Namaz</div>
+    </div>
+  </div>
 
-    <div class="info-row">
+  <!-- GRID -->
+  <div class="dashboard-grid">
 
-      <span class="label">
-        Class:
-      </span>
+    <!-- ─── NAMAZ TRACKER CARD ─── -->
+    <div class="card" style="grid-column: 1 / -1;">
+      <div class="card-header">
+        <div class="card-icon icon-green">🕌</div>
+        <div>
+          <div class="card-title">Today's Namaz Tracker</div>
+          <div class="card-subtitle">Mark each prayer you have offered today</div>
+        </div>
+        <div style="margin-left:auto; text-align:right;">
+          <div id="progressLabel" style="font-size:14px; font-weight:700; color:var(--accent);">0 / 5 Prayers</div>
+          <div style="font-size:11px; color:var(--text-muted);">Stay consistent 💪</div>
+        </div>
+      </div>
 
-      <span id="studentClass">
-        Loading...
-      </span>
+      <!-- Progress Bar -->
+      <div class="prayer-progress">
+        <div class="progress-track">
+          <div class="progress-fill" id="progressBar"></div>
+        </div>
+      </div>
 
+      <!-- 5 Prayer Cards -->
+      <div class="prayer-grid">
+
+        <div class="prayer-card" id="card-fajr" onclick="document.getElementById('fajr').click()">
+          <div class="prayer-check">✓</div>
+          <input type="checkbox" class="prayer-cb" id="fajr" onchange="togglePrayer('fajr')">
+          <span class="prayer-emoji">🌅</span>
+          <span class="prayer-name">Fajr</span>
+          <span class="prayer-time-label">Dawn</span>
+        </div>
+
+        <div class="prayer-card" id="card-dhuhr" onclick="document.getElementById('dhuhr').click()">
+          <div class="prayer-check">✓</div>
+          <input type="checkbox" class="prayer-cb" id="dhuhr" onchange="togglePrayer('dhuhr')">
+          <span class="prayer-emoji">☀️</span>
+          <span class="prayer-name">Dhuhr</span>
+          <span class="prayer-time-label">Midday</span>
+        </div>
+
+        <div class="prayer-card" id="card-asr" onclick="document.getElementById('asr').click()">
+          <div class="prayer-check">✓</div>
+          <input type="checkbox" class="prayer-cb" id="asr" onchange="togglePrayer('asr')">
+          <span class="prayer-emoji">🌤️</span>
+          <span class="prayer-name">Asr</span>
+          <span class="prayer-time-label">Afternoon</span>
+        </div>
+
+        <div class="prayer-card" id="card-maghrib" onclick="document.getElementById('maghrib').click()">
+          <div class="prayer-check">✓</div>
+          <input type="checkbox" class="prayer-cb" id="maghrib" onchange="togglePrayer('maghrib')">
+          <span class="prayer-emoji">🌆</span>
+          <span class="prayer-name">Maghrib</span>
+          <span class="prayer-time-label">Sunset</span>
+        </div>
+
+        <div class="prayer-card" id="card-isha" onclick="document.getElementById('isha').click()">
+          <div class="prayer-check">✓</div>
+          <input type="checkbox" class="prayer-cb" id="isha" onchange="togglePrayer('isha')">
+          <span class="prayer-emoji">🌙</span>
+          <span class="prayer-name">Isha</span>
+          <span class="prayer-time-label">Night</span>
+        </div>
+
+      </div>
+
+      <!-- Save Button -->
+      <button class="save-namaz-btn" id="saveNamazBtn" onclick="saveNamaz()">
+        💾 Save Today's Namaz
+      </button>
+      <div id="saveStatus" class="msg-status"></div>
+    </div>
+
+    <!-- ─── ANNOUNCEMENTS CARD ─── -->
+    <div class="card" id="teacherRemarksCard" style="display:none;">
+      <div class="card-header">
+        <div class="card-icon icon-gold">📢</div>
+        <div>
+          <div class="card-title">Class Announcements</div>
+          <div class="card-subtitle">Messages from your teachers</div>
+        </div>
+      </div>
+      <div id="announcementsContainer">
+        <div class="no-announcements">
+          <div style="font-size:2rem;">🕌</div>
+          <p>No announcements yet.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── SUGGESTION CARD ─── -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon icon-blue">💡</div>
+        <div>
+          <div class="card-title">Send a Message</div>
+          <div class="card-subtitle">Write to your teachers or madrasa</div>
+        </div>
+      </div>
+
+      <textarea
+        class="suggestion-textarea"
+        id="suggestionText"
+        placeholder="Write your suggestion, question, or message here... Your teachers will read it in the admin panel."
+      ></textarea>
+
+      <button class="send-btn" id="submitSuggestionBtn" onclick="submitStudentSuggestion()">
+        📨 Send Message
+      </button>
+
+      <div id="suggestionMsg" class="msg-status" style="display:none;"></div>
     </div>
 
   </div>
+  <!-- end grid -->
 
+</main>
 
-
-  <div class="card">
-
-    <h2>
-      🕌 Today's Namaz
-    </h2>
-
-
-    <div class="namaz-list">
-
-
-      <label>
-        <input
-          type="checkbox"
-          id="fajr"
-        >
-        Fajr
-      </label>
-
-
-      <label>
-        <input
-          type="checkbox"
-          id="dhuhr"
-        >
-        Dhuhr
-      </label>
-
-
-      <label>
-        <input
-          type="checkbox"
-          id="asr"
-        >
-        Asr
-      </label>
-
-
-      <label>
-        <input
-          type="checkbox"
-          id="maghrib"
-        >
-        Maghrib
-      </label>
-
-
-      <label>
-        <input
-          type="checkbox"
-          id="isha"
-        >
-        Isha
-      </label>
-
-
-    </div>
-
-
-    <button
-      onclick="saveNamaz()"
-    >
-      Save Namaz
-    </button>
-
-  </div>
-
-
-
-  <!-- TEACHER REMARKS & ANNOUNCEMENTS -->
-  <div class="card" id="teacherRemarksCard" style="display:none; border-left: 5px solid #075e45;">
-    <h2 style="color:#075e45;">📢 Teacher Remarks &amp; Announcements</h2>
-    <div id="teacherRemarksList" style="margin-top:12px; font-size:15px; line-height:1.6; color:#222;"></div>
-  </div>
-
-  <div class="card">
-
-    <h2>
-      💡 Send Suggestion to Madrasa
-    </h2>
-
-    <textarea
-      id="suggestionText"
-      placeholder="Write your suggestion, request, or message for teachers here..."
-    ></textarea>
-
-    <button
-      id="submitSuggestionBtn"
-      onclick="submitStudentSuggestion()"
-    >
-      Submit Suggestion
-    </button>
-
-    <div id="suggestionMsg" style="margin-top:10px; font-size:14px; font-weight:bold;"></div>
-
-  </div>
-
-
-
-  <div
-    class="card"
-    style="text-align:center;"
-  >
-
-    <button
-      class="logout"
-      onclick="logout()"
-    >
-      Logout
-    </button>
-
-  </div>
-
-
-</div>
-
-
-
-<footer>
-
-  MAADANUDHEEN MADRASA
-
-  <br>
-
-  KOOMANNA CHENAKKAL
-
+<!-- ─── FOOTER ─── -->
+<footer class="site-footer">
+  <strong>MAADANUDHEEN MADRASA</strong><br>
+  Koomanna Chenakkal &nbsp;·&nbsp; Student Portal
 </footer>
 
+<script>
+  // Show suggestion msg properly
+  const origSubmit = window.submitStudentSuggestion;
+  window.submitStudentSuggestion = async function() {
+    const msgEl = document.getElementById("suggestionMsg");
+    msgEl.style.display = "block";
+    await origSubmit();
+    setTimeout(() => { msgEl.style.display = "none"; }, 5000);
+  };
+</script>
 
 </body>
 </html>
