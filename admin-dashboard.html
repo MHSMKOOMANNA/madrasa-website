@@ -327,6 +327,10 @@
   <div class="header">
     <h1>Admin Dashboard</h1>
     <p>Madarsa Student Management</p>
+    <div id="welcomeBanner" style="display:none; margin-top:12px; font-size:15px; background:rgba(255,255,255,0.18); backdrop-filter:blur(8px); padding:8px 18px; border-radius:20px; align-items:center; justify-content:center; gap:10px; border:1px solid rgba(255,255,255,0.25); width:fit-content; margin-left:auto; margin-right:auto;">
+      <span>👋 Welcome, <strong id="teacherNameDisplay">Teacher</strong>!</span>
+      <span style="background:#10b981; color:white; padding:3px 10px; border-radius:12px; font-size:13px; font-weight:bold;">Assigned: <span id="teacherClassesDisplay">Class --</span></span>
+    </div>
   </div>
 
 
@@ -520,6 +524,130 @@
 
 
     // ==========================================
+    // TEACHER PROFILES & ASSIGNED CLASSES
+    // ==========================================
+
+    const TEACHER_PROFILES = {
+      "MINHAJP": {
+        name: "Minhaj Hudawi",
+        classes: ["ALL", "1", "+2", "4", "8"],
+        defaultClass: "4"
+      },
+      "DARIMI": {
+        name: "Basheer Dharimi",
+        classes: ["5", "9"],
+        defaultClass: "5"
+      },
+      "BASHEER": {
+        name: "Basheer Dharimi",
+        classes: ["5", "9"],
+        defaultClass: "5"
+      },
+      "YEMANI": {
+        name: "Kunji Muhammed Yenmani",
+        classes: ["2", "+1"],
+        defaultClass: "2"
+      },
+      "SHAHIN": {
+        name: "Shahin Hudawi",
+        classes: ["3", "7"],
+        defaultClass: "3"
+      },
+      "SWALIH": {
+        name: "Swalih Hudawi",
+        classes: ["6", "10"],
+        defaultClass: "6"
+      }
+    };
+
+    const ALL_CLASS_OPTIONS = [
+      { value: "ALL", label: "All Classes" },
+      { value: "1", label: "Class 1 (Principal)" },
+      { value: "+2", label: "Class +2 (Principal)" },
+      { value: "2", label: "Class 2 (Kunji Muhammed Yenmani)" },
+      { value: "+1", label: "Class +1 (Kunji Muhammed Yenmani)" },
+      { value: "3", label: "Class 3 (Shahin Hudawi)" },
+      { value: "7", label: "Class 7 (Shahin Hudawi)" },
+      { value: "4", label: "Class 4 (Minhaj Hudawi)" },
+      { value: "8", label: "Class 8 (Minhaj Hudawi)" },
+      { value: "5", label: "Class 5 (Basheer Dharimi)" },
+      { value: "9", label: "Class 9 (Basheer Dharimi)" },
+      { value: "6", label: "Class 6 (Swalih Hudawi)" },
+      { value: "10", label: "Class 10 (Swalih Hudawi)" }
+    ];
+
+    function setupTeacherProfile(user) {
+      let loginId = (user.user_metadata?.login_id || "").toUpperCase();
+      let email = (user.email || "").toLowerCase();
+
+      if (!loginId) {
+        if (email.includes("minhaj")) loginId = "MINHAJP";
+        else if (email.includes("darimi") || email.includes("basheer")) loginId = "DARIMI";
+        else if (email.includes("yemani")) loginId = "YEMANI";
+        else if (email.includes("shahin")) loginId = "SHAHIN";
+        else if (email.includes("swalih")) loginId = "SWALIH";
+      }
+
+      const profile = TEACHER_PROFILES[loginId] || {
+        name: email.split("@")[0].toUpperCase() + " (Teacher)",
+        classes: ["ALL", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "+1", "+2"],
+        defaultClass: "ALL"
+      };
+
+      // Set Welcome Banner UI
+      document.getElementById("teacherNameDisplay").textContent = profile.name;
+      const classNames = profile.classes
+        .filter(c => c !== "ALL")
+        .map(c => "Class " + c)
+        .join(", ");
+      document.getElementById("teacherClassesDisplay").textContent = classNames || "All Classes";
+      document.getElementById("welcomeBanner").style.display = "inline-flex";
+
+      // Rebuild main class selector dropdown (ONLY show assigned classes)
+      const selector = document.getElementById("classSelector");
+      selector.innerHTML = "";
+
+      ALL_CLASS_OPTIONS.forEach(opt => {
+        if (profile.classes.includes(opt.value)) {
+          const el = document.createElement("option");
+          el.value = opt.value;
+          el.textContent = opt.label;
+          selector.appendChild(el);
+        }
+      });
+
+      // Update "Add Student" class field if it exists
+      const studentClassInput = document.getElementById("studentClass");
+      if (studentClassInput) {
+        let selectHTML = "";
+        ALL_CLASS_OPTIONS.forEach(opt => {
+          if (opt.value !== "ALL" && profile.classes.includes(opt.value)) {
+            selectHTML += `<option value="${opt.value}">Class ${opt.value}</option>`;
+          }
+        });
+
+        if (studentClassInput.tagName === "INPUT") {
+          const newSelect = document.createElement("select");
+          newSelect.id = "studentClass";
+          newSelect.style.cssText = "width: 100%; padding: 13px; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; background: white;";
+          newSelect.innerHTML = selectHTML;
+          studentClassInput.parentNode.replaceChild(newSelect, studentClassInput);
+        } else {
+          studentClassInput.innerHTML = selectHTML;
+        }
+      }
+
+      // Set default selected class
+      currentSelectedClass = profile.defaultClass && profile.classes.includes(profile.defaultClass)
+        ? profile.defaultClass
+        : profile.classes[0];
+
+      selector.value = currentSelectedClass;
+      onClassFilterChange();
+    }
+
+
+    // ==========================================
     // CHECK ADMIN
     // ==========================================
 
@@ -611,6 +739,8 @@
 
         dashboard.style.display =
           "block";
+
+        setupTeacherProfile(user);
 
       }
 
