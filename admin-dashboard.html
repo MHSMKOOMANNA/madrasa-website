@@ -353,8 +353,8 @@
           <div class="filter-select-wrap">
             <select id="classSelector" onchange="onClassFilterChange()">
               <option value="ALL">All Classes</option>
-              <option value="1">Class 1 (Principal)</option>
-              <option value="+2">Class +2 (Principal)</option>
+              <option value="1">Class 1 (Abdulla Darimi - Principal)</option>
+              <option value="+2">Class +2 (Abdulla Darimi - Principal)</option>
               <option value="2">Class 2 (Kunji Muhammed Yenmani)</option>
               <option value="+1">Class +1 (Kunji Muhammed Yenmani)</option>
               <option value="3">Class 3 (Shahin Hudawi)</option>
@@ -530,13 +530,13 @@
     const TEACHER_PROFILES = {
       "MINHAJP": {
         name: "Minhaj Hudawi",
-        classes: ["ALL", "1", "+2", "4", "8"],
+        classes: ["4", "8"],
         defaultClass: "4"
       },
       "DARIMI": {
-        name: "Basheer Dharimi",
-        classes: ["5", "9"],
-        defaultClass: "5"
+        name: "Abdulla Darimi (Principal)",
+        classes: ["ALL", "1", "+2"],
+        defaultClass: "1"
       },
       "BASHEER": {
         name: "Basheer Dharimi",
@@ -562,8 +562,8 @@
 
     const ALL_CLASS_OPTIONS = [
       { value: "ALL", label: "All Classes" },
-      { value: "1", label: "Class 1 (Principal)" },
-      { value: "+2", label: "Class +2 (Principal)" },
+      { value: "1", label: "Class 1 (Abdulla Darimi - Principal)" },
+      { value: "+2", label: "Class +2 (Abdulla Darimi - Principal)" },
       { value: "2", label: "Class 2 (Kunji Muhammed Yenmani)" },
       { value: "+1", label: "Class +1 (Kunji Muhammed Yenmani)" },
       { value: "3", label: "Class 3 (Shahin Hudawi)" },
@@ -582,7 +582,8 @@
 
       if (!loginId) {
         if (email.includes("minhaj")) loginId = "MINHAJP";
-        else if (email.includes("darimi") || email.includes("basheer")) loginId = "DARIMI";
+        else if (email.includes("darimi")) loginId = "DARIMI";
+        else if (email.includes("basheer")) loginId = "BASHEER";
         else if (email.includes("yemani")) loginId = "YEMANI";
         else if (email.includes("shahin")) loginId = "SHAHIN";
         else if (email.includes("swalih")) loginId = "SWALIH";
