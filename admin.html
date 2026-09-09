@@ -227,57 +227,7 @@
     }
 
     /* ── TEACHER ACCOUNTS TABLE ── */
-    .accounts-section {
-      margin-top: 20px;
-      border-top: 1px solid var(--border);
-      padding-top: 18px;
-    }
 
-    .accounts-title {
-      font-size: 11px;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      font-weight: 600;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .teacher-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 12px;
-    }
-
-    .teacher-table th {
-      text-align: left;
-      color: var(--text-muted);
-      padding: 6px 8px;
-      border-bottom: 1px solid var(--border);
-      font-weight: 600;
-    }
-
-    .teacher-table td {
-      padding: 8px 8px;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-      color: var(--text);
-    }
-
-    .teacher-table tr:last-child td { border-bottom: none; }
-
-    .teacher-table td:first-child {
-      font-weight: 600;
-      color: var(--accent);
-      font-family: monospace;
-    }
-
-    .teacher-table td:nth-child(2) {
-      color: rgba(255,255,255,0.4);
-      font-family: monospace;
-      font-size: 11px;
-    }
 
     /* ── RESET INFO ── */
     .reset-info {
@@ -345,8 +295,8 @@
       <div class="panel-title">🔐 Admin Sign In</div>
 
       <div class="form-group">
-        <label>Email</label>
-        <input type="email" id="email" placeholder="admin@madrasa.example" autocomplete="username">
+        <label>Login ID</label>
+        <input type="text" id="email" placeholder="Enter your Login ID" autocomplete="username">
       </div>
 
       <div class="form-group">
@@ -359,54 +309,7 @@
 
       <div id="loginMessage"></div>
 
-      <!-- Teacher Accounts Reference -->
-      <div class="accounts-section">
-        <div class="accounts-title">🏫 Teacher Accounts</div>
-        <table class="teacher-table">
-          <thead>
-            <tr>
-              <th>Login ID</th>
-              <th>Password</th>
-              <th>Teacher / Class</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>MINHAJP</td>
-              <td>102019</td>
-              <td>Minhaj Hudawi (Cl 4, 8)</td>
-            </tr>
-            <tr>
-              <td>DARIMI</td>
-              <td>DARIMI1</td>
-              <td>Basheer Dharimi (Cl 5, 9)</td>
-            </tr>
-            <tr>
-              <td>YEMANI</td>
-              <td>YEMANI1</td>
-              <td>Kunji Muhammed Yenmani (Cl 2, +1)</td>
-            </tr>
-            <tr>
-              <td>SHAHIN</td>
-              <td>SHAHIN1</td>
-              <td>Shahin Hudawi (Cl 3, 7)</td>
-            </tr>
-            <tr>
-              <td>SWALIH</td>
-              <td>SWALIH1</td>
-              <td>Swalih Hudawi (Cl 6, 10)</td>
-            </tr>
-            <tr>
-              <td>BASHEER</td>
-              <td>BASHEER1</td>
-              <td>Basheer (Cl 1, +2)</td>
-            </tr>
-          </tbody>
-        </table>
-        <div style="font-size:11px; color:rgba(255,255,255,0.3); margin-top:8px; text-align:center;">
-          Use email format: <em>LOGINID@admin.madrasa.example</em>
-        </div>
-      </div>
+
     </div>
 
     <!-- ── FORGOT PASSWORD PANEL ── -->
@@ -451,41 +354,63 @@
   };
 
   // ── Login ──
+  // Maps plain Login IDs to their registered Supabase email addresses
+  const TEACHER_EMAILS = {
+    "MINHAJP":  "minhajp@admin.madrasa.example",
+    "DARIMI":   "darimi@admin.madrasa.example",
+    "YEMANI":   "yemani@admin.madrasa.example",
+    "SHAHIN":   "shahin@admin.madrasa.example",
+    "SWALIH":   "swalih@admin.madrasa.example",
+    "BASHEER":  "basheer@admin.madrasa.example"
+  };
+
   window.loginAdmin = async function() {
-    const emailInput = document.getElementById("email").value.trim();
+    const rawInput = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value;
     const msgEl = document.getElementById("loginMessage");
     const btn = document.getElementById("loginBtn");
 
-    if (!emailInput || !password) {
-      showMsg(msgEl, "⚠️ Please enter email and password.", "error");
+    if (!rawInput || !password) {
+      showMsg(msgEl, "⚠️ Please enter your Login ID and password.", "error");
       return;
     }
-
-    // Convert plain Login ID to email if no @ symbol
-    const email = emailInput.includes("@")
-      ? emailInput
-      : emailInput.toUpperCase() + "@admin.madrasa.example";
 
     btn.disabled = true;
     btn.innerHTML = '<span class="spinner"></span> Signing in...';
     showMsg(msgEl, "Authenticating...", "");
 
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    // Build list of emails to try
+    const upperInput = rawInput.toUpperCase();
+    const lowerInput = rawInput.toLowerCase();
+    const emailsToTry = [];
 
-    if (error) {
-      // Also try lowercase login
-      const { data: data2, error: err2 } = await supabase.auth.signInWithPassword({
-        email: emailInput.toLowerCase() + "@admin.madrasa.example",
-        password
-      });
-
-      if (err2) {
-        showMsg(msgEl, "❌ Login failed: " + (error.message || "Invalid credentials"), "error");
-        btn.disabled = false;
-        btn.innerHTML = "LOGIN →";
-        return;
+    if (rawInput.includes("@")) {
+      emailsToTry.push(rawInput);
+    } else {
+      // Check known teacher map first
+      if (TEACHER_EMAILS[upperInput]) {
+        emailsToTry.push(TEACHER_EMAILS[upperInput]);
       }
+      // Also try common formats
+      emailsToTry.push(lowerInput + "@admin.madrasa.example");
+      emailsToTry.push(upperInput + "@admin.madrasa.example");
+      emailsToTry.push(lowerInput + "@student.madrasa.example");
+    }
+
+    let success = false;
+    let lastError = null;
+
+    for (const email of emailsToTry) {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (!error) { success = true; break; }
+      lastError = error;
+    }
+
+    if (!success) {
+      showMsg(msgEl, "❌ Login failed. Please check your Login ID and password.", "error");
+      btn.disabled = false;
+      btn.innerHTML = "LOGIN →";
+      return;
     }
 
     showMsg(msgEl, "✅ Login successful! Redirecting...", "success");
