@@ -77,11 +77,29 @@
         document.getElementById("studentInitial").textContent = data.student_name.charAt(0).toUpperCase();
         message.textContent = "";
 
+        // Teacher mapping by class
+        const CLASS_TEACHERS = {
+          "1":  { name: "Abdulla Darimi", phone: "919562005282" },
+          "+2": { name: "Abdulla Darimi", phone: "919562005282" },
+          "2":  { name: "Kunji Muhammed Yemani", phone: "919747260741" },
+          "+1": { name: "Kunji Muhammed Yemani", phone: "919747260741" },
+          "3":  { name: "Shahin Hudawi", phone: "919946412959" },
+          "7":  { name: "Shahin Hudawi", phone: "919946412959" },
+          "4":  { name: "Minhaj Hudawi", phone: "916235761685" },
+          "8":  { name: "Minhaj Hudawi", phone: "916235761685" },
+          "5":  { name: "Basheer Dharimi", phone: "919745979308" },
+          "9":  { name: "Basheer Dharimi", phone: "919745979308" },
+          "6":  { name: "Swalih Hudawi", phone: "917034918700" },
+          "10": { name: "Swalih Hudawi", phone: "917034918700" }
+        };
+
+        const teacher = CLASS_TEACHERS[String(data.class).trim()] || { name: "Minhaj Hudawi", phone: "916235761685" };
+
         // Set WhatsApp Contact Usthad link with pre-filled greeting
         const waLink = document.getElementById("whatsappUsthadLink");
         if (waLink) {
-          const greeting = `Assalamu Alaikum Usthad 🤲\n\nI am *${data.student_name}* from *Class ${data.class}* at Maadanudheen Madrasa.\n\nI wanted to reach you regarding:`;
-          waLink.href = `https://wa.me/916235761685?text=${encodeURIComponent(greeting)}`;
+          const greeting = `Assalamu Alaikum Usthad ${teacher.name} 🤲\n\nI am *${data.student_name}* from *Class ${data.class}* at Maadanudheen Madrasa.\n\nI wanted to reach you regarding:`;
+          waLink.href = `https://wa.me/${teacher.phone}?text=${encodeURIComponent(greeting)}`;
         }
 
         window.currentStudent = data;

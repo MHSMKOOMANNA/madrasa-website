@@ -638,8 +638,8 @@
             <p style="font-size:13px; color:#666; margin-bottom:12px;">Quickly compose a formatted announcement to send via WhatsApp Web to your class group or parents.</p>
             
             <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;">
+              <button type="button" onclick="setBroadcastTemplate('chapter')" class="btn-secondary-sm" style="background:#075e45; color:white; font-weight:600;">📖 Daily Chapter Reminder</button>
               <button type="button" onclick="setBroadcastTemplate('fajr')" class="btn-secondary-sm">🌅 Morning Fajr Reminder</button>
-              <button type="button" onclick="setBroadcastTemplate('sabaq')" class="btn-secondary-sm">📖 Daily Sabaq Alert</button>
               <button type="button" onclick="setBroadcastTemplate('jumua')" class="btn-secondary-sm">🕌 Jumu'ah Mubarak</button>
               <button type="button" onclick="setBroadcastTemplate('exam')" class="btn-secondary-sm">📝 Exam Preparation</button>
             </div>
@@ -1683,9 +1683,9 @@
 
         let html = "";
         students.forEach((s, idx) => {
-          const phone = getStudentPhone(s.username);
+          const phone = getStudentPhone(s.username, s.class, idx);
           const phoneCell = phone
-            ? `<span class="phone-tag">📱 ${phone}</span> <button onclick="openPhoneModal('${s.username}','${s.student_name}')" class="btn-secondary-sm" style="margin-left:4px;">✏️</button>`
+            ? `<span class="phone-tag">📱 +${phone}</span> <button onclick="openPhoneModal('${s.username}','${s.student_name}')" class="btn-secondary-sm" style="margin-left:4px;">✏️</button>`
             : `<button onclick="openPhoneModal('${s.username}','${s.student_name}')" class="btn-warning-sm">+ Add Number</button>`;
           html += `
             <tr>
@@ -1714,8 +1714,40 @@
       return localStorage.getItem("madrasa_mentor_phone") || window.currentTeacherPhone || MENTOR_PHONE_DEFAULT;
     }
 
-    function getStudentPhone(username) {
-      return localStorage.getItem("phone_" + username) || "";
+    const CLASS_4_STUDENT_PHONES = [
+      "919947363343",
+      "919847492716",
+      "919747080134",
+      "919656060908",
+      "919633589002",
+      "919539105686",
+      "919526996275",
+      "919061955662",
+      "919037946394",
+      "919605999757",
+      "919605531758",
+      "919544946394",
+      "919544225800",
+      "918592852535",
+      "919846488822",
+      "919995668338",
+      "919400792295",
+      "919961868133",
+      "919562351573",
+      "916282615358"
+    ];
+
+    function getStudentPhone(username, studentClass, index) {
+      const stored = localStorage.getItem("phone_" + username);
+      if (stored) return stored;
+
+      // Auto-assign from predefined Class 4 numbers if available
+      if (String(studentClass) === "4" && index !== undefined && CLASS_4_STUDENT_PHONES[index]) {
+        const defaultNum = CLASS_4_STUDENT_PHONES[index];
+        localStorage.setItem("phone_" + username, defaultNum);
+        return defaultNum;
+      }
+      return "";
     }
 
     function setStudentPhone(username, phone) {
@@ -1886,10 +1918,10 @@ _📱 For queries: +${getMentorPhone()}_`;
         let phonesLinked = 0, prayersDone = 0, prayersPending = 0;
 
         let html = "";
-        students.forEach(s => {
+        students.forEach((s, idx) => {
           const namaz = namazMap[s.username] || { fajr: false, dhuhr: false, asr: false, maghrib: false, isha: false };
           const score = ["fajr","dhuhr","asr","maghrib","isha"].reduce((n, p) => n + (namaz[p] ? 1 : 0), 0);
-          const phone = getStudentPhone(s.username);
+          const phone = getStudentPhone(s.username, s.class, idx);
 
           // Track stats
           if (phone) phonesLinked++;
@@ -1955,9 +1987,14 @@ _📱 For queries: +${getMentorPhone()}_`;
     window.setBroadcastTemplate = function(type) {
       const classLabel = currentSelectedClass === "ALL" ? "All Classes" : "Class " + currentSelectedClass;
       const date = new Date().toLocaleDateString("en-IN", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+      const teacherName = window.currentTeacherName ? "Usthad " + window.currentTeacherName : "Usthad Minhaj Hudawi";
+      
+      const chapterMsg = `📖 *Daily CHAPTER Reminder — ${classLabel}*\n\nAssalamu Alaikum Dear Students,\n\n📅 ${date}\n\n*ഇന്ന് ക്ലാസിൽ എടുത്ത വിഷയങ്ങൾ എല്ലാവരും നന്നായി പഠിക്കുക. നാളെ ഇതിൽ നിന്ന് ചോദ്യങ്ങൾ ഉണ്ടാകും.* 📝\n\n*ഖുർആൻ ഓതാൻ മറക്കരുത്.* 📖✨\n\n🌟 *നബി മുഹമ്മദ് ﷺ അരുളി:*\n\n*"നിങ്ങളിൽ ഏറ്റവും ഉത്തമർ ഖുർആൻ പഠിക്കുകയും അത് പഠിപ്പിക്കുകയും ചെയ്യുന്നവരാണ്."*\n\n*— ${teacherName}*\n*Maadanudheen Madrasa*`;
+
       const templates = {
+        chapter: chapterMsg,
+        sabaq: chapterMsg,
         fajr: `🌅 *Assalamu Alaikum — Fajr Reminder*\n\nDear Students & Parents,\n\n📅 ${date}\n\nThe blessed time of Fajr is here! Please do not miss the most important prayer of the day. 🤲\n\n*"Indeed, prayer has been decreed upon the believers a decree of specified times."* (An-Nisa: 103)\n\nMay Allah accept from all of us.\n\n_— Maadanudheen Madrasa, ${classLabel}_`,
-        sabaq: `📖 *Daily Sabaq Reminder — ${classLabel}*\n\nAssalamu Alaikum Dear Students,\n\n📅 ${date}\n\nPlease revise your Quran sabaq and prepare for today's class. ✨\n\nRemember: *"The best of you are those who learn the Quran and teach it."* — Prophet Muhammad ﷺ\n\n_— Usthad Minhaj Hudawi_\n_Maadanudheen Madrasa_`,
         jumua: `🕌 *Jumu'ah Mubarak!*\n\nAssalamu Alaikum Dear Students & Parents,\n\nWishing you all a blessed Friday! 🤲\n\n*"O you who have believed, when the call to prayer is made on Friday, proceed to the remembrance of Allah..."* (Al-Jumu'ah: 9)\n\nMay Allah accept your Salah and make this Jumu'ah a source of immense blessings for you and your family.\n\nJazakAllahu Khayran.\n_— Maadanudheen Madrasa, ${classLabel}_`,
         exam: `📝 *Exam Preparation — ${classLabel}*\n\nAssalamu Alaikum Dear Students,\n\n📅 ${date}\n\nPlease revise all your lessons thoroughly. Begin with Bismillah and make sincere Dua before studying. 📚\n\n*"My Lord, increase me in knowledge."* — Surah Taha: 114\n\nMay Allah grant you all success and understanding. Ameen!\n\n_— Maadanudheen Madrasa Mentoring Cell_`
       };
