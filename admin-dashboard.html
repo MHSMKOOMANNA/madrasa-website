@@ -1935,15 +1935,8 @@ _📱 For queries: +${getMentorPhone()}_`;
       );
 
       if (!phone) {
-        // No phone: offer to add or send test to mentor
-        const choice = confirm(
-          `No WhatsApp number saved for ${rowData.student.student_name}.\n\nClick OK to send a test report to YOUR number (+91 6235761685).\nClick Cancel to add the student's number instead.`
-        );
-        if (choice) {
-          window.open(`https://wa.me/${getMentorPhone()}?text=${encodeURIComponent(msg)}`, "_blank");
-        } else {
-          openPhoneModal(username, rowData.student.student_name);
-        }
+        alert(`⚠️ No WhatsApp number saved for ${rowData.student.student_name}.\n\nPlease add their parent's phone number.`);
+        openPhoneModal(username, rowData.student.student_name);
         return;
       }
 
@@ -1954,11 +1947,15 @@ _📱 For queries: +${getMentorPhone()}_`;
       const rowData = window._mentoringData && window._mentoringData[username];
       if (!rowData) return;
       const phone = getStudentPhone(username);
+      if (!phone) {
+        alert(`⚠️ No WhatsApp number saved for ${rowData.student.student_name}.\n\nPlease add their parent's phone number first.`);
+        openPhoneModal(username, rowData.student.student_name);
+        return;
+      }
       const prayers = ["fajr","dhuhr","asr","maghrib","isha"];
       const missed = prayers.filter(p => !rowData.namaz[p]).map(p => p.charAt(0).toUpperCase() + p.slice(1));
       const msg = `🌙 *Assalamu Alaikum — Gentle Reminder*\n\nDear Parent,\n\nWe noticed that *${rowData.student.student_name}* (Class ${rowData.student.class}) has not yet marked the following prayers today:\n\n${missed.map(p => "  ❌ " + p).join("\n")}\n\nPlease remind your child to offer their Salah. Prayer is the pillar of our Deen. 🤲\n\nJazakAllahu Khayran.\n_— Maadanudheen Madrasa Mentoring Cell_`;
-      const target = phone || getMentorPhone();
-      window.open(`https://wa.me/${target}?text=${encodeURIComponent(msg)}`, "_blank");
+      window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, "_blank");
     };
 
     window.loadMentoringRoster = async function() {
@@ -2256,7 +2253,7 @@ _📱 For queries: +${getMentorPhone()}_`;
 
       broadcastQueue = students.map((s, idx) => ({
         student: s,
-        phone: getStudentPhone(s.username, s.class, idx) || getMentorPhone()
+        phone: getStudentPhone(s.username, s.class, idx) || ""
       }));
 
       currentQueueIdx = 0;
@@ -2267,25 +2264,50 @@ _📱 For queries: +${getMentorPhone()}_`;
     function showQueueStudent() {
       if (currentQueueIdx >= broadcastQueue.length) {
         document.getElementById("bqueueStudentName").textContent = "🎉 All Messages Sent!";
-        document.getElementById("bqueueStudentPhone").textContent = "Broadcast to this class is complete.";
+        document.getElementById("bqueueStudentPhone").innerHTML = "<span style='color:#16a34a; font-weight:600;'>Broadcast to this class is complete.</span>";
         document.getElementById("bqueueProgress").textContent = `${broadcastQueue.length} of ${broadcastQueue.length}`;
         document.getElementById("bqueueSendBtn").style.display = "none";
         return;
       }
 
       const item = broadcastQueue[currentQueueIdx];
+      // Refresh phone in case user just added it
+      item.phone = getStudentPhone(item.student.username) || item.phone;
+
       document.getElementById("bqueueStudentName").textContent = `${item.student.student_name} (Class ${item.student.class})`;
-      document.getElementById("bqueueStudentPhone").textContent = `📱 +${item.phone}`;
+      
+      const phoneDisplayEl = document.getElementById("bqueueStudentPhone");
+      const sendBtn = document.getElementById("bqueueSendBtn");
+      
+      if (item.phone) {
+        phoneDisplayEl.innerHTML = `<span style="color:#075e45; font-weight:600;">📱 +${item.phone}</span>`;
+        sendBtn.style.display = "inline-flex";
+        sendBtn.style.background = "linear-gradient(135deg, #25D366, #128C7E)";
+        sendBtn.innerHTML = `<span>📲 Send to ${item.student.student_name} (${currentQueueIdx + 1}/${broadcastQueue.length}) ➔</span>`;
+      } else {
+        const safeName = (item.student.student_name || "").replace(/'/g, "\\'");
+        phoneDisplayEl.innerHTML = `
+          <span style="color:#b42318; font-weight:600;">⚠️ No WhatsApp number added yet</span>
+          <br>
+          <button type="button" onclick="openPhoneModal('${item.student.username}', '${safeName}')" class="btn-warning-sm" style="margin-top:6px; cursor:pointer;">+ Add Student Phone Number</button>
+        `;
+        sendBtn.style.display = "inline-flex";
+        sendBtn.style.background = "#64748b";
+        sendBtn.innerHTML = `<span>⏭️ Skip (No Phone) ➔</span>`;
+      }
+
       document.getElementById("bqueueProgress").textContent = `${currentQueueIdx + 1} of ${broadcastQueue.length}`;
-      document.getElementById("bqueueSendBtn").style.display = "inline-flex";
-      document.getElementById("bqueueSendBtn").innerHTML = `<span>📲 Send to ${item.student.student_name} (${currentQueueIdx + 1}/${broadcastQueue.length}) ➔</span>`;
     }
 
     window.bqueueSendCurrent = function() {
       if (currentQueueIdx >= broadcastQueue.length) return;
       const item = broadcastQueue[currentQueueIdx];
+      item.phone = getStudentPhone(item.student.username) || item.phone;
       const msg = document.getElementById("broadcastMessageInput").value.trim();
-      window.open(`https://wa.me/${item.phone}?text=${encodeURIComponent(msg)}`, "_blank");
+
+      if (item.phone) {
+        window.open(`https://wa.me/${item.phone}?text=${encodeURIComponent(msg)}`, "_blank");
+      }
       currentQueueIdx++;
       showQueueStudent();
     };
