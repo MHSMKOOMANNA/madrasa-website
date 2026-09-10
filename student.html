@@ -52,10 +52,13 @@
           return;
         }
 
+        // Clean and normalize username
+        const cleanUsername = username.replace(/\s+/g, '').toLowerCase();
+
         // Multi-strategy student record lookup
         let data = null;
 
-        // Strategy 1: Match by username (case-insensitive)
+        // Strategy 1: Match by exact or cleaned username (case-insensitive)
         const { data: byUsername } = await supabase
           .from("students")
           .select("student_name, class, username")
@@ -66,29 +69,27 @@
           data = byUsername;
         }
 
-        // Strategy 2: Match by metadata username or login_id
-        if (!data) {
-          const metaLogin = user.user_metadata?.username || user.user_metadata?.login_id;
-          if (metaLogin) {
-            const { data: byMeta } = await supabase
-              .from("students")
-              .select("student_name, class, username")
-              .ilike("username", metaLogin.trim())
-              .maybeSingle();
-            if (byMeta) data = byMeta;
-          }
+        // Strategy 2: Match by cleaned username if different
+        if (!data && cleanUsername !== username) {
+          const { data: byClean } = await supabase
+            .from("students")
+            .select("student_name, class, username")
+            .ilike("username", cleanUsername)
+            .maybeSingle();
+          if (byClean) data = byClean;
         }
 
-        // Strategy 3: Check all students table if username is formatted differently
+        // Strategy 3: Check all students table and match normalized username or name
         if (!data) {
           const { data: allList } = await supabase
             .from("students")
             .select("student_name, class, username");
           if (allList && allList.length > 0) {
-            data = allList.find(s => 
-              (s.username && s.username.toLowerCase().trim() === username) ||
-              (s.student_name && s.student_name.toLowerCase().trim() === username)
-            ) || null;
+            data = allList.find(s => {
+              const sUser = (s.username || "").replace(/\s+/g, '').toLowerCase();
+              const sName = (s.student_name || "").replace(/\s+/g, '').toLowerCase();
+              return sUser === cleanUsername || sUser === username || sName === cleanUsername || sUser.includes(cleanUsername) || cleanUsername.includes(sUser);
+            }) || null;
           }
         }
 

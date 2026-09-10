@@ -244,10 +244,11 @@
            * email format.
            */
 
+          const cleanInput = loginId.replace(/\s+/g, '').toLowerCase();
           const candidateEmail =
             loginId.includes("@")
               ? loginId
-              : loginId.toLowerCase() + "@student.madrasa.example";
+              : cleanInput + "@student.madrasa.example";
 
           let {
             data,

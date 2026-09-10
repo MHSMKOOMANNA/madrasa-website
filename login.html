@@ -177,9 +177,10 @@
         message.textContent = "Logging in...";
 
         // Try username formatted as internal email first if no domain was provided
+        const cleanInput = inputVal.replace(/\s+/g, '').toLowerCase();
         const candidateEmail = inputVal.includes("@")
             ? inputVal
-            : inputVal.toLowerCase() + "@student.madrasa.example";
+            : cleanInput + "@student.madrasa.example";
 
         let { data, error } =
             await supabase.auth.signInWithPassword({
