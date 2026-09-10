@@ -199,7 +199,7 @@
 
       if (!text) {
         status.className = "msg-status error";
-        status.textContent = "⚠️ Please write a suggestion first.";
+        status.textContent = "⚠️ Please write a message or suggestion first.";
         return;
       }
 
@@ -208,25 +208,31 @@
 
       try {
         const student = window.currentStudent || {};
+        const studentName = student.student_name || document.getElementById("studentName")?.textContent || "Student";
+        const studentClass = String(student.class || document.getElementById("studentClass")?.textContent?.replace(/[^0-9+]/g, '') || "4").trim();
+        const username = student.username || "student";
+
         const { error } = await supabase.from("messages").insert([{
           sender_type: "student",
-          student_name: student.student_name || "Student",
-          username: student.username || "student",
-          class: student.class || "Unknown",
+          student_name: studentName,
+          username: username,
+          class: studentClass,
           content: text
         }]);
 
         if (error) {
+          console.error("Suggestion submission error:", error);
           status.className = "msg-status error";
-          status.textContent = "❌ Error: " + error.message;
+          status.innerHTML = `❌ Could not send message to database: ${error.message}. <br><a href="https://wa.me/916235761685?text=${encodeURIComponent('Assalamu Alaikum Usthad,\n\nMessage from ' + studentName + ' (Class ' + studentClass + '):\n' + text)}" target="_blank" style="color:#25D366; font-weight:bold; text-decoration:underline;">📲 Send via WhatsApp instead</a>`;
         } else {
           status.className = "msg-status success";
-          status.textContent = "✅ Thank you! Your message has been sent to your teachers.";
+          status.textContent = "✅ Assalamu Alaikum! Your message has been sent directly to your Usthad.";
           document.getElementById("suggestionText").value = "";
         }
       } catch (err) {
+        console.error("Suggestion submission exception:", err);
         status.className = "msg-status error";
-        status.textContent = "❌ Could not submit: " + (err.message || "Network issue");
+        status.textContent = "❌ Error: " + (err.message || "Network issue");
       } finally {
         btn.disabled = false;
         btn.innerHTML = '📨 Send Message';

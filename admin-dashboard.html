@@ -1633,44 +1633,57 @@
     // LOAD SUGGESTIONS & REMARKS
     // ==========================================
 
-    window.loadSuggestions = async function () {
+    window.loadSuggestions = async function (filterMode = "all") {
       const feed = document.getElementById("suggestionsList");
       feed.innerHTML = '<p style="text-align:center; color:#888; padding:20px;">Loading student messages...</p>';
 
       try {
-        let query = supabase.from("messages").select("*").order("created_at", { ascending: false }).limit(30);
-        if (currentSelectedClass !== "ALL") {
-          query = query.or(`class.eq.${currentSelectedClass},class.eq.ALL`);
+        let query = supabase.from("messages").select("*").order("created_at", { ascending: false }).limit(50);
+        
+        if (filterMode === "current" && currentSelectedClass !== "ALL") {
+          query = query.or(`class.eq.${currentSelectedClass},class.eq.ALL,class.eq.Class ${currentSelectedClass}`);
         }
+        
         const { data: messages, error } = await query;
 
         if (error) {
-          // Table might not exist yet; provide friendly fallback
           feed.innerHTML = `
-            <div class="msg-card">
-              <p style="color:#666; margin:0;">
-                No messages yet. (Messages sent by students from their portal will appear here automatically).
-              </p>
+            <div class="msg-card" style="border-left:4px solid #b42318; background:#fff5f5; padding:14px; border-radius:8px;">
+              <p style="color:#b42318; margin:0 0 6px 0; font-weight:600;">Could not load messages: ${error.message}</p>
+              <p style="color:#666; font-size:12px; margin:0;">Make sure the "messages" table is created in your Supabase database.</p>
             </div>
           `;
           return;
         }
 
         if (!messages || messages.length === 0) {
-          feed.innerHTML = '<p style="text-align:center; color:#888; padding:20px;">No messages or suggestions found for this class.</p>';
+          feed.innerHTML = '<p style="text-align:center; color:#888; padding:25px;">No messages received yet. Messages sent by students from their portal will appear here automatically.</p>';
           return;
         }
 
         let html = "";
         messages.forEach(m => {
           const isTeacher = m.sender_type === "teacher";
+          const studentPhone = m.username ? getStudentPhone(m.username) : "";
+          const timeStr = m.created_at ? new Date(m.created_at).toLocaleString("en-IN", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }) : "";
+          
+          const replyBtn = (!isTeacher && studentPhone)
+            ? `<a href="https://wa.me/${studentPhone}?text=${encodeURIComponent('Assalamu Alaikum ' + (m.student_name || 'Student') + ',\n\nRegarding your message: \"' + m.content + '\"')}" target="_blank" class="btn-whatsapp btn-whatsapp-sm" style="font-size:11px; padding:4px 10px; margin-left:auto; text-decoration:none;">📲 Reply on WhatsApp</a>`
+            : '';
+
           html += `
-            <div class="msg-card" style="border-left: 4px solid ${isTeacher ? '#075e45' : '#d4af37'};">
-              <div class="msg-header">
-                <span class="msg-author">${isTeacher ? '👨‍🏫 Teacher / Admin' : '🎓 ' + (m.student_name || m.username || 'Student')} <small style="color:#888;">(Class ${m.class || 'All'})</small></span>
-                <span class="msg-date">${m.created_at ? new Date(m.created_at).toLocaleDateString() : ''}</span>
+            <div class="msg-card" style="border-left: 4px solid ${isTeacher ? '#075e45' : '#10b981'}; background:#fcfdfd; border:1px solid #e2e8f0; border-left-width:4px; border-radius:10px; padding:14px; margin-bottom:12px;">
+              <div class="msg-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:6px;">
+                <span class="msg-author" style="font-weight:700; color:${isTeacher ? '#075e45' : '#0f172a'}; font-size:14px;">
+                  ${isTeacher ? '👨‍🏫 Usthad Announcement' : '🎓 ' + (m.student_name || m.username || 'Student')} 
+                  <span style="font-size:11px; background:${isTeacher ? '#e6f4ea' : '#ecfdf5'}; color:${isTeacher ? '#075e45' : '#059669'}; padding:2px 8px; border-radius:12px; margin-left:6px; font-weight:600;">Class ${m.class || 'All'}</span>
+                </span>
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span class="msg-date" style="font-size:12px; color:#888;">${timeStr}</span>
+                  ${replyBtn}
+                </div>
               </div>
-              <div class="msg-text">${m.content}</div>
+              <div class="msg-text" style="font-size:14px; color:#334155; line-height:1.5; white-space:pre-wrap;">${m.content}</div>
             </div>
           `;
         });
