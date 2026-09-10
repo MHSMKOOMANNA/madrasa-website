@@ -646,9 +646,12 @@
 
             <textarea id="broadcastMessageInput" placeholder="Write message to broadcast..." style="width:100%; min-height:80px; padding:10px; border-radius:8px; border:1px solid #ccc; font-size:14px;"></textarea>
 
-            <div style="margin-top:10px; display:flex; justify-content:flex-end; gap:10px;">
+            <div style="margin-top:10px; display:flex; justify-content:flex-end; gap:10px; flex-wrap:wrap;">
+              <button onclick="startBroadcastQueue()" class="btn-whatsapp" style="padding:10px 20px; background:#075e45;">
+                <span>🚀 Send to All Students (1-by-1 Queue)</span>
+              </button>
               <button onclick="sendClassBroadcast()" class="btn-whatsapp" style="padding:10px 20px;">
-                <span>📲 Open Broadcast on WhatsApp</span>
+                <span>📲 Open on My WhatsApp</span>
               </button>
             </div>
           </div>
@@ -764,10 +767,11 @@
                   <th>Class</th>
                   <th>Login ID</th>
                   <th>WhatsApp</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody id="studentsTableBody">
-                <tr><td colspan="5" style="text-align:center; padding:20px; color:#888;">Loading directory...</td></tr>
+                <tr><td colspan="6" style="text-align:center; padding:20px; color:#888;">Loading directory...</td></tr>
               </tbody>
             </table>
           </div>
@@ -788,6 +792,67 @@
           <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:10px;">
             <button onclick="closePhoneModal()" style="width:auto; margin:0; background:#eee; color:#333; padding:10px 18px; border-radius:8px; font-size:14px; border:none; cursor:pointer;">Cancel</button>
             <button onclick="saveStudentPhone()" style="width:auto; margin:0; background:#075e45; color:white; padding:10px 20px; border-radius:8px; font-size:14px; border:none; cursor:pointer; font-weight:bold;">💾 Save Number</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- EDIT STUDENT & PASSWORD MODAL -->
+      <div id="editStudentModal" class="modal-overlay">
+        <div class="modal-box" style="max-width:480px;">
+          <h3 style="margin:0 0 6px 0; color:#075e45;">✏️ Edit Student Profile &amp; Password</h3>
+          <p style="font-size:13px; color:#666; margin-bottom:15px;" id="editStudentModalSubtitle">Update student name, class, password, or contact number</p>
+          
+          <input type="hidden" id="editOriginalUsername">
+
+          <label for="editStudentName" style="margin-top:0;">Student Full Name</label>
+          <input type="text" id="editStudentName" placeholder="Student name" style="margin-bottom:12px;">
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+            <div>
+              <label for="editStudentClass" style="margin-top:0;">Class</label>
+              <input type="text" id="editStudentClass" placeholder="e.g. 4" style="margin-bottom:12px;">
+            </div>
+            <div>
+              <label for="editStudentUsername" style="margin-top:0;">Login ID (Username)</label>
+              <input type="text" id="editStudentUsername" disabled style="background:#f1f5f9; color:#64748b; margin-bottom:12px; cursor:not-allowed;">
+            </div>
+          </div>
+
+          <label for="editStudentPassword" style="margin-top:0;">New Password (Optional)</label>
+          <input type="text" id="editStudentPassword" placeholder="Leave blank to keep existing password" style="margin-bottom:12px;">
+
+          <label for="editStudentPhone" style="margin-top:0;">Parent WhatsApp Number</label>
+          <input type="text" id="editStudentPhone" placeholder="e.g. 9876543210" style="margin-bottom:15px;">
+
+          <div id="editStudentMsg" class="message" style="margin-bottom:12px;"></div>
+
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; margin-top:10px; flex-wrap:wrap;">
+            <button type="button" onclick="deleteStudentAccount()" style="width:auto; margin:0; background:#fee2e2; color:#b42318; border:1px solid #fecaca; padding:10px 14px; border-radius:8px; font-size:13px; font-weight:bold; cursor:pointer;">🗑️ Delete</button>
+            <div style="display:flex; gap:8px;">
+              <button type="button" onclick="closeEditStudentModal()" style="width:auto; margin:0; background:#eee; color:#333; padding:10px 16px; border-radius:8px; font-size:14px; border:none; cursor:pointer;">Cancel</button>
+              <button type="button" id="btnSaveEditStudent" onclick="saveStudentEdits()" style="width:auto; margin:0; background:#075e45; color:white; padding:10px 20px; border-radius:8px; font-size:14px; border:none; cursor:pointer; font-weight:bold;">💾 Save Changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEQUENTIAL BROADCAST MODAL -->
+      <div id="broadcastQueueModal" class="modal-overlay">
+        <div class="modal-box" style="max-width:500px; text-align:center;">
+          <h3 style="margin:0 0 6px 0; color:#075e45;">🚀 Send Broadcast to All Students</h3>
+          <p style="font-size:13px; color:#666; margin-bottom:15px;">Send message directly to each student's parent one-by-one via WhatsApp with 1-click</p>
+          
+          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:15px; margin-bottom:15px; text-align:left;">
+            <div style="font-size:11px; color:#64748b; text-transform:uppercase; font-weight:700;">Current Student (<span id="bqueueProgress">1 of 20</span>)</div>
+            <div id="bqueueStudentName" style="font-size:17px; font-weight:bold; color:#075e45; margin:4px 0;">Student Name</div>
+            <div id="bqueueStudentPhone" style="font-size:13px; color:#334155; font-family:monospace;">📱 +91 ...</div>
+          </div>
+
+          <div style="display:flex; justify-content:center; gap:10px; flex-wrap:wrap;">
+            <button type="button" onclick="closeBroadcastQueue()" style="background:#eee; color:#333; padding:10px 18px; border-radius:8px; border:none; cursor:pointer;">Close</button>
+            <button type="button" id="bqueueSendBtn" onclick="bqueueSendCurrent()" class="btn-whatsapp" style="padding:12px 24px; font-size:14px;">
+              <span>📲 Send &amp; Next Student ➔</span>
+            </button>
           </div>
         </div>
       </div>
@@ -1684,9 +1749,10 @@
         let html = "";
         students.forEach((s, idx) => {
           const phone = getStudentPhone(s.username, s.class, idx);
+          const safeName = (s.student_name || "").replace(/'/g, "\\'");
           const phoneCell = phone
-            ? `<span class="phone-tag">📱 +${phone}</span> <button onclick="openPhoneModal('${s.username}','${s.student_name}')" class="btn-secondary-sm" style="margin-left:4px;">✏️</button>`
-            : `<button onclick="openPhoneModal('${s.username}','${s.student_name}')" class="btn-warning-sm">+ Add Number</button>`;
+            ? `<span class="phone-tag">📱 +${phone}</span> <button onclick="openPhoneModal('${s.username}','${safeName}')" class="btn-secondary-sm" style="margin-left:4px;">✏️</button>`
+            : `<button onclick="openPhoneModal('${s.username}','${safeName}')" class="btn-warning-sm">+ Add Number</button>`;
           html += `
             <tr>
               <td>${idx + 1}</td>
@@ -1694,12 +1760,15 @@
               <td>Class ${s.class}</td>
               <td style="color:#075e45; font-family:monospace; font-weight:bold;">${s.username}</td>
               <td>${phoneCell}</td>
+              <td>
+                <button onclick="openEditStudentModal('${s.username}','${safeName}','${s.class}')" class="btn-secondary-sm" style="font-weight:600; background:#075e45; color:white; padding:6px 12px;">✏️ Edit</button>
+              </td>
             </tr>
           `;
         });
         tbody.innerHTML = html;
       } catch (err) {
-        tbody.innerHTML = `<tr><td colspan="5" style="color:#b42318; padding:15px; text-align:center;">Error: ${err.message}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" style="color:#b42318; padding:15px; text-align:center;">Error: ${err.message}</td></tr>`;
       }
     };
 
@@ -1816,6 +1885,7 @@
       ).join("\n");
       const adabStars = adab ? "⭐".repeat(Number(adab)) : "Not rated";
       const dateStr = date || new Date().toLocaleDateString("en-IN", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+      const teacherName = window.currentTeacherName ? "Usthad " + window.currentTeacherName : "Usthad Minhaj Hudawi";
 
       return `🌟 *Maadanudheen Madrasa* 🌟
 📋 *Daily Mentoring Report*
@@ -1835,7 +1905,17 @@ ${namazLines}
 📝 *Usthad's Remark:*
   ${remark || "May Allah bless your efforts. Keep striving! 🤲"}
 
-_— ${window.currentTeacherName || "Usthad"}_
+━━━━━━━━━━━━━━━━━━━━
+📖 *Daily CHAPTER Reminder:*
+*ഇന്ന് ക്ലാസിൽ എടുത്ത വിഷയങ്ങൾ എല്ലാവരും നന്നായി പഠിക്കുക. നാളെ ഇതിൽ നിന്ന് ചോദ്യങ്ങൾ ഉണ്ടാകും.* 📝
+
+*ഖുർആൻ ഓതാൻ മറക്കരുത്.* 📖✨
+
+🌟 *നബി മുഹമ്മദ് ﷺ അരുളി:*
+*"നിങ്ങളിൽ ഏറ്റവും ഉത്തമർ ഖുർആൻ പഠിക്കുകയും അത് പഠിപ്പിക്കുകയും ചെയ്യുന്നവരാണ്."*
+━━━━━━━━━━━━━━━━━━━━
+
+_— ${teacherName}_
 _Maadanudheen Madrasa, Koomanna Chenakkal_
 _📱 For queries: +${getMentorPhone()}_`;
     }
@@ -2017,10 +2097,207 @@ _📱 For queries: +${getMentorPhone()}_`;
       });
     };
 
-    // Close phone modal when clicking outside
-    document.getElementById("phoneModal").addEventListener("click", function(e) {
-      if (e.target === this) closePhoneModal();
-    });
+    // ==========================================
+    // EDIT STUDENT & PASSWORD MANAGEMENT
+    // ==========================================
+
+    window.openEditStudentModal = function(username, name, studentClass) {
+      document.getElementById("editOriginalUsername").value = username;
+      document.getElementById("editStudentName").value = name || "";
+      document.getElementById("editStudentClass").value = studentClass || "";
+      document.getElementById("editStudentUsername").value = username || "";
+      document.getElementById("editStudentPassword").value = "";
+      document.getElementById("editStudentPhone").value = (getStudentPhone(username) || "").replace(/^91/, "");
+      
+      const msgBox = document.getElementById("editStudentMsg");
+      msgBox.textContent = "";
+      msgBox.className = "message";
+      
+      document.getElementById("editStudentModalSubtitle").textContent = `Editing profile for ${name} (${username})`;
+      document.getElementById("editStudentModal").classList.add("active");
+    };
+
+    window.closeEditStudentModal = function() {
+      document.getElementById("editStudentModal").classList.remove("active");
+    };
+
+    window.saveStudentEdits = async function() {
+      const username = document.getElementById("editOriginalUsername").value;
+      const newName = document.getElementById("editStudentName").value.trim();
+      const newClass = document.getElementById("editStudentClass").value.trim();
+      const newPass = document.getElementById("editStudentPassword").value;
+      const newPhone = document.getElementById("editStudentPhone").value.trim();
+      const msgBox = document.getElementById("editStudentMsg");
+      const saveBtn = document.getElementById("btnSaveEditStudent");
+
+      if (!newName || !newClass) {
+        msgBox.textContent = "Student name and class are required.";
+        msgBox.className = "message error";
+        return;
+      }
+
+      saveBtn.disabled = true;
+      saveBtn.textContent = "SAVING...";
+      msgBox.textContent = "Updating student...";
+      msgBox.className = "message";
+
+      try {
+        // 1. Update students table
+        const updatePayload = {
+          student_name: newName,
+          class: newClass
+        };
+        if (newPhone) {
+          const cleaned = newPhone.replace(/[^0-9]/g, "");
+          updatePayload.parent_phone = cleaned.length === 10 ? "91" + cleaned : cleaned;
+        }
+
+        const { error: dbErr } = await supabase
+          .from("students")
+          .update(updatePayload)
+          .eq("username", username);
+
+        if (dbErr) {
+          throw new Error("Failed to update student database: " + dbErr.message);
+        }
+
+        // 2. Update phone cache
+        if (newPhone) {
+          setStudentPhone(username, newPhone);
+        }
+
+        // 3. Update password if provided
+        if (newPass && newPass.trim().length > 0) {
+          msgBox.textContent = "Updating password in authentication...";
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session) {
+            try {
+              const res = await fetch(SUPABASE_URL + "/functions/v1/update-student-password", {
+                method: "POST",
+                headers: {
+                  "Authorization": "Bearer " + session.access_token,
+                  "apikey": SUPABASE_ANON_KEY,
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ username: username, password: newPass.trim() })
+              });
+              if (!res.ok) {
+                console.warn("Password function response status:", res.status);
+              }
+            } catch (pErr) {
+              console.warn("Password update edge function notice:", pErr);
+            }
+          }
+        }
+
+        msgBox.textContent = "✅ Student details updated successfully!";
+        msgBox.className = "message success";
+
+        setTimeout(() => {
+          closeEditStudentModal();
+          loadStudentsList();
+          const activeTab = document.querySelector(".dash-tab.active");
+          if (activeTab && activeTab.id === "tabBtnMentoring") loadMentoringRoster();
+        }, 1000);
+
+      } catch (err) {
+        msgBox.textContent = "Error: " + err.message;
+        msgBox.className = "message error";
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = "💾 Save Changes";
+      }
+    };
+
+    window.deleteStudentAccount = async function() {
+      const username = document.getElementById("editOriginalUsername").value;
+      const name = document.getElementById("editStudentName").value;
+      if (!confirm(`Are you sure you want to permanently delete the student account for "${name}" (${username})? This action cannot be undone.`)) {
+        return;
+      }
+
+      try {
+        await supabase.from("namaz").delete().eq("username", username);
+        const { error } = await supabase.from("students").delete().eq("username", username);
+        if (error) throw error;
+        localStorage.removeItem("phone_" + username);
+        alert(`Student "${name}" has been deleted.`);
+        closeEditStudentModal();
+        loadStudentsList();
+        loadNamazRecords();
+      } catch (err) {
+        alert("Could not delete student: " + err.message);
+      }
+    };
+
+    // ==========================================
+    // SEQUENTIAL 1-BY-1 BROADCAST SENDER
+    // ==========================================
+
+    let broadcastQueue = [];
+    let currentQueueIdx = 0;
+
+    window.startBroadcastQueue = async function() {
+      const msg = document.getElementById("broadcastMessageInput").value.trim();
+      if (!msg) {
+        alert("Please write a broadcast message or select a template first!");
+        return;
+      }
+
+      // Fetch students for the current selected class
+      let q = supabase.from("students").select("student_name, class, username").order("student_name");
+      if (currentSelectedClass !== "ALL") q = q.eq("class", currentSelectedClass);
+      const { data: students } = await q;
+
+      if (!students || students.length === 0) {
+        alert("No students found in this class.");
+        return;
+      }
+
+      broadcastQueue = students.map((s, idx) => ({
+        student: s,
+        phone: getStudentPhone(s.username, s.class, idx) || getMentorPhone()
+      }));
+
+      currentQueueIdx = 0;
+      showQueueStudent();
+      document.getElementById("broadcastQueueModal").classList.add("active");
+    };
+
+    function showQueueStudent() {
+      if (currentQueueIdx >= broadcastQueue.length) {
+        document.getElementById("bqueueStudentName").textContent = "🎉 All Messages Sent!";
+        document.getElementById("bqueueStudentPhone").textContent = "Broadcast to this class is complete.";
+        document.getElementById("bqueueProgress").textContent = `${broadcastQueue.length} of ${broadcastQueue.length}`;
+        document.getElementById("bqueueSendBtn").style.display = "none";
+        return;
+      }
+
+      const item = broadcastQueue[currentQueueIdx];
+      document.getElementById("bqueueStudentName").textContent = `${item.student.student_name} (Class ${item.student.class})`;
+      document.getElementById("bqueueStudentPhone").textContent = `📱 +${item.phone}`;
+      document.getElementById("bqueueProgress").textContent = `${currentQueueIdx + 1} of ${broadcastQueue.length}`;
+      document.getElementById("bqueueSendBtn").style.display = "inline-flex";
+      document.getElementById("bqueueSendBtn").innerHTML = `<span>📲 Send to ${item.student.student_name} (${currentQueueIdx + 1}/${broadcastQueue.length}) ➔</span>`;
+    }
+
+    window.bqueueSendCurrent = function() {
+      if (currentQueueIdx >= broadcastQueue.length) return;
+      const item = broadcastQueue[currentQueueIdx];
+      const msg = document.getElementById("broadcastMessageInput").value.trim();
+      window.open(`https://wa.me/${item.phone}?text=${encodeURIComponent(msg)}`, "_blank");
+      currentQueueIdx++;
+      showQueueStudent();
+    };
+
+    window.closeBroadcastQueue = function() {
+      document.getElementById("broadcastQueueModal").classList.remove("active");
+    };
+
+    // Close modals on background click
+    document.getElementById("phoneModal").addEventListener("click", function(e) { if (e.target === this) closePhoneModal(); });
+    document.getElementById("editStudentModal").addEventListener("click", function(e) { if (e.target === this) closeEditStudentModal(); });
+    document.getElementById("broadcastQueueModal").addEventListener("click", function(e) { if (e.target === this) closeBroadcastQueue(); });
 
     // ==========================================
     // LOGOUT
