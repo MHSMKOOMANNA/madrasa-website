@@ -567,13 +567,13 @@
           <!-- MENTOR BANNER & SETTINGS -->
           <div style="background: linear-gradient(135deg, #075e45, #0a4433); color:white; border-radius:12px; padding:16px 20px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px; box-shadow: 0 4px 15px rgba(7,94,69,0.2);">
             <div>
-              <div style="font-size:11px; text-transform:uppercase; letter-spacing:1px; opacity:0.85;">Active Mentor &amp; Madrasa WhatsApp</div>
+              <div style="font-size:11px; text-transform:uppercase; letter-spacing:1px; opacity:0.85;">Active Mentor &amp; WhatsApp Contact</div>
               <div style="font-size:18px; font-weight:bold; margin-top:2px; display:flex; align-items:center; gap:8px;">
-                <span>Usthad Minhaj Hudawi</span>
-                <span id="mentorPhoneDisplay" style="background:rgba(255,255,255,0.2); padding:3px 10px; border-radius:20px; font-size:13px; font-family:monospace;">+91 6235761685</span>
+                <span class="mentor-name-display">Usthad (Loading...)</span>
+                <span id="mentorPhoneDisplay" style="background:rgba(255,255,255,0.2); padding:3px 10px; border-radius:20px; font-size:13px; font-family:monospace;">+91 ...</span>
               </div>
               <div style="font-size:12px; opacity:0.9; margin-top:4px;">
-                Reports will be sent from this mentor number. Click "Change" if needed.
+                Reports will be sent from your WhatsApp number. Click "Change" if you need to override it.
               </div>
             </div>
             <div style="display:flex; gap:10px; flex-wrap:wrap;">
@@ -830,31 +830,37 @@
     const TEACHER_PROFILES = {
       "MINHAJP": {
         name: "Minhaj Hudawi",
+        phone: "916235761685",
         classes: ["4", "8"],
         defaultClass: "4"
       },
       "DARIMI": {
         name: "Abdulla Darimi (Principal)",
+        phone: "919562005282",
         classes: ["ALL", "1", "+2"],
         defaultClass: "1"
       },
       "BASHEER": {
         name: "Basheer Dharimi",
+        phone: "919745979308",
         classes: ["5", "9"],
         defaultClass: "5"
       },
       "YEMANI": {
         name: "Kunji Muhammed Yenmani",
+        phone: "919747260741",
         classes: ["2", "+1"],
         defaultClass: "2"
       },
       "SHAHIN": {
         name: "Shahin Hudawi",
+        phone: "919946412959",
         classes: ["3", "7"],
         defaultClass: "3"
       },
       "SWALIH": {
         name: "Swalih Hudawi",
+        phone: "917034918700",
         classes: ["6", "10"],
         defaultClass: "6"
       }
@@ -891,9 +897,24 @@
 
       const profile = TEACHER_PROFILES[loginId] || {
         name: email.split("@")[0].toUpperCase() + " (Teacher)",
+        phone: "916235761685",
         classes: ["ALL", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "+1", "+2"],
         defaultClass: "ALL"
       };
+
+      // Store teacher identity globally for WhatsApp Mentoring System
+      window.currentTeacherPhone = localStorage.getItem("madrasa_mentor_phone") || profile.phone;
+      window.currentTeacherName = profile.name;
+
+      // Update Mentoring Banner with THIS teacher's info
+      const mentorPhoneEl = document.getElementById("mentorPhoneDisplay");
+      if (mentorPhoneEl) {
+        const displayPhone = window.currentTeacherPhone;
+        mentorPhoneEl.textContent = "+" + displayPhone;
+      }
+      // Update the hardcoded Usthad name in the banner
+      const mentorNameEls = document.querySelectorAll(".mentor-name-display");
+      mentorNameEls.forEach(el => { el.textContent = "Usthad " + profile.name; });
 
       // Set Welcome Banner UI
       document.getElementById("teacherNameDisplay").textContent = profile.name;
@@ -1686,10 +1707,11 @@
     // WHATSAPP MENTORING SYSTEM
     // ==========================================
 
-    const MENTOR_PHONE_DEFAULT = "916235761685";
+    const MENTOR_PHONE_DEFAULT = "916235761685"; // fallback only
 
     function getMentorPhone() {
-      return localStorage.getItem("madrasa_mentor_phone") || MENTOR_PHONE_DEFAULT;
+      // Use per-teacher override from localStorage first, then the teacher's own profile phone
+      return localStorage.getItem("madrasa_mentor_phone") || window.currentTeacherPhone || MENTOR_PHONE_DEFAULT;
     }
 
     function getStudentPhone(username) {
@@ -1743,7 +1765,8 @@
 
     window.testMentorWhatsApp = function() {
       const phone = getMentorPhone();
-      const msg = encodeURIComponent("🌟 *Maadanudheen Madrasa WhatsApp Mentoring System*\n\nAssalamu Alaikum! This is a test message from the Admin Dashboard. The WhatsApp mentoring system is working correctly. ✅\n\n— Madrasa Mentoring Cell");
+      const name = window.currentTeacherName || "Usthad";
+      const msg = encodeURIComponent(`🌟 *Maadanudheen Madrasa WhatsApp Mentoring System*\n\nAssalamu Alaikum! This is a test message for *${name}*. Your WhatsApp mentoring system is working correctly. ✅\n\n— Madrasa Mentoring Cell`);
       window.open(`https://wa.me/${phone}?text=${msg}`, "_blank");
     };
 
@@ -1780,9 +1803,9 @@ ${namazLines}
 📝 *Usthad's Remark:*
   ${remark || "May Allah bless your efforts. Keep striving! 🤲"}
 
-_— Usthad Minhaj Hudawi_
+_— ${window.currentTeacherName || "Usthad"}_
 _Maadanudheen Madrasa, Koomanna Chenakkal_
-_📱 For queries: +91 6235761685_`;
+_📱 For queries: +${getMentorPhone()}_`;
     }
 
     window.sendWhatsAppReport = function(username) {
