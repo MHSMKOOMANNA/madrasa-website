@@ -1434,6 +1434,10 @@
         document.getElementById("tabBtnNamaz").classList.add("active");
         document.getElementById("tabNamaz").classList.add("active");
         loadNamazRecords();
+      } else if (tabName === "mentoring") {
+        document.getElementById("tabBtnMentoring").classList.add("active");
+        document.getElementById("tabMentoring").classList.add("active");
+        loadMentoringRoster();
       } else if (tabName === "suggestions") {
         document.getElementById("tabBtnSuggestions").classList.add("active");
         document.getElementById("tabSuggestions").classList.add("active");
@@ -1459,6 +1463,7 @@
       if (activeTab && activeTab.id === "tabBtnNamaz") loadNamazRecords();
       if (activeTab && activeTab.id === "tabBtnStudents") loadStudentsList();
       if (activeTab && activeTab.id === "tabBtnSuggestions") loadSuggestions();
+      if (activeTab && activeTab.id === "tabBtnMentoring") loadMentoringRoster();
     };
 
     // ==========================================
@@ -1636,7 +1641,7 @@
 
     window.loadStudentsList = async function () {
       const tbody = document.getElementById("studentsTableBody");
-      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px; color:#888;">Loading directory...</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px; color:#888;">Loading directory...</td></tr>';
 
       try {
         let query = supabase.from("students").select("student_name, class, username").order("class");
@@ -1646,31 +1651,316 @@
         const { data: students, error } = await query;
 
         if (error) {
-          tbody.innerHTML = `<tr><td colspan="4" style="color:#b42318; padding:15px; text-align:center;">Could not load: ${error.message}</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="5" style="color:#b42318; padding:15px; text-align:center;">Could not load: ${error.message}</td></tr>`;
           return;
         }
 
         if (!students || students.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:20px; color:#888;">No students found in this class.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:20px; color:#888;">No students found in this class.</td></tr>`;
           return;
         }
 
         let html = "";
         students.forEach((s, idx) => {
+          const phone = getStudentPhone(s.username);
+          const phoneCell = phone
+            ? `<span class="phone-tag">📱 ${phone}</span> <button onclick="openPhoneModal('${s.username}','${s.student_name}')" class="btn-secondary-sm" style="margin-left:4px;">✏️</button>`
+            : `<button onclick="openPhoneModal('${s.username}','${s.student_name}')" class="btn-warning-sm">+ Add Number</button>`;
           html += `
             <tr>
               <td>${idx + 1}</td>
               <td><strong>${s.student_name}</strong></td>
               <td>Class ${s.class}</td>
               <td style="color:#075e45; font-family:monospace; font-weight:bold;">${s.username}</td>
+              <td>${phoneCell}</td>
             </tr>
           `;
         });
         tbody.innerHTML = html;
       } catch (err) {
-        tbody.innerHTML = `<tr><td colspan="4" style="color:#b42318; padding:15px; text-align:center;">Error: ${err.message}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" style="color:#b42318; padding:15px; text-align:center;">Error: ${err.message}</td></tr>`;
       }
     };
+
+    // ==========================================
+    // WHATSAPP MENTORING SYSTEM
+    // ==========================================
+
+    const MENTOR_PHONE_DEFAULT = "916235761685";
+
+    function getMentorPhone() {
+      return localStorage.getItem("madrasa_mentor_phone") || MENTOR_PHONE_DEFAULT;
+    }
+
+    function getStudentPhone(username) {
+      return localStorage.getItem("phone_" + username) || "";
+    }
+
+    function setStudentPhone(username, phone) {
+      const cleaned = phone.replace(/[^0-9]/g, "");
+      const formatted = cleaned.length === 10 ? "91" + cleaned : cleaned;
+      localStorage.setItem("phone_" + username, formatted);
+      // Also attempt to save to Supabase (non-blocking)
+      supabase.from("students").update({ parent_phone: formatted }).eq("username", username).then(() => {});
+      return formatted;
+    }
+
+    window.openPhoneModal = function(username, name) {
+      document.getElementById("phoneModalSubtitle").textContent = `Update WhatsApp for ${name}`;
+      document.getElementById("modalPhoneUsername").value = username;
+      const existing = getStudentPhone(username);
+      document.getElementById("modalPhoneInput").value = existing ? existing.replace(/^91/, "") : "";
+      document.getElementById("phoneModal").classList.add("active");
+      setTimeout(() => document.getElementById("modalPhoneInput").focus(), 100);
+    };
+
+    window.closePhoneModal = function() {
+      document.getElementById("phoneModal").classList.remove("active");
+    };
+
+    window.saveStudentPhone = function() {
+      const username = document.getElementById("modalPhoneUsername").value;
+      const raw = document.getElementById("modalPhoneInput").value.trim();
+      if (!raw) { alert("Please enter a phone number."); return; }
+      setStudentPhone(username, raw);
+      closePhoneModal();
+      // Refresh whichever view is active
+      const activeTab = document.querySelector(".dash-tab.active");
+      if (activeTab && activeTab.id === "tabBtnStudents") loadStudentsList();
+      if (activeTab && activeTab.id === "tabBtnMentoring") loadMentoringRoster();
+    };
+
+    window.changeMentorPhone = function() {
+      const cur = getMentorPhone().replace(/^91/, "");
+      const n = prompt("Enter your WhatsApp number (10 digits):", cur);
+      if (n && n.trim()) {
+        const cleaned = n.trim().replace(/[^0-9]/g, "");
+        const formatted = cleaned.length === 10 ? "91" + cleaned : cleaned;
+        localStorage.setItem("madrasa_mentor_phone", formatted);
+        document.getElementById("mentorPhoneDisplay").textContent = "+" + formatted;
+      }
+    };
+
+    window.testMentorWhatsApp = function() {
+      const phone = getMentorPhone();
+      const msg = encodeURIComponent("🌟 *Maadanudheen Madrasa WhatsApp Mentoring System*\n\nAssalamu Alaikum! This is a test message from the Admin Dashboard. The WhatsApp mentoring system is working correctly. ✅\n\n— Madrasa Mentoring Cell");
+      window.open(`https://wa.me/${phone}?text=${msg}`, "_blank");
+    };
+
+    function buildReportMessage(student, namazRec, sabaq, adab, remark, date) {
+      const prayers = [
+        { name: "Fajr",   emoji: "🌅", key: "fajr"    },
+        { name: "Dhuhr",  emoji: "☀️",  key: "dhuhr"   },
+        { name: "Asr",    emoji: "🌤️", key: "asr"     },
+        { name: "Maghrib",emoji: "🌇", key: "maghrib"  },
+        { name: "Isha",   emoji: "🌙", key: "isha"     }
+      ];
+      const score = prayers.reduce((n, p) => n + (namazRec[p.key] ? 1 : 0), 0);
+      const namazLines = prayers.map(p =>
+        `  • ${p.emoji} ${p.name}: ${namazRec[p.key] ? "✅ Done" : "❌ Missed"}`
+      ).join("\n");
+      const adabStars = adab ? "⭐".repeat(Number(adab)) : "Not rated";
+      const dateStr = date || new Date().toLocaleDateString("en-IN", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+
+      return `🌟 *Maadanudheen Madrasa* 🌟
+📋 *Daily Mentoring Report*
+📅 ${dateStr}
+
+👤 *Student:* ${student.student_name}
+🎓 *Class:* ${student.class}
+
+🕌 *Daily Namaz (${score}/5):*
+${namazLines}
+
+📖 *Sabaq / Lesson Today:*
+  ${sabaq || "Not recorded"}
+
+⭐ *Adab & Discipline:* ${adabStars}
+
+📝 *Usthad's Remark:*
+  ${remark || "May Allah bless your efforts. Keep striving! 🤲"}
+
+_— Usthad Minhaj Hudawi_
+_Maadanudheen Madrasa, Koomanna Chenakkal_
+_📱 For queries: +91 6235761685_`;
+    }
+
+    window.sendWhatsAppReport = function(username) {
+      const rowData = window._mentoringData && window._mentoringData[username];
+      if (!rowData) { alert("Student data not found. Please refresh."); return; }
+
+      const phone = getStudentPhone(username);
+      const msg = buildReportMessage(
+        rowData.student,
+        rowData.namaz,
+        document.getElementById("sabaq_" + username)?.value || "",
+        document.getElementById("adab_" + username)?.value || "",
+        document.getElementById("remark_" + username)?.value || "",
+        document.getElementById("mentoringDateInput")?.value
+      );
+
+      if (!phone) {
+        // No phone: offer to add or send test to mentor
+        const choice = confirm(
+          `No WhatsApp number saved for ${rowData.student.student_name}.\n\nClick OK to send a test report to YOUR number (+91 6235761685).\nClick Cancel to add the student's number instead.`
+        );
+        if (choice) {
+          window.open(`https://wa.me/${getMentorPhone()}?text=${encodeURIComponent(msg)}`, "_blank");
+        } else {
+          openPhoneModal(username, rowData.student.student_name);
+        }
+        return;
+      }
+
+      window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, "_blank");
+    };
+
+    window.sendNamazAlert = function(username) {
+      const rowData = window._mentoringData && window._mentoringData[username];
+      if (!rowData) return;
+      const phone = getStudentPhone(username);
+      const prayers = ["fajr","dhuhr","asr","maghrib","isha"];
+      const missed = prayers.filter(p => !rowData.namaz[p]).map(p => p.charAt(0).toUpperCase() + p.slice(1));
+      const msg = `🌙 *Assalamu Alaikum — Gentle Reminder*\n\nDear Parent,\n\nWe noticed that *${rowData.student.student_name}* (Class ${rowData.student.class}) has not yet marked the following prayers today:\n\n${missed.map(p => "  ❌ " + p).join("\n")}\n\nPlease remind your child to offer their Salah. Prayer is the pillar of our Deen. 🤲\n\nJazakAllahu Khayran.\n_— Maadanudheen Madrasa Mentoring Cell_`;
+      const target = phone || getMentorPhone();
+      window.open(`https://wa.me/${target}?text=${encodeURIComponent(msg)}`, "_blank");
+    };
+
+    window.loadMentoringRoster = async function() {
+      const tbody = document.getElementById("mentoringTableBody");
+      const dateInput = document.getElementById("mentoringDateInput");
+      if (!dateInput.value) dateInput.value = new Date().toISOString().split("T")[0];
+      const selectedDate = dateInput.value;
+      const dateLabel = new Date(selectedDate + "T00:00:00").toLocaleDateString("en-IN", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:25px; color:#888;">Loading mentoring roster...</td></tr>';
+      window._mentoringData = {};
+
+      try {
+        let studentsQuery = supabase.from("students").select("student_name, class, username");
+        if (currentSelectedClass !== "ALL") studentsQuery = studentsQuery.eq("class", currentSelectedClass);
+        const { data: students, error: sErr } = await studentsQuery;
+
+        if (sErr || !students || students.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:20px; color:#888;">No students found.</td></tr>`;
+          document.getElementById("statTotalStudents").textContent = 0;
+          document.getElementById("statPhonesLinked").textContent = 0;
+          document.getElementById("statPrayersDone").textContent = 0;
+          document.getElementById("statPrayersPending").textContent = 0;
+          return;
+        }
+
+        const usernames = students.map(s => s.username);
+        const { data: namazList } = await supabase
+          .from("namaz")
+          .select("username, fajr, dhuhr, asr, maghrib, isha")
+          .eq("date", selectedDate)
+          .in("username", usernames);
+
+        const namazMap = {};
+        if (namazList) namazList.forEach(n => { namazMap[n.username] = n; });
+
+        let phonesLinked = 0, prayersDone = 0, prayersPending = 0;
+
+        let html = "";
+        students.forEach(s => {
+          const namaz = namazMap[s.username] || { fajr: false, dhuhr: false, asr: false, maghrib: false, isha: false };
+          const score = ["fajr","dhuhr","asr","maghrib","isha"].reduce((n, p) => n + (namaz[p] ? 1 : 0), 0);
+          const phone = getStudentPhone(s.username);
+
+          // Track stats
+          if (phone) phonesLinked++;
+          if (score === 5) prayersDone++; else prayersPending++;
+
+          // Store for report generation
+          window._mentoringData[s.username] = { student: s, namaz };
+
+          const namazBadge = `<span style="font-weight:bold; color:${score >= 4 ? '#176b35' : score >= 2 ? '#d97706' : '#b42318'}">${score}/5</span>
+            ${["fajr","dhuhr","asr","maghrib","isha"].map(p => namaz[p] ? '<span title="'+p+'" style="font-size:15px;">✅</span>' : '<span title="'+p+'" style="font-size:15px;">❌</span>').join(" ")}`;
+
+          const phoneCell = phone
+            ? `<span class="phone-tag">📱 +${phone}</span><br><button onclick="openPhoneModal('${s.username}','${s.student_name}')" class="btn-secondary-sm" style="margin-top:4px;">✏️ Edit</button>`
+            : `<button onclick="openPhoneModal('${s.username}','${s.student_name}')" class="btn-warning-sm">+ Add Number</button>`;
+
+          html += `
+            <tr id="mrow_${s.username}">
+              <td>
+                <strong>${s.student_name}</strong><br>
+                <span style="font-size:12px; color:#555;">Class ${s.class}</span>
+              </td>
+              <td>${phoneCell}</td>
+              <td>${namazBadge}</td>
+              <td>
+                <input class="compact-table-input" id="sabaq_${s.username}" placeholder="e.g. Surah Al-Mulk" title="Today's Sabaq / Lesson">
+              </td>
+              <td>
+                <select class="compact-table-input" id="adab_${s.username}" title="Adab & Discipline" style="padding:6px 8px;">
+                  <option value="">Rate...</option>
+                  <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+                  <option value="4">⭐⭐⭐⭐ Very Good</option>
+                  <option value="3">⭐⭐⭐ Good</option>
+                  <option value="2">⭐⭐ Needs Work</option>
+                  <option value="1">⭐ Poor</option>
+                </select>
+              </td>
+              <td>
+                <input class="compact-table-input" id="remark_${s.username}" placeholder="Usthad's note for parent..." title="Mentor Remark">
+              </td>
+              <td style="text-align:center; white-space:nowrap; min-width:180px;">
+                <div style="display:flex; flex-direction:column; gap:6px; align-items:center;">
+                  <button onclick="sendWhatsAppReport('${s.username}')" class="btn-whatsapp btn-whatsapp-sm" style="width:100%;">📲 Send Report</button>
+                  ${score < 5 ? `<button onclick="sendNamazAlert('${s.username}')" class="btn-warning-sm" style="width:100%;">⚠️ Prayer Alert</button>` : '<span style="font-size:12px; color:#176b35;">✅ All Prayers Done</span>'}
+                </div>
+              </td>
+            </tr>
+          `;
+        });
+
+        tbody.innerHTML = html;
+
+        // Update stats
+        document.getElementById("statTotalStudents").textContent = students.length;
+        document.getElementById("statPhonesLinked").textContent = phonesLinked;
+        document.getElementById("statPrayersDone").textContent = prayersDone;
+        document.getElementById("statPrayersPending").textContent = prayersPending;
+
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="7" style="color:#b42318; padding:15px; text-align:center;">Error: ${err.message}</td></tr>`;
+      }
+    };
+
+    window.setBroadcastTemplate = function(type) {
+      const classLabel = currentSelectedClass === "ALL" ? "All Classes" : "Class " + currentSelectedClass;
+      const date = new Date().toLocaleDateString("en-IN", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+      const templates = {
+        fajr: `🌅 *Assalamu Alaikum — Fajr Reminder*\n\nDear Students & Parents,\n\n📅 ${date}\n\nThe blessed time of Fajr is here! Please do not miss the most important prayer of the day. 🤲\n\n*"Indeed, prayer has been decreed upon the believers a decree of specified times."* (An-Nisa: 103)\n\nMay Allah accept from all of us.\n\n_— Maadanudheen Madrasa, ${classLabel}_`,
+        sabaq: `📖 *Daily Sabaq Reminder — ${classLabel}*\n\nAssalamu Alaikum Dear Students,\n\n📅 ${date}\n\nPlease revise your Quran sabaq and prepare for today's class. ✨\n\nRemember: *"The best of you are those who learn the Quran and teach it."* — Prophet Muhammad ﷺ\n\n_— Usthad Minhaj Hudawi_\n_Maadanudheen Madrasa_`,
+        jumua: `🕌 *Jumu'ah Mubarak!*\n\nAssalamu Alaikum Dear Students & Parents,\n\nWishing you all a blessed Friday! 🤲\n\n*"O you who have believed, when the call to prayer is made on Friday, proceed to the remembrance of Allah..."* (Al-Jumu'ah: 9)\n\nMay Allah accept your Salah and make this Jumu'ah a source of immense blessings for you and your family.\n\nJazakAllahu Khayran.\n_— Maadanudheen Madrasa, ${classLabel}_`,
+        exam: `📝 *Exam Preparation — ${classLabel}*\n\nAssalamu Alaikum Dear Students,\n\n📅 ${date}\n\nPlease revise all your lessons thoroughly. Begin with Bismillah and make sincere Dua before studying. 📚\n\n*"My Lord, increase me in knowledge."* — Surah Taha: 114\n\nMay Allah grant you all success and understanding. Ameen!\n\n_— Maadanudheen Madrasa Mentoring Cell_`
+      };
+      document.getElementById("broadcastMessageInput").value = templates[type] || "";
+    };
+
+    window.sendClassBroadcast = function() {
+      const msg = document.getElementById("broadcastMessageInput").value.trim();
+      if (!msg) { alert("Please write a message or select a template first."); return; }
+      const phone = getMentorPhone();
+      window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, "_blank");
+    };
+
+    window.copySqlSnippet = function() {
+      const code = document.getElementById("sqlSnippetCode").textContent;
+      navigator.clipboard.writeText(code).then(() => {
+        alert("SQL copied! Paste it in your Supabase SQL Editor and run it.");
+      }).catch(() => {
+        prompt("Copy this SQL:", code);
+      });
+    };
+
+    // Close phone modal when clicking outside
+    document.getElementById("phoneModal").addEventListener("click", function(e) {
+      if (e.target === this) closePhoneModal();
+    });
 
     // ==========================================
     // LOGOUT
@@ -1695,6 +1985,15 @@
     const todayStr = new Date().toISOString().split("T")[0];
     const datePicker = document.getElementById("namazDateInput");
     if (datePicker) datePicker.value = todayStr;
+    const mentoringPicker = document.getElementById("mentoringDateInput");
+    if (mentoringPicker) mentoringPicker.value = todayStr;
+
+    // Initialize mentor phone display from localStorage
+    const savedPhone = localStorage.getItem("madrasa_mentor_phone");
+    if (savedPhone) {
+      const display = document.getElementById("mentorPhoneDisplay");
+      if (display) display.textContent = "+" + savedPhone;
+    }
 
     checkAdmin();
 
