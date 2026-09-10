@@ -1647,10 +1647,32 @@
         const { data: messages, error } = await query;
 
         if (error) {
+          const sqlScript = `CREATE TABLE IF NOT EXISTS messages (
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  sender_type text DEFAULT 'student',
+  student_name text,
+  username text,
+  class text,
+  content text NOT NULL,
+  created_at timestamptz DEFAULT now()
+);
+
+ALTER TABLE messages ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow all on messages" ON messages FOR ALL USING (true) WITH CHECK (true);`;
+
           feed.innerHTML = `
-            <div class="msg-card" style="border-left:4px solid #b42318; background:#fff5f5; padding:14px; border-radius:8px;">
-              <p style="color:#b42318; margin:0 0 6px 0; font-weight:600;">Could not load messages: ${error.message}</p>
-              <p style="color:#666; font-size:12px; margin:0;">Make sure the "messages" table is created in your Supabase database.</p>
+            <div class="msg-card" style="border-left:4px solid #b42318; background:#fff5f5; padding:18px; border-radius:12px; margin-bottom:15px;">
+              <h4 style="color:#b42318; margin:0 0 6px 0; font-size:15px;">⚠️ Database Setup Required: "messages" table missing</h4>
+              <p style="color:#475569; font-size:13px; margin:0 0 12px 0; line-height:1.5;">
+                The <code>messages</code> table needs to be created in your Supabase project (<strong>oqhnaxolmqxifyjyzufj</strong>).
+              </p>
+              
+              <div style="background:#0f172a; color:#38bdf8; padding:12px; border-radius:8px; font-family:monospace; font-size:12px; margin-bottom:12px; white-space:pre-wrap; overflow-x:auto;">${sqlScript}</div>
+
+              <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <button type="button" onclick="navigator.clipboard.writeText(\`${sqlScript.replace(/`/g, '\\`')}\`); alert('✅ SQL copied to clipboard! Now paste it in Supabase SQL Editor.');" style="padding:8px 16px; background:#075e45; color:white; border:none; border-radius:8px; font-weight:bold; font-size:13px; cursor:pointer;">📋 Copy SQL Query</button>
+                <a href="https://supabase.com/dashboard/project/oqhnaxolmqxifyjyzufj/sql/new" target="_blank" style="padding:8px 16px; background:#2563eb; color:white; text-decoration:none; border-radius:8px; font-weight:bold; font-size:13px; display:inline-flex; align-items:center; gap:6px;">🔗 Open Supabase SQL Editor ➔</a>
+              </div>
             </div>
           `;
           return;
