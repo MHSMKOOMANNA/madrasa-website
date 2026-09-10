@@ -16,6 +16,9 @@
 
     async function loadStudent() {
       const message = document.getElementById("message");
+      const profileHero = document.querySelector(".profile-hero");
+      const dashboardGrid = document.querySelector(".dashboard-grid");
+
       try {
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
         if (sessionError || !session || !session.user) {
@@ -23,19 +26,22 @@
           return;
         }
         const user = session.user;
-        const username = (user.email || "").split("@")[0];
+        const rawEmail = (user.email || "").toLowerCase();
+        const username = rawEmail.split("@")[0].trim();
 
         // Check if current session belongs to an Admin
-        const isAdmin = user.email?.includes("@admin.madrasa.example") || user.email?.includes("gmail.com");
+        const isAdmin = rawEmail.includes("@admin.madrasa.example") || rawEmail.includes("gmail.com");
 
         if (isAdmin) {
+          if (profileHero) profileHero.style.display = "none";
+          if (dashboardGrid) dashboardGrid.style.display = "none";
           message.style.display = "block";
           message.innerHTML = `
             <div style="background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(239, 68, 68, 0.4); padding: 28px; border-radius: 20px; text-align: center; margin: 40px auto; max-width: 540px; box-shadow: 0 20px 50px rgba(0,0,0,0.6);">
               <div style="font-size: 44px; margin-bottom: 12px;">🔐</div>
               <h3 style="color: #fca5a5; margin-bottom: 10px; font-size: 20px;">Logged in as Admin (${username.toUpperCase()})</h3>
               <p style="color: #94a3b8; font-size: 14px; margin-bottom: 24px; line-height: 1.6;">
-                You are currently signed in with your Admin account. To view or manage student records, go to the Admin Dashboard. To test as a student, please log out first.
+                You are currently signed in with an Admin account. To access student features, please log out and sign in with a student username.
               </p>
               <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
                 <a href="admin-dashboard.html" style="padding: 12px 22px; background: #075e45; color: white; border-radius: 12px; text-decoration: none; font-weight: bold; font-size: 14px; box-shadow: 0 4px 14px rgba(7,94,69,0.4);">👨‍🏫 Go to Admin Dashboard</a>
@@ -46,36 +52,76 @@
           return;
         }
 
-        const { data, error } = await supabase
+        // Multi-strategy student record lookup
+        let data = null;
+
+        // Strategy 1: Match by username (case-insensitive)
+        const { data: byUsername } = await supabase
           .from("students")
-          .select("student_name, class")
-          .eq("username", username)
+          .select("student_name, class, username")
+          .ilike("username", username)
           .maybeSingle();
 
-        if (error) {
-          message.textContent = "Database error: " + error.message;
-          return;
+        if (byUsername) {
+          data = byUsername;
         }
+
+        // Strategy 2: Match by metadata username or login_id
         if (!data) {
+          const metaLogin = user.user_metadata?.username || user.user_metadata?.login_id;
+          if (metaLogin) {
+            const { data: byMeta } = await supabase
+              .from("students")
+              .select("student_name, class, username")
+              .ilike("username", metaLogin.trim())
+              .maybeSingle();
+            if (byMeta) data = byMeta;
+          }
+        }
+
+        // Strategy 3: Check all students table if username is formatted differently
+        if (!data) {
+          const { data: allList } = await supabase
+            .from("students")
+            .select("student_name, class, username");
+          if (allList && allList.length > 0) {
+            data = allList.find(s => 
+              (s.username && s.username.toLowerCase().trim() === username) ||
+              (s.student_name && s.student_name.toLowerCase().trim() === username)
+            ) || null;
+          }
+        }
+
+        if (!data) {
+          if (profileHero) profileHero.style.display = "none";
+          if (dashboardGrid) dashboardGrid.style.display = "none";
           message.style.display = "block";
           message.innerHTML = `
-            <div style="background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(245, 158, 11, 0.4); padding: 24px; border-radius: 18px; text-align: center; margin: 30px auto; max-width: 500px;">
-              <h3 style="color: #fbbf24; margin-bottom: 8px;">⚠️ Student Record Not Found</h3>
-              <p style="color: #94a3b8; font-size: 14px; margin-bottom: 18px;">
-                No student account found for username: <strong>${username}</strong>
+            <div style="background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(245, 158, 11, 0.4); padding: 32px 24px; border-radius: 20px; text-align: center; margin: 40px auto; max-width: 520px; box-shadow: 0 20px 50px rgba(0,0,0,0.6);">
+              <div style="font-size: 40px; margin-bottom: 12px;">⚠️</div>
+              <h3 style="color: #fbbf24; margin-bottom: 10px; font-size: 20px;">Student Profile Not Found</h3>
+              <p style="color: #94a3b8; font-size: 14px; margin-bottom: 20px; line-height: 1.6;">
+                You are logged in as <strong>"${username}"</strong>, but no matching student record exists in the Madrasa directory yet.
               </p>
-              <button onclick="logout()" style="padding: 10px 18px; background: #b42318; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">Back to Student Login</button>
+              <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+                <button onclick="logout()" style="padding: 12px 22px; background: #075e45; color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 14px; cursor: pointer;">🔑 Sign In with Another ID</button>
+                <a href="https://wa.me/916235761685?text=Assalamu%20Alaikum%20Usthad%2C%20my%20login%20ID%20is%20${username}%20and%20I%20cannot%20see%20my%20student%20profile." target="_blank" style="padding: 12px 22px; background: #25D366; color: white; border-radius: 12px; font-weight: bold; font-size: 14px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">💬 Contact Usthad</a>
+              </div>
             </div>
           `;
           return;
         }
 
-        // Update profile elements
+        // Student found! Show dashboard and update profile elements
+        if (profileHero) profileHero.style.display = "";
+        if (dashboardGrid) dashboardGrid.style.display = "";
+
         document.getElementById("studentName").textContent = data.student_name;
         document.getElementById("studentName2").textContent = data.student_name;
         document.getElementById("studentClass").textContent = "Class " + data.class;
-        document.getElementById("studentInitial").textContent = data.student_name.charAt(0).toUpperCase();
+        document.getElementById("studentInitial").textContent = (data.student_name || "S").charAt(0).toUpperCase();
         message.textContent = "";
+        message.style.display = "none";
 
         // Teacher mapping by class
         const CLASS_TEACHERS = {
