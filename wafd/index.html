@@ -1,0 +1,1835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="WAFD Alumni Association - Official Portal for WAFD Batch. Connecting past, present, and future generations of WAFD members.">
+  <title>WAFD Alumni Association | Official Batch Portal</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* ==========================================================================
+       DESIGN SYSTEM & CSS VARIABLES
+       ========================================================================== */
+    :root {
+      --bg-dark: #080c14;
+      --bg-card: rgba(17, 24, 39, 0.75);
+      --bg-card-hover: rgba(31, 41, 61, 0.85);
+      --bg-nav: rgba(8, 12, 20, 0.85);
+      
+      --accent-cyan: #00f2fe;
+      --accent-blue: #4facfe;
+      --accent-gold: #f0d060;
+      --accent-emerald: #10b981;
+      --accent-purple: #9d4edd;
+      
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --text-gold: #f5d77a;
+
+      --border-glass: rgba(255, 255, 255, 0.1);
+      --border-glow: rgba(0, 242, 254, 0.3);
+
+      --gradient-primary: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+      --gradient-gold: linear-gradient(135deg, #f0d060 0%, #d4af37 100%);
+      --gradient-dark: linear-gradient(180deg, #0d1322 0%, #080c14 100%);
+      --gradient-card: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
+
+      --font-display: 'Outfit', sans-serif;
+      --font-serif: 'Playfair Display', Georgia, serif;
+      --font-body: 'Inter', sans-serif;
+
+      --shadow-sm: 0 4px 20px rgba(0,0,0,0.3);
+      --shadow-lg: 0 20px 50px rgba(0, 242, 254, 0.15);
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Reset & Base */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(0, 242, 254, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 85% 65%, rgba(157, 78, 221, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 50% 90%, rgba(240, 208, 96, 0.05) 0%, transparent 50%);
+      background-attachment: fixed;
+      color: var(--text-main);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-dark); }
+    ::-webkit-scrollbar-thumb { background: rgba(0, 242, 254, 0.3); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent-cyan); }
+
+    /* Utility Container */
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Section Typography */
+    .section-header {
+      text-align: center;
+      max-width: 750px;
+      margin: 0 auto 60px auto;
+    }
+
+    .badge-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 18px;
+      border-radius: 30px;
+      background: rgba(0, 242, 254, 0.1);
+      border: 1px solid var(--border-glow);
+      color: var(--accent-cyan);
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.2rem, 4vw, 3.2rem);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 18px;
+      background: linear-gradient(135deg, #ffffff 30%, #9ca3af 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .section-title span {
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .section-desc {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px 28px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: var(--transition);
+      border: none;
+      outline: none;
+    }
+
+    .btn-primary {
+      background: var(--gradient-primary);
+      color: #040914;
+      box-shadow: 0 10px 25px rgba(0, 242, 254, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 35px rgba(0, 242, 254, 0.5);
+    }
+
+    .btn-gold {
+      background: var(--gradient-gold);
+      color: #0b0f19;
+      box-shadow: 0 10px 25px rgba(240, 208, 96, 0.3);
+    }
+
+    .btn-gold:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 35px rgba(240, 208, 96, 0.5);
+    }
+
+    .btn-outline {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+      border: 1px solid var(--border-glass);
+      backdrop-filter: blur(10px);
+    }
+
+    .btn-outline:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+      transform: translateY(-3px);
+    }
+
+    /* ==========================================================================
+       HEADER & NAVBAR
+       ========================================================================== */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      background: var(--bg-nav);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-glass);
+      transition: var(--transition);
+    }
+
+    .header.scrolled {
+      padding: 10px 0;
+      background: rgba(5, 8, 15, 0.95);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .nav-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 80px;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+    }
+
+    .logo-img {
+      width: 48px;
+      height: 48px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 10px rgba(0, 242, 254, 0.4));
+      transition: var(--transition);
+    }
+
+    .logo-container:hover .logo-img {
+      transform: rotate(6deg) scale(1.05);
+    }
+
+    .logo-text {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1.5rem;
+      letter-spacing: 1px;
+      color: var(--text-main);
+    }
+
+    .logo-text span {
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 0;
+      width: 0%;
+      height: 2px;
+      background: var(--gradient-primary);
+      border-radius: 2px;
+      transition: var(--transition);
+    }
+
+    .nav-link:hover, .nav-link.active {
+      color: var(--accent-cyan);
+    }
+
+    .nav-link:hover::after, .nav-link.active::after {
+      width: 100%;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .mobile-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text-main);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    /* ==========================================================================
+       HERO SECTION
+       ========================================================================== */
+    .hero {
+      position: relative;
+      padding-top: 170px;
+      padding-bottom: 100px;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 50px;
+      align-items: center;
+    }
+
+    .hero-content {
+      z-index: 2;
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.8rem, 5vw, 4.2rem);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 24px;
+    }
+
+    .hero-title .gradient-text {
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: block;
+    }
+
+    .hero-subtitle {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      margin-bottom: 36px;
+      max-width: 540px;
+      line-height: 1.7;
+    }
+
+    .hero-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 36px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border-glass);
+    }
+
+    .stat-item h3 {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent-cyan);
+    }
+
+    .stat-item p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Hero Media Visual */
+    .hero-media {
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-card-glow {
+      position: relative;
+      border-radius: var(--radius-lg);
+      padding: 12px;
+      background: var(--gradient-card);
+      border: 1px solid var(--border-glass);
+      backdrop-filter: blur(20px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .hero-img {
+      width: 100%;
+      height: 440px;
+      object-fit: cover;
+      border-radius: var(--radius-md);
+      display: block;
+    }
+
+    .floating-badge {
+      position: absolute;
+      bottom: -20px;
+      left: -20px;
+      background: rgba(13, 19, 34, 0.9);
+      border: 1px solid var(--border-glow);
+      backdrop-filter: blur(16px);
+      padding: 16px 24px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+    }
+
+    .floating-badge-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: var(--gradient-gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #0a0e1a;
+      font-size: 1.2rem;
+    }
+
+    .floating-badge-text h4 {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      color: var(--text-main);
+    }
+
+    .floating-badge-text p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* ==========================================================================
+       ABOUT & MOTTO SECTION
+       ========================================================================== */
+    .section-about {
+      padding: 100px 0;
+      position: relative;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 30px;
+    }
+
+    .about-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      padding: 36px 28px;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .about-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--gradient-primary);
+      opacity: 0;
+      transition: var(--transition);
+    }
+
+    .about-card:hover {
+      transform: translateY(-8px);
+      background: var(--bg-card-hover);
+      border-color: var(--border-glow);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+
+    .about-card:hover::before {
+      opacity: 1;
+    }
+
+    .about-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 16px;
+      background: rgba(0, 242, 254, 0.1);
+      border: 1px solid var(--border-glow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: var(--accent-cyan);
+      margin-bottom: 24px;
+    }
+
+    .about-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      margin-bottom: 12px;
+      color: var(--text-main);
+    }
+
+    .about-card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* Motto Banner */
+    .motto-banner {
+      margin-top: 60px;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(0, 242, 254, 0.1) 100%);
+      border: 1px solid var(--border-glow);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      text-align: center;
+      position: relative;
+    }
+
+    .motto-text {
+      font-family: var(--font-serif);
+      font-size: clamp(1.4rem, 3vw, 2.2rem);
+      font-style: italic;
+      color: var(--text-gold);
+      margin-bottom: 12px;
+    }
+
+    .motto-author {
+      font-family: var(--font-display);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 0.9rem;
+      color: var(--accent-cyan);
+    }
+
+    /* ==========================================================================
+       HISTORY & TIMELINE SECTION
+       ========================================================================== */
+    .section-history {
+      padding: 100px 0;
+      background: rgba(13, 19, 34, 0.4);
+    }
+
+    .timeline {
+      position: relative;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 2px;
+      background: linear-gradient(180deg, var(--accent-cyan), var(--accent-purple), transparent);
+      transform: translateX(-50%);
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 50px;
+      width: 50%;
+      padding-right: 40px;
+    }
+
+    .timeline-item:nth-child(even) {
+      left: 50%;
+      padding-right: 0;
+      padding-left: 40px;
+    }
+
+    .timeline-dot {
+      position: absolute;
+      top: 20px;
+      right: -10px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--accent-cyan);
+      box-shadow: 0 0 15px var(--accent-cyan);
+    }
+
+    .timeline-item:nth-child(even) .timeline-dot {
+      right: auto;
+      left: -10px;
+    }
+
+    .timeline-content {
+      background: var(--bg-card);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      padding: 28px;
+      backdrop-filter: blur(10px);
+      transition: var(--transition);
+    }
+
+    .timeline-content:hover {
+      border-color: var(--border-glow);
+      transform: scale(1.02);
+    }
+
+    .timeline-year {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      background: rgba(240, 208, 96, 0.15);
+      color: var(--text-gold);
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+    }
+
+    .timeline-content h3 {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      margin-bottom: 8px;
+    }
+
+    .timeline-content p {
+      color: var(--text-muted);
+      font-size: 0.92rem;
+    }
+
+    /* ==========================================================================
+       DIRECTORY & MENTORS
+       ========================================================================== */
+    .section-directory {
+      padding: 100px 0;
+    }
+
+    .filter-bar {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 8px 20px;
+      border-radius: 30px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border-glass);
+      color: var(--text-muted);
+      font-family: var(--font-display);
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .filter-btn:hover, .filter-btn.active {
+      background: var(--gradient-primary);
+      color: #040914;
+      font-weight: 600;
+      border-color: transparent;
+      box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3);
+    }
+
+    .members-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 30px;
+    }
+
+    .member-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      transition: var(--transition);
+      text-align: center;
+    }
+
+    .member-card:hover {
+      transform: translateY(-8px);
+      border-color: var(--border-glow);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+    }
+
+    .member-img-wrap {
+      width: 100%;
+      height: 240px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .member-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: var(--transition);
+    }
+
+    .member-card:hover .member-img {
+      transform: scale(1.08);
+    }
+
+    .member-info {
+      padding: 20px 16px;
+    }
+
+    .member-info h4 {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+
+    .member-role {
+      font-size: 0.85rem;
+      color: var(--accent-cyan);
+      font-weight: 500;
+      margin-bottom: 12px;
+    }
+
+    .member-socials {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .social-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: var(--transition);
+    }
+
+    .social-icon:hover {
+      background: var(--accent-cyan);
+      color: #040914;
+    }
+
+    /* ==========================================================================
+       MEMORY GALLERY & LIGHTBOX
+       ========================================================================== */
+    .section-gallery {
+      padding: 100px 0;
+      background: rgba(13, 19, 34, 0.4);
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .gallery-item {
+      position: relative;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      height: 230px;
+      cursor: pointer;
+      border: 1px solid var(--border-glass);
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: var(--transition);
+    }
+
+    .gallery-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.85) 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 20px;
+      opacity: 0;
+      transition: var(--transition);
+    }
+
+    .gallery-item:hover img {
+      transform: scale(1.1);
+    }
+
+    .gallery-item:hover .gallery-overlay {
+      opacity: 1;
+    }
+
+    .gallery-overlay h5 {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      color: var(--text-main);
+    }
+
+    .gallery-overlay p {
+      font-size: 0.8rem;
+      color: var(--accent-cyan);
+    }
+
+    /* Lightbox Modal */
+    .lightbox-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      background: rgba(4, 7, 13, 0.95);
+      backdrop-filter: blur(20px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 30px;
+    }
+
+    .lightbox-modal.active {
+      display: flex;
+    }
+
+    .lightbox-content {
+      max-width: 900px;
+      max-height: 85vh;
+      position: relative;
+    }
+
+    .lightbox-content img {
+      width: 100%;
+      max-height: 75vh;
+      object-fit: contain;
+      border-radius: var(--radius-md);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.8);
+    }
+
+    .lightbox-caption {
+      text-align: center;
+      margin-top: 16px;
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      color: var(--text-main);
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: 20px;
+      right: 25px;
+      color: white;
+      font-size: 2rem;
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+
+    /* ==========================================================================
+       EVENTS SECTION
+       ========================================================================== */
+    .section-events {
+      padding: 100px 0;
+    }
+
+    .events-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 30px;
+    }
+
+    .event-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      padding: 30px;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .event-card:hover {
+      border-color: var(--border-glow);
+      transform: translateY(-6px);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+    }
+
+    .event-date {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--accent-gold);
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 14px;
+    }
+
+    .event-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      margin-bottom: 10px;
+    }
+
+    .event-card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 20px;
+    }
+
+    /* ==========================================================================
+       CONTACT & REGISTRATION PORTAL
+       ========================================================================== */
+    .section-contact {
+      padding: 100px 0;
+      background: rgba(13, 19, 34, 0.6);
+    }
+
+    .contact-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 50px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-lg);
+      padding: 50px;
+      backdrop-filter: blur(20px);
+    }
+
+    .contact-info h3 {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      margin-bottom: 16px;
+    }
+
+    .contact-info p {
+      color: var(--text-muted);
+      margin-bottom: 30px;
+    }
+
+    .contact-details {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .contact-detail-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .contact-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(0, 242, 254, 0.1);
+      color: var(--accent-cyan);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .form-group label {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-main);
+    }
+
+    .form-control {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      color: var(--text-main);
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      outline: none;
+      transition: var(--transition);
+    }
+
+    .form-control:focus {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
+    }
+
+    textarea.form-control {
+      resize: vertical;
+      min-height: 110px;
+    }
+
+    /* Toast Alert */
+    .toast-alert {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: var(--gradient-primary);
+      color: #040914;
+      padding: 16px 28px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-display);
+      font-weight: 600;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      display: none;
+      z-index: 3000;
+      animation: slideUp 0.4s ease;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* ==========================================================================
+       FOOTER
+       ========================================================================== */
+    .footer {
+      padding: 60px 0 30px 0;
+      border-top: 1px solid var(--border-glass);
+      background: #04070d;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 50px;
+    }
+
+    .footer-brand p {
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      margin-top: 14px;
+      max-width: 320px;
+    }
+
+    .footer-col h4 {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      margin-bottom: 18px;
+      color: var(--text-main);
+    }
+
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: var(--transition);
+    }
+
+    .footer-links a:hover {
+      color: var(--accent-cyan);
+    }
+
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 30px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      color: var(--text-muted);
+      font-size: 0.88rem;
+    }
+
+    .back-to-top {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--bg-card);
+      border: 1px solid var(--border-glass);
+      color: var(--accent-cyan);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .back-to-top:hover {
+      background: var(--accent-cyan);
+      color: #040914;
+      transform: translateY(-4px);
+    }
+
+    /* ==========================================================================
+       RESPONSIVE DESIGN
+       ========================================================================== */
+    @media (max-width: 992px) {
+      .hero-grid, .contact-wrapper, .footer-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .timeline::before {
+        left: 20px;
+      }
+
+      .timeline-item, .timeline-item:nth-child(even) {
+        width: 100%;
+        padding-left: 50px;
+        padding-right: 0;
+      }
+
+      .timeline-dot, .timeline-item:nth-child(even) .timeline-dot {
+        left: 10px;
+        right: auto;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        position: fixed;
+        top: 80px;
+        left: 0;
+        width: 100%;
+        background: rgba(8, 12, 20, 0.98);
+        backdrop-filter: blur(20px);
+        flex-direction: column;
+        padding: 30px;
+        gap: 20px;
+        display: none;
+        border-bottom: 1px solid var(--border-glass);
+      }
+
+      .nav-links.active {
+        display: flex;
+      }
+
+      .mobile-toggle {
+        display: block;
+      }
+
+      .hero-title {
+        font-size: 2.5rem;
+      }
+
+      .footer-bottom {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==========================================================================
+       HEADER & NAVIGATION
+       ========================================================================== -->
+  <header class="header" id="header">
+    <div class="container">
+      <div class="nav-wrapper">
+        <a href="#home" class="logo-container">
+          <img src="logo.png" alt="WAFD Logo" class="logo-img">
+          <div class="logo-text">WAFD <span>ALUMNI</span></div>
+        </a>
+
+        <ul class="nav-links" id="navLinks">
+          <li><a href="#home" class="nav-link active">Home</a></li>
+          <li><a href="#about" class="nav-link">About & Motto</a></li>
+          <li><a href="#history" class="nav-link">History</a></li>
+          <li><a href="#directory" class="nav-link">Directory</a></li>
+          <li><a href="#gallery" class="nav-link">Memories</a></li>
+          <li><a href="#events" class="nav-link">Events</a></li>
+          <li><a href="#contact" class="nav-link">Contact</a></li>
+        </ul>
+
+        <div class="nav-actions">
+          <a href="#contact" class="btn btn-primary" style="padding: 8px 18px; font-size: 0.88rem;">Join Alumni</a>
+          <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle Navigation">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       HERO SECTION
+       ========================================================================== -->
+  <section class="hero" id="home">
+    <div class="container">
+      <div class="hero-grid">
+        <div class="hero-content">
+          <div class="badge-tag">
+            <i class="fa-solid fa-graduation-cap"></i> WAFD Batch Official Portal
+          </div>
+          <h1 class="hero-title">
+            United by Memories, 
+            <span class="gradient-text">Driven by Purpose</span>
+          </h1>
+          <p class="hero-subtitle">
+            Welcome to the official digital home of the WAFD Batch Alumni Association. Preserving our lifelong bond, honoring our mentors, and empowering future generations.
+          </p>
+
+          <div class="hero-buttons">
+            <a href="#about" class="btn btn-primary">
+              <i class="fa-solid fa-compass"></i> Explore WAFD
+            </a>
+            <a href="#gallery" class="btn btn-outline">
+              <i class="fa-solid fa-images"></i> Memory Wall
+            </a>
+          </div>
+
+          <div class="hero-stats">
+            <div class="stat-item">
+              <h3>WAFD</h3>
+              <p>Batch Distinction</p>
+            </div>
+            <div class="stat-item">
+              <h3>100+</h3>
+              <p>Active Alumni</p>
+            </div>
+            <div class="stat-item">
+              <h3>10+</h3>
+              <p>Years Legacy</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-media">
+          <div class="hero-card-glow">
+            <img src="champions.jpg" alt="WAFD Batch Champions" class="hero-img">
+            <div class="floating-badge">
+              <div class="floating-badge-icon">
+                <i class="fa-solid fa-trophy"></i>
+              </div>
+              <div class="floating-badge-text">
+                <h4>Championship Legacy</h4>
+                <p>WAFD Batch Celebrations & Honors</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       ABOUT & MOTTO SECTION
+       ========================================================================== -->
+  <section class="section-about" id="about">
+    <div class="container">
+      <div class="section-header">
+        <div class="badge-tag">Vision & Values</div>
+        <h2 class="section-title">The Pillars of <span>WAFD Batch</span></h2>
+        <p class="section-desc">Our foundation rests on brotherhood, continuous growth, moral values, and community impact.</p>
+      </div>
+
+      <div class="about-grid">
+        <div class="about-card">
+          <div class="about-icon">
+            <i class="fa-solid fa-handshake"></i>
+          </div>
+          <h3>Unity & Brotherhood</h3>
+          <p>Fostering lifelong connections among batchmates across generations and geographic boundaries.</p>
+        </div>
+
+        <div class="about-card">
+          <div class="about-icon">
+            <i class="fa-solid fa-book-open"></i>
+          </div>
+          <h3>Academic Excellence</h3>
+          <p>Promoting knowledge, ethical leadership, and continuous skill development in every sphere of life.</p>
+        </div>
+
+        <div class="about-card">
+          <div class="about-icon">
+            <i class="fa-solid fa-heart-pulse"></i>
+          </div>
+          <h3>Community Service</h3>
+          <p>Giving back through social initiatives, educational mentoring, and humanitarian support.</p>
+        </div>
+
+        <div class="about-card">
+          <div class="about-icon">
+            <i class="fa-solid fa-seedling"></i>
+          </div>
+          <h3>Inspiring Generations</h3>
+          <p>Serving as mentors and role models for young scholars and upcoming batches.</p>
+        </div>
+      </div>
+
+      <!-- Motto Banner -->
+      <div class="motto-banner">
+        <div class="motto-text">
+          "Learn with dedication, Practice with sincerity, Lead with humility, Spread with passion."
+        </div>
+        <div class="motto-author">
+          — Official WAFD Batch Motto
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       HISTORY & TIMELINE
+       ========================================================================== -->
+  <section class="section-history" id="history">
+    <div class="container">
+      <div class="section-header">
+        <div class="badge-tag">Our Journey</div>
+        <h2 class="section-title">Batch History & <span>Milestones</span></h2>
+        <p class="section-desc">Tracing the golden steps of WAFD Batch from establishment to present achievements.</p>
+      </div>
+
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <span class="timeline-year">Foundation Year</span>
+            <h3>Formation of WAFD Batch</h3>
+            <p>Gathered as a unified cohort of ambitious scholars, laying the groundwork for camaraderie, excellence, and shared aspirations.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <span class="timeline-year">Academic Distinction</span>
+            <h3>Excellence & Competitions</h3>
+            <p>Achieved top state rankings and accolades across academic, cultural, and sports tournaments.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <span class="timeline-year">Championship Victory</span>
+            <h3>Grand Champions Trophy</h3>
+            <p>Secured the overall championship title in the major fest, cementing WAFD's place in batch history.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <span class="timeline-year">Present & Beyond</span>
+            <h3>Global Alumni Network</h3>
+            <p>Launching our digital portal to connect alumni worldwide, host reunions, and initiate community projects.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       ALUMNI & MENTORS DIRECTORY
+       ========================================================================== -->
+  <section class="section-directory" id="directory">
+    <div class="container">
+      <div class="section-header">
+        <div class="badge-tag">People of WAFD</div>
+        <h2 class="section-title">Mentors & <span>Alumni Directory</span></h2>
+        <p class="section-desc">Honoring the respected teachers who guided us and the alumni who carry forward our legacy.</p>
+      </div>
+
+      <div class="filter-bar">
+        <button class="filter-btn active" data-filter="all">All Members</button>
+        <button class="filter-btn" data-filter="mentor">Respected Ustads</button>
+        <button class="filter-btn" data-filter="executive">Batch Executives</button>
+        <button class="filter-btn" data-filter="alumni">Alumni Representatives</button>
+      </div>
+
+      <div class="members-grid">
+        <!-- Mentor Cards -->
+        <div class="member-card" data-category="mentor">
+          <div class="member-img-wrap">
+            <img src="teacher1.jpg" alt="Mentor Teacher" class="member-img">
+          </div>
+          <div class="member-info">
+            <h4>Chief Patron Ustad</h4>
+            <p class="member-role">Senior Academic Advisor</p>
+            <div class="member-socials">
+              <a href="#" class="social-icon"><i class="fa-solid fa-envelope"></i></a>
+              <a href="#" class="social-icon"><i class="fa-brands fa-whatsapp"></i></a>
+            </div>
+          </div>
+        </div>
+
+        <div class="member-card" data-category="mentor">
+          <div class="member-img-wrap">
+            <img src="teacher2.jpg" alt="Mentor Teacher" class="member-img">
+          </div>
+          <div class="member-info">
+            <h4>Senior Faculty Ustad</h4>
+            <p class="member-role">Head of Department</p>
+            <div class="member-socials">
+              <a href="#" class="social-icon"><i class="fa-solid fa-envelope"></i></a>
+              <a href="#" class="social-icon"><i class="fa-brands fa-whatsapp"></i></a>
+            </div>
+          </div>
+        </div>
+
+        <div class="member-card" data-category="mentor">
+          <div class="member-img-wrap">
+            <img src="teacher3.jpg" alt="Mentor Teacher" class="member-img">
+          </div>
+          <div class="member-info">
+            <h4>Faculty Member</h4>
+            <p class="member-role">Curriculum Coordinator</p>
+            <div class="member-socials">
+              <a href="#" class="social-icon"><i class="fa-solid fa-envelope"></i></a>
+              <a href="#" class="social-icon"><i class="fa-brands fa-whatsapp"></i></a>
+            </div>
+          </div>
+        </div>
+
+        <div class="member-card" data-category="executive">
+          <div class="member-img-wrap">
+            <img src="teacher4.jpg" alt="Executive Member" class="member-img">
+          </div>
+          <div class="member-info">
+            <h4>WAFD President</h4>
+            <p class="member-role">Alumni Representative</p>
+            <div class="member-socials">
+              <a href="#" class="social-icon"><i class="fa-brands fa-linkedin"></i></a>
+              <a href="#" class="social-icon"><i class="fa-brands fa-whatsapp"></i></a>
+            </div>
+          </div>
+        </div>
+
+        <div class="member-card" data-category="executive">
+          <div class="member-img-wrap">
+            <img src="teacher5.jpg" alt="General Secretary" class="member-img">
+          </div>
+          <div class="member-info">
+            <h4>General Secretary</h4>
+            <p class="member-role">Events & Coordination</p>
+            <div class="member-socials">
+              <a href="#" class="social-icon"><i class="fa-brands fa-linkedin"></i></a>
+              <a href="#" class="social-icon"><i class="fa-brands fa-whatsapp"></i></a>
+            </div>
+          </div>
+        </div>
+
+        <div class="member-card" data-category="alumni">
+          <div class="member-img-wrap">
+            <img src="teacher6.jpg" alt="Treasurer" class="member-img">
+          </div>
+          <div class="member-info">
+            <h4>Batch Treasurer</h4>
+            <p class="member-role">Finance & Welfare</p>
+            <div class="member-socials">
+              <a href="#" class="social-icon"><i class="fa-solid fa-envelope"></i></a>
+              <a href="#" class="social-icon"><i class="fa-brands fa-whatsapp"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       MEMORY WALL GALLERY
+       ========================================================================== -->
+  <section class="section-gallery" id="gallery">
+    <div class="container">
+      <div class="section-header">
+        <div class="badge-tag">Moments & Memories</div>
+        <h2 class="section-title">WAFD Batch <span>Memory Wall</span></h2>
+        <p class="section-desc">Click any image to view full screen moments from our gatherings, celebrations, and events.</p>
+      </div>
+
+      <div class="gallery-grid">
+        <div class="gallery-item" onclick="openLightbox('champions.jpg', 'WAFD Batch Championship Trophy Celebration')">
+          <img src="champions.jpg" alt="Championship Celebration">
+          <div class="gallery-overlay">
+            <h5>Championship Celebration</h5>
+            <p>Overall Fest Trophy Winners</p>
+          </div>
+        </div>
+
+        <div class="gallery-item" onclick="openLightbox('madrasa.jpg', 'WAFD Campus Assembly & Gathering')">
+          <img src="madrasa.jpg" alt="Campus Assembly">
+          <div class="gallery-overlay">
+            <h5>Campus Morning Assembly</h5>
+            <p>Unity & Discipline</p>
+          </div>
+        </div>
+
+        <div class="gallery-item" onclick="openLightbox('roohul1.jpg', 'Batch Gathering & Cultural Meet')">
+          <img src="roohul1.jpg" alt="Cultural Meet">
+          <div class="gallery-overlay">
+            <h5>Cultural Session</h5>
+            <p>Batch Performances</p>
+          </div>
+        </div>
+
+        <div class="gallery-item" onclick="openLightbox('roohul2.jpg', 'Interactive Seminar & Discussion')">
+          <img src="roohul2.jpg" alt="Interactive Seminar">
+          <div class="gallery-overlay">
+            <h5>Knowledge Exchange</h5>
+            <p>Interactive Workshops</p>
+          </div>
+        </div>
+
+        <div class="gallery-item" onclick="openLightbox('roohul3.jpg', 'Batch Award Distribution Ceremony')">
+          <img src="roohul3.jpg" alt="Award Ceremony">
+          <div class="gallery-overlay">
+            <h5>Honors & Awards</h5>
+            <p>Recognizing Excellence</p>
+          </div>
+        </div>
+
+        <div class="gallery-item" onclick="openLightbox('roohul4.jpg', 'Special Guest Session & Speech')">
+          <img src="roohul4.jpg" alt="Special Session">
+          <div class="gallery-overlay">
+            <h5>Guest Session</h5>
+            <p>Inspirational Guidance</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Lightbox Modal -->
+  <div class="lightbox-modal" id="lightboxModal">
+    <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+    <div class="lightbox-content">
+      <img src="" id="lightboxImg" alt="Enlarged Memory">
+      <div class="lightbox-caption" id="lightboxCaption"></div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       EVENTS SECTION
+       ========================================================================== -->
+  <section class="section-events" id="events">
+    <div class="container">
+      <div class="section-header">
+        <div class="badge-tag">Upcoming Activities</div>
+        <h2 class="section-title">Events & <span>Reunions</span></h2>
+        <p class="section-desc">Stay updated on our annual gatherings, charity drives, and alumni conventions.</p>
+      </div>
+
+      <div class="events-grid">
+        <div class="event-card">
+          <div>
+            <div class="event-date">
+              <i class="fa-regular fa-calendar-check"></i> December 28, 2026
+            </div>
+            <h3>Grand WAFD Alumni Reunion 2026</h3>
+            <p>Annual gathering of all batchmates, family dinner, nostalgia sharing, and executive committee elections.</p>
+          </div>
+          <button class="btn btn-outline" onclick="rsvpAlert('Grand Reunion')">
+            <i class="fa-solid fa-paper-plane"></i> RSVP Now
+          </button>
+        </div>
+
+        <div class="event-card">
+          <div>
+            <div class="event-date">
+              <i class="fa-regular fa-calendar-check"></i> October 15, 2026
+            </div>
+            <h3>Youth Empowerment Workshop</h3>
+            <p>Interactive career orientation and leadership workshop hosted by WAFD alumni for current students.</p>
+          </div>
+          <button class="btn btn-outline" onclick="rsvpAlert('Youth Workshop')">
+            <i class="fa-solid fa-paper-plane"></i> Register
+          </button>
+        </div>
+
+        <div class="event-card">
+          <div>
+            <div class="event-date">
+              <i class="fa-regular fa-calendar-check"></i> Ramadan 2027
+            </div>
+            <h3>WAFD Welfare & Relief Drive</h3>
+            <p>Annual community food package distribution and scholarship sponsorship program.</p>
+          </div>
+          <button class="btn btn-outline" onclick="rsvpAlert('Relief Drive')">
+            <i class="fa-solid fa-paper-plane"></i> Support Cause
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       CONTACT & REGISTRATION PORTAL
+       ========================================================================== -->
+  <section class="section-contact" id="contact">
+    <div class="container">
+      <div class="contact-wrapper">
+        <div class="contact-info">
+          <div class="badge-tag">Connect With Us</div>
+          <h3>Join the WAFD Alumni Network</h3>
+          <p>Are you a WAFD batch member? Fill out the form to stay connected, receive event invites, and update your directory details.</p>
+
+          <div class="contact-details">
+            <div class="contact-detail-item">
+              <div class="contact-icon">
+                <i class="fa-solid fa-location-dot"></i>
+              </div>
+              <div>
+                <strong>Central HQ:</strong>
+                <p style="margin: 0; color: var(--text-muted);">Koomanna Chenakkal, Malappuram, Kerala</p>
+              </div>
+            </div>
+
+            <div class="contact-detail-item">
+              <div class="contact-icon">
+                <i class="fa-solid fa-envelope"></i>
+              </div>
+              <div>
+                <strong>Email Portal:</strong>
+                <p style="margin: 0; color: var(--text-muted);">alumni@wafd-batch.org</p>
+              </div>
+            </div>
+
+            <div class="contact-detail-item">
+              <div class="contact-icon">
+                <i class="fa-brands fa-whatsapp"></i>
+              </div>
+              <div>
+                <strong>Official Helpline:</strong>
+                <p style="margin: 0; color: var(--text-muted);">+91 98765 43210</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <form class="contact-form" id="alumniForm" onsubmit="handleFormSubmit(event)">
+          <div class="form-group">
+            <label for="fullName">Full Name</label>
+            <input type="text" id="fullName" class="form-control" placeholder="Enter your name" required>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" class="form-control" placeholder="name@example.com" required>
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Phone / WhatsApp Number</label>
+            <input type="tel" id="phone" class="form-control" placeholder="+91 00000 00000" required>
+          </div>
+
+          <div class="form-group">
+            <label for="message">Message / Batch Memories</label>
+            <textarea id="message" class="form-control" placeholder="Share your message or batch update..."></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="margin-top: 10px;">
+            <i class="fa-solid fa-paper-plane"></i> Submit Registration
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Toast Alert -->
+  <div class="toast-alert" id="toastAlert">
+    <i class="fa-solid fa-circle-check"></i> Registration submitted successfully! Welcome to WAFD Alumni.
+  </div>
+
+  <!-- ==========================================================================
+       FOOTER
+       ========================================================================== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="logo-container">
+            <img src="logo.png" alt="WAFD Logo" class="logo-img">
+            <div class="logo-text">WAFD <span>ALUMNI</span></div>
+          </div>
+          <p>Official digital portal of WAFD Batch. Preserving values, fostering brotherhood, and inspiring future generations.</p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Navigation</h4>
+          <ul class="footer-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About Us</a></li>
+            <li><a href="#history">Batch History</a></li>
+            <li><a href="#directory">Directory</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Community</h4>
+          <ul class="footer-links">
+            <li><a href="#gallery">Memory Wall</a></li>
+            <li><a href="#events">Reunions & Events</a></li>
+            <li><a href="#contact">Alumni Registration</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Motto</h4>
+          <p style="font-style: italic; color: var(--text-gold); font-size: 0.9rem;">
+            "Learn • Practice • Lead • Inspire"
+          </p>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; 2026 WAFD Batch Alumni Association. All rights reserved.</div>
+        <button class="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Back to Top">
+          <i class="fa-solid fa-chevron-up"></i>
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==========================================================================
+       JAVASCRIPT LOGIC
+       ========================================================================== -->
+  <script>
+    // Header Scroll Effect & Active Link Highlight
+    const header = document.getElementById('header');
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('section');
+
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+
+      // Scroll spy
+      let current = '';
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop - 120;
+        if (window.scrollY >= sectionTop) {
+          current = section.getAttribute('id');
+        }
+      });
+
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === `#${current}`) {
+          link.classList.add('active');
+        }
+      });
+    });
+
+    // Mobile Menu Toggle
+    const mobileToggle = document.getElementById('mobileToggle');
+    const navLinksContainer = document.getElementById('navLinks');
+
+    mobileToggle.addEventListener('click', () => {
+      navLinksContainer.classList.toggle('active');
+    });
+
+    // Close mobile menu on click link
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        navLinksContainer.classList.remove('active');
+      });
+    });
+
+    // Directory Filter
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const memberCards = document.querySelectorAll('.member-card');
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const filter = btn.getAttribute('data-filter');
+
+        memberCards.forEach(card => {
+          if (filter === 'all' || card.getAttribute('data-category') === filter) {
+            card.style.display = 'block';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // Lightbox Gallery Modal
+    const lightboxModal = document.getElementById('lightboxModal');
+    const lightboxImg = document.getElementById('lightboxImg');
+    const lightboxCaption = document.getElementById('lightboxCaption');
+
+    function openLightbox(src, caption) {
+      lightboxImg.src = src;
+      lightboxCaption.textContent = caption;
+      lightboxModal.classList.add('active');
+    }
+
+    function closeLightbox() {
+      lightboxModal.classList.remove('active');
+    }
+
+    // Form Submission & Toast Alert
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      const toast = document.getElementById('toastAlert');
+      toast.style.display = 'block';
+      document.getElementById('alumniForm').reset();
+
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, 4000);
+    }
+
+    function rsvpAlert(eventName) {
+      alert(`Thank you for expressing interest in "${eventName}"! Registration details will be sent to your email.`);
+    }
+  </script>
+</body>
+</html>
