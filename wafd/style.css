@@ -1059,10 +1059,12 @@ body {
 }
 
 .showcase-heading {
-  font-family: var(--font-arabic);
-  font-size: 1.8rem;
-  font-weight: 700;
+  font-family: var(--font-cinzel);
+  font-size: 1.4rem;
+  font-weight: 800;
   color: var(--green-dark);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   line-height: 1.2;
 }
 .showcase-sub {
