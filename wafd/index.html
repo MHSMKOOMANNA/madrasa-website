@@ -92,7 +92,7 @@
               <span class="institution-sub">Islamic College</span>
             </h1>
             <div class="batch-emblem-badge">
-              <span class="wafd-text">وفد · WAFD</span>
+              <span class="wafd-text">WAFD</span>
               <span class="badge-sep">|</span>
               <span class="batch-designation">16<sup>th</sup> Batch Alumni</span>
             </div>
@@ -291,7 +291,7 @@
                   <img src="batch-photo.jpg" alt="WAFD Batch Emblem" class="showcase-emblem" />
                 </div>
                 <div class="showcase-badge-ribbon">EST. 2012 — 2024</div>
-                <h3 class="showcase-heading">WAFD · وفد</h3>
+                <h3 class="showcase-heading">WAFD ALUMNI</h3>
                 <p class="showcase-sub">16th Batch Alumni Council</p>
                 <div class="showcase-divider"></div>
                 <ul class="showcase-list">
@@ -350,6 +350,10 @@
             <span class="tab-icon">🎓</span>
             <span>Graduation Ceremony 2024</span>
           </button>
+          <button class="spotlight-tab-btn" data-target="tab-almamater" role="tab" aria-selected="false">
+            <span class="tab-icon">🏛️</span>
+            <span>Alma Mater Campus Sanctuary</span>
+          </button>
         </div>
 
         <!-- Tab 1: Campus Group Photo -->
@@ -400,6 +404,30 @@
           </div>
         </div>
 
+        <!-- Tab 3: Alma Mater Campus Artwork -->
+        <div class="spotlight-content" id="tab-almamater">
+          <div class="spotlight-card reveal">
+            <div class="spotlight-img-container" onclick="openLightbox('campus-art.jpg', 'Sabeelul Hidaya Islamic College (SHIC) — The Hilltop Sanctuary of Sacred Knowledge & Brotherhood')">
+              <img src="campus-art.jpg" alt="Sabeelul Hidaya Islamic College Hilltop Campus Artwork" class="spotlight-img spotlight-img-portrait" />
+              <div class="spotlight-zoom-hint">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+                <span>Click to view high-resolution campus art</span>
+              </div>
+            </div>
+            <div class="spotlight-caption-bar">
+              <div class="caption-main">
+                <span class="caption-tag">Alma Mater · Hilltop Sanctuary</span>
+                <h3 class="caption-title">Sabeelul Hidaya Islamic College (SHIC)</h3>
+                <p class="caption-desc">Nestled on the serene hills of Kooriyad, our beloved alma mater stood as our spiritual home, academy of sacred knowledge, and cradle of brotherhood for 12 transformative years (2012 – 2024).</p>
+              </div>
+              <div class="caption-meta">
+                <span class="meta-item"><span class="meta-icon">📍</span> Kooriyad, Malappuram</span>
+                <span class="meta-item"><span class="meta-icon">🏛️</span> Est. Center of Excellence</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </section>
 
@@ -430,6 +458,32 @@
 
         <!-- Gallery Grid -->
         <div class="gallery-grid" id="gallery-grid">
+
+          <!-- Item 0: Sabeelul Hidaya Campus Art (New Featured Memory) -->
+          <article class="gallery-card featured reveal" data-category="campus" onclick="openLightbox('campus-art.jpg', 'Sabeelul Hidaya Islamic College (SHIC) — The Hilltop Sanctuary of Sacred Knowledge & Brotherhood')">
+            <div class="gallery-img-wrap">
+              <img src="campus-art.jpg" alt="Sabeelul Hidaya Islamic College Campus Artwork" class="gallery-img" loading="lazy" />
+              <div class="gallery-overlay">
+                <div class="gallery-overlay-badge">Alma Mater Landmark</div>
+                <div class="gallery-overlay-content">
+                  <span class="overlay-tag">🏛️ Alma Mater</span>
+                  <h3 class="overlay-title">Sabeelul Hidaya Campus Sanctuary</h3>
+                  <p class="overlay-text">The sacred hill of Kooriyad where twelve years of spiritual character and scholarship flourished.</p>
+                </div>
+                <div class="gallery-zoom-btn" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+                </div>
+              </div>
+            </div>
+            <div class="gallery-info">
+              <div class="card-meta-top">
+                <span class="card-category">🏛️ Alma Mater</span>
+                <span class="card-date">SHIC Campus</span>
+              </div>
+              <h3 class="card-title">Sabeelul Hidaya Islamic College — Campus Sanctuary</h3>
+              <p class="card-desc">Our beloved hillside campus at Kooriyad — the sacred space that nurtured 35 scholars over twelve transformative years.</p>
+            </div>
+          </article>
 
           <!-- Item 1: Graduation University (Featured) -->
           <article class="gallery-card featured reveal" data-category="graduation" onclick="openLightbox('mem-graduation.jpg', 'Graduation Day — Standing in front of Darul Huda Islamic University (5th March 2024)')">

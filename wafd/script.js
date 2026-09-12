@@ -294,6 +294,7 @@ let currentLightboxIndex = 0;
 
 function initGalleryList() {
   galleryItems = [
+    { src: 'campus-art.jpg', caption: 'Sabeelul Hidaya Islamic College (SHIC) — The Hilltop Sanctuary of Sacred Knowledge & Brotherhood' },
     { src: 'mem-graduation.jpg', caption: 'Graduation Day — Standing in front of Darul Huda Islamic University (5th March 2024)' },
     { src: 'cover-photo.jpg', caption: 'Official Convocation Batch Portrait — 16th Batch in graduation regalia with degrees' },
     { src: 'logo.png', caption: '16th Batch at Sabeelul Hidaya Islamic College — United in traditional white attire' },
