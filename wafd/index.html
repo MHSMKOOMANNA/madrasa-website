@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>16th Batch Alumni | Sabeelul Hidaya Islamic College</title>
+  <meta name="description" content="Official alumni page of the 16th Batch of Sabeelul Hidaya Islamic College (SHIC). Graduated after 12 years of Islamic education — Since 9.5.12 to 5.3.24." />
+  <meta name="keywords" content="SHIC, Sabeelul Hidaya, Islamic College, 16th Batch, Alumni, Islamic Education, WAFD" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cinzel:wght@400;600;700;900&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- PARTICLES BACKGROUND -->
+  <div class="particles" id="particles"></div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <!-- Logo = batch-photo.jpg (the actual logo as user specified) -->
+        <img src="batch-photo.jpg" alt="16th Batch Logo" class="nav-logo" id="nav-logo" />
+        <div class="nav-brand-text">
+          <span class="brand-title">SHIC</span>
+          <span class="brand-sub">16th Batch Alumni</span>
+        </div>
+      </div>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#home" class="nav-link active" id="nav-home">Home</a></li>
+        <li><a href="#about" class="nav-link" id="nav-about">About</a></li>
+        <li><a href="#memories" class="nav-link" id="nav-memories">Memories</a></li>
+        <li><a href="#journey" class="nav-link" id="nav-journey">Our Journey</a></li>
+        <li><a href="#batch" class="nav-link" id="nav-batch">Batch</a></li>
+        <li><a href="#contact" class="nav-link" id="nav-contact">Contact</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION — background = cover-photo.jpg (new graduation cover) -->
+  <section class="hero" id="home">
+    <div class="hero-bg-image"></div>
+    <div class="hero-bg-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-badge animate-fade-up delay-1">
+        <span class="badge-dot"></span>
+        Batch of 2024 — Graduated with Honours
+      </div>
+      <div class="logo-wrapper animate-fade-up delay-2">
+        <div class="logo-glow-ring"></div>
+        <img src="batch-photo.jpg" alt="Sabeelul Hidaya Islamic College 16th Batch Logo" class="hero-logo" id="hero-logo" />
+      </div>
+      <h1 class="hero-title animate-fade-up delay-3">
+        <span class="title-arabic">سبيل الهداية</span>
+        <span class="title-main">Sabeelul Hidaya</span>
+        <span class="title-sub">Islamic College</span>
+      </h1>
+      <div class="hero-batch-badge animate-fade-up delay-4">
+        <div class="batch-number">16<sup>th</sup></div>
+        <div class="batch-label">Batch Alumni</div>
+      </div>
+      <div class="hero-tagline animate-fade-up delay-5">
+        <p class="tagline-text">Twelve Years of Knowledge, Faith &amp; Brotherhood</p>
+        <div class="hero-dates">
+          <div class="date-item">
+            <span class="date-icon">📖</span>
+            <span class="date-label">Admission</span>
+            <span class="date-value">9th May 2012</span>
+          </div>
+          <div class="date-divider">—</div>
+          <div class="date-item">
+            <span class="date-icon">🎓</span>
+            <span class="date-label">Graduation</span>
+            <span class="date-value">5th March 2024</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-actions animate-fade-up delay-6">
+        <a href="#memories" class="btn btn-primary" id="btn-our-memories">📸 Our Memories</a>
+        <a href="#journey" class="btn btn-outline" id="btn-our-journey">Our Journey</a>
+      </div>
+      <div class="hero-scroll animate-fade-up delay-7">
+        <span>Scroll to explore</span>
+        <div class="scroll-line"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS SECTION -->
+  <section class="stats-section" id="stats">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-card reveal" id="stat-years">
+          <div class="stat-number" data-target="12">0</div>
+          <div class="stat-label">Years of Study</div>
+          <div class="stat-icon">📚</div>
+        </div>
+        <div class="stat-card reveal" id="stat-graduates">
+          <div class="stat-number" data-target="35">0</div>
+          <div class="stat-label">Graduates</div>
+          <div class="stat-icon">🎓</div>
+        </div>
+        <div class="stat-card reveal" id="stat-batch">
+          <div class="stat-number" data-target="16">0</div>
+          <div class="stat-label">Batch Number</div>
+          <div class="stat-icon">🏛️</div>
+        </div>
+        <div class="stat-card reveal" id="stat-year">
+          <div class="stat-number" data-target="2024">0</div>
+          <div class="stat-label">Year of Graduation</div>
+          <div class="stat-icon">🌟</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT SECTION -->
+  <section class="about-section" id="about">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Who We Are</span>
+        <h2 class="section-title">About the 16th Batch</h2>
+        <div class="section-divider"></div>
+      </div>
+      <div class="about-grid">
+        <div class="about-text-col reveal">
+          <div class="about-quote">
+            <span class="arabic-quote">&#xFE70; اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ &#xFE70;</span>
+            <small>Read in the name of your Lord who created — Surah Al-Alaq 96:1</small>
+          </div>
+          <p class="about-body">
+            We are the proud <strong>16th Batch</strong> of <strong>Sabeelul Hidaya Islamic College (SHIC)</strong> —
+            a brotherhood forged over 12 remarkable years of Islamic learning, spiritual growth, and lifelong friendship.
+          </p>
+          <p class="about-body">
+            Our journey began on <strong>9th May 2012</strong>, when we walked through the gates of SHIC as young
+            students eager to seek knowledge. Twelve transformative years later, we graduated on <strong>5th March 2024</strong>,
+            carrying with us the torch of Islamic scholarship and values.
+          </p>
+          <p class="about-body">
+            Through years of Quran, Hadith, Fiqh, Arabic language, and Islamic sciences — our batch emerged
+            not just as scholars, but as brothers bonded for life.
+          </p>
+          <div class="about-highlights">
+            <div class="highlight-item">
+              <span class="highlight-icon">🕌</span>
+              <span>Deep-rooted Islamic Education</span>
+            </div>
+            <div class="highlight-item">
+              <span class="highlight-icon">📿</span>
+              <span>Quran &amp; Hadith Sciences</span>
+            </div>
+            <div class="highlight-item">
+              <span class="highlight-icon">🤝</span>
+              <span>Lifelong Brotherhood</span>
+            </div>
+            <div class="highlight-item">
+              <span class="highlight-icon">🌍</span>
+              <span>Serving the Community</span>
+            </div>
+          </div>
+        </div>
+        <div class="about-visual-col reveal">
+          <div class="about-logo-display">
+            <!-- Logo = batch-photo.jpg -->
+            <img src="batch-photo.jpg" alt="16th Batch Logo" class="about-logo" />
+            <div class="about-logo-caption">
+              <h3>SHIC</h3>
+              <p>Sabeelul Hidaya Islamic College</p>
+              <div class="about-logo-badge">Est. Legacy of Knowledge</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- OUR MEMORIES SECTION -->
+  <section class="memories-section" id="memories">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Cherished Moments</span>
+        <h2 class="section-title">Our Memories</h2>
+        <div class="section-divider"></div>
+        <p class="section-desc">Every moment together is a treasure we carry in our hearts forever</p>
+      </div>
+
+      <div class="memories-grid">
+
+        <!-- Memory 1 — Featured: Graduation Day (Darul Huda) -->
+        <div class="memory-card featured reveal" id="mem-graduation-card" onclick="openLightbox('mem-graduation.jpg', 'Graduation Day — Darul Huda Islamic University, 5th March 2024')">
+          <div class="memory-img-wrap">
+            <img src="mem-graduation.jpg" alt="Graduation Day at Darul Huda Islamic University" class="memory-img" />
+            <div class="memory-overlay">
+              <p class="memory-overlay-text">Click to view — Our proudest moment</p>
+            </div>
+          </div>
+          <div class="memory-info">
+            <span class="memory-tag">🎓 Graduation</span>
+            <h3 class="memory-title">Graduation Day — Darul Huda Islamic University</h3>
+            <p class="memory-desc">5th March 2024 — The proudest day of our 12-year journey. We received our degrees at Darul Huda Islamic University, dressed in black suits and white turbans, each holding our certificates of Islamic scholarship.</p>
+          </div>
+        </div>
+
+        <!-- Memory 2 — Friends & Brotherhood -->
+        <div class="memory-card reveal" id="mem-brotherhood-card" onclick="openLightbox('mem-brotherhood.jpg', 'Friends & Brotherhood — A joyful reunion selfie')">
+          <div class="memory-img-wrap">
+            <img src="mem-brotherhood.jpg" alt="Friends and Brotherhood reunion" class="memory-img" />
+            <div class="memory-overlay">
+              <p class="memory-overlay-text">Click to view — Brotherhood moments</p>
+            </div>
+          </div>
+          <div class="memory-info">
+            <span class="memory-tag">🤝 Brotherhood</span>
+            <h3 class="memory-title">Friends &amp; Brotherhood</h3>
+            <p class="memory-desc">A joyful reunion — brothers reunited, laughter and love captured in one selfie. These friendships are for life.</p>
+          </div>
+        </div>
+
+        <!-- Memory 3 — Wafd Meet & Grand Turf Football League -->
+        <div class="memory-card reveal" id="mem-football-card" onclick="openLightbox('mem-football.jpg', 'Wafd Meet & Grand Turf League — Our football tournament')">
+          <div class="memory-img-wrap">
+            <img src="mem-football.jpg" alt="Wafd Meet Grand Turf Football League" class="memory-img" />
+            <div class="memory-overlay">
+              <p class="memory-overlay-text">Click to view — Football memories</p>
+            </div>
+          </div>
+          <div class="memory-info">
+            <span class="memory-tag">⚽ Sports</span>
+            <h3 class="memory-title">Wafd Meet &amp; Grand Turf League</h3>
+            <p class="memory-desc">Beyond books and studies — our brotherhood shone on the football field too. The Wafd Meet &amp; Grand Turf League was more than a game; it was unity in sport.</p>
+          </div>
+        </div>
+
+        <!-- Memory 4 — Our Roots: Under the Tree -->
+        <div class="memory-card reveal" id="mem-roots-card" onclick="openLightbox('mem-roots.jpg', 'Our Roots — Peaceful days under the tree, dressed in white')">
+          <div class="memory-img-wrap">
+            <img src="mem-roots.jpg" alt="Peaceful group under the tree in white" class="memory-img" />
+            <div class="memory-overlay">
+              <p class="memory-overlay-text">Click to view — Our peaceful roots</p>
+            </div>
+          </div>
+          <div class="memory-info">
+            <span class="memory-tag">🌿 Our Roots</span>
+            <h3 class="memory-title">Peaceful Days — Under the Tree</h3>
+            <p class="memory-desc">Dressed in white, seated under the shade of a great tree — a moment of peace, simplicity, and spiritual beauty that captures the soul of our SHIC days.</p>
+          </div>
+        </div>
+
+        <!-- Memory 5 — School Excursion Trip -->
+        <div class="memory-card reveal" id="mem-excursion-card" onclick="openLightbox('mem-excursion.jpg', 'School Excursion Trip — The young days at Madrasa')">
+          <div class="memory-img-wrap">
+            <img src="mem-excursion.jpg" alt="School Excursion Trip at Madrasa" class="memory-img" />
+            <div class="memory-overlay">
+              <p class="memory-overlay-text">Click to view — Early school years</p>
+            </div>
+          </div>
+          <div class="memory-info">
+            <span class="memory-tag">🚌 Excursion</span>
+            <h3 class="memory-title">School Excursion Trip — The Young Days</h3>
+            <p class="memory-desc">When we were young students on an adventure — our early madrasa excursion trip where the seeds of lifelong brotherhood were first planted.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- BATCH PHOTO SECTION -->
+  <section class="batch-section" id="batch">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Our Brotherhood</span>
+        <h2 class="section-title">The 16th Batch</h2>
+        <div class="section-divider"></div>
+        <p class="section-desc">United by faith, bonded by twelve years of shared memories</p>
+      </div>
+      <div class="batch-photo-wrapper">
+        <div class="photo-frame reveal">
+          <!-- Graduation photo as the main batch section image -->
+          <img src="mem-graduation.jpg" alt="16th Batch of Sabeelul Hidaya Islamic College — Graduation at Darul Huda University" class="batch-photo" id="batch-group-photo" />
+          <div class="photo-overlay">
+            <div class="photo-caption">
+              <span class="caption-badge">16th Batch — SHIC</span>
+              <span class="caption-year">2012 – 2024</span>
+            </div>
+          </div>
+        </div>
+        <div class="batch-photo-info reveal">
+          <div class="info-card" id="info-batch-name">
+            <div class="info-icon">🏛️</div>
+            <div class="info-text">
+              <h4>16th Batch</h4>
+              <p>Sabeelul Hidaya Islamic College</p>
+            </div>
+          </div>
+          <div class="info-card" id="info-duration">
+            <div class="info-icon">⏳</div>
+            <div class="info-text">
+              <h4>12 Years</h4>
+              <p>Of Dedication &amp; Learning</p>
+            </div>
+          </div>
+          <div class="info-card" id="info-period">
+            <div class="info-icon">📅</div>
+            <div class="info-text">
+              <h4>9.5.12 — 5.3.24</h4>
+              <p>Our Academic Journey</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- JOURNEY / TIMELINE SECTION -->
+  <section class="journey-section" id="journey">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Timeline</span>
+        <h2 class="section-title">Our 12-Year Journey</h2>
+        <div class="section-divider"></div>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item left reveal">
+          <div class="timeline-dot">📖</div>
+          <div class="timeline-content" id="tl-start">
+            <span class="timeline-year">2012</span>
+            <h3>The Beginning</h3>
+            <p>We enrolled at Sabeelul Hidaya Islamic College on 9th May 2012, beginning our journey as the 16th Batch — young minds hungry for knowledge and Islamic wisdom.</p>
+          </div>
+        </div>
+        <div class="timeline-item right reveal">
+          <div class="timeline-dot">🌿</div>
+          <div class="timeline-content" id="tl-early">
+            <span class="timeline-year">2012–2016</span>
+            <h3>Foundation Years</h3>
+            <p>Laying the groundwork in Quranic recitation, Arabic language, Islamic history, and foundational sciences. Brotherhood formed in the early years of study.</p>
+          </div>
+        </div>
+        <div class="timeline-item left reveal">
+          <div class="timeline-dot">📿</div>
+          <div class="timeline-content" id="tl-middle">
+            <span class="timeline-year">2016–2020</span>
+            <h3>Deep Learning</h3>
+            <p>Advanced studies in Hadith sciences, Fiqh, Tafseer, and Islamic jurisprudence. Developing scholars with deep understanding of Islamic principles.</p>
+          </div>
+        </div>
+        <div class="timeline-item right reveal">
+          <div class="timeline-dot">⭐</div>
+          <div class="timeline-content" id="tl-advanced">
+            <span class="timeline-year">2020–2023</span>
+            <h3>Scholarly Excellence</h3>
+            <p>Final years of advanced Islamic scholarship. Mastery of classical texts, rigorous academic preparation, and spiritual development as future community leaders.</p>
+          </div>
+        </div>
+        <div class="timeline-item left reveal">
+          <div class="timeline-dot">🎓</div>
+          <div class="timeline-content" id="tl-graduation">
+            <span class="timeline-year">5th March 2024</span>
+            <h3>Graduation Day</h3>
+            <p>We proudly graduated as the 16th Batch of SHIC at Darul Huda Islamic University — carrying forward 12 years of learning, faith, and brotherhood into the world.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUOTE SECTION -->
+  <section class="quote-section" id="inspiration">
+    <div class="quote-overlay"></div>
+    <div class="container">
+      <div class="quote-content reveal">
+        <div class="quote-logo">
+          <img src="batch-photo.jpg" alt="16th Batch Logo" />
+        </div>
+        <blockquote class="inspirational-quote">
+          <span class="arabic-text">طَلَبُ الْعِلْمِ فَرِيضَةٌ عَلَى كُلِّ مُسْلِمٍ</span>
+          <p>"Seeking knowledge is an obligation upon every Muslim."</p>
+          <cite>— Prophet Muhammad ﷺ (Ibn Majah)</cite>
+        </blockquote>
+        <div class="quote-batch-sign">
+          <span>— 16th Batch, SHIC | Since 9.5.12 : To 5.3.24 —</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT SECTION -->
+  <section class="contact-section" id="contact">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Stay Connected</span>
+        <h2 class="section-title">Connect With Us</h2>
+        <div class="section-divider"></div>
+        <p class="section-desc">The bond of brotherhood continues beyond graduation</p>
+      </div>
+      <div class="contact-grid">
+        <div class="contact-card reveal" id="contact-college">
+          <div class="contact-icon">🕌</div>
+          <h3>Our College</h3>
+          <p>Sabeelul Hidaya Islamic College (SHIC)</p>
+          <span class="contact-tag">Alma Mater</span>
+        </div>
+        <div class="contact-card reveal" id="contact-batch">
+          <div class="contact-icon">👥</div>
+          <h3>16th Batch</h3>
+          <p>Alumni Network — Together Forever</p>
+          <span class="contact-tag">Est. 2024</span>
+        </div>
+        <div class="contact-card reveal" id="contact-legacy">
+          <div class="contact-icon">📜</div>
+          <h3>Our Legacy</h3>
+          <p>12 Years of Knowledge &amp; Brotherhood</p>
+          <span class="contact-tag">2012 — 2024</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer" id="footer">
+    <div class="footer-glow"></div>
+    <div class="container">
+      <div class="footer-main">
+        <div class="footer-brand">
+          <img src="batch-photo.jpg" alt="16th Batch Logo" class="footer-logo" />
+          <div class="footer-brand-info">
+            <h3>16th Batch Alumni</h3>
+            <p>Sabeelul Hidaya Islamic College</p>
+          </div>
+        </div>
+        <div class="footer-meta">
+          <p class="footer-dates">
+            <strong>Since:</strong> 9th May 2012 &nbsp;|&nbsp; <strong>To:</strong> 5th March 2024
+          </p>
+          <p class="footer-tagline">Twelve Years · One Brotherhood · Eternal Knowledge</p>
+        </div>
+      </div>
+      <div class="footer-divider"></div>
+      <div class="footer-bottom">
+        <p>© 2024 16th Batch Alumni — Sabeelul Hidaya Islamic College (SHIC)</p>
+        <p class="footer-arabic">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- LIGHTBOX for Memories -->
+  <div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+    <div class="lightbox-inner">
+      <button class="lightbox-close" id="lightbox-close" onclick="closeLightbox()">✕</button>
+      <img src="" alt="" class="lightbox-img" id="lightbox-img" />
+      <p class="lightbox-caption" id="lightbox-caption"></p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
